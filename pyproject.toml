@@ -1,0 +1,222 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ctf-kit"
+version = "0.1.0"
+description = "AI-assisted CTF challenge solver toolkit"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [
+    { name = "Your Name", email = "your.email@example.com" }
+]
+keywords = ["ctf", "security", "capture-the-flag", "ai", "automation"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+]
+
+dependencies = [
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+    "pyyaml>=6.0",
+    "pydantic>=2.0.0",
+    "pydantic-settings>=2.0.0",
+]
+
+[project.optional-dependencies]
+# Crypto tools
+crypto = [
+    "pycryptodome>=3.19.0",
+    "gmpy2>=2.1.0",
+]
+
+# PWN tools
+pwn = [
+    "pwntools>=4.11.0",
+]
+
+# All tool integrations
+all = [
+    "ctf-kit[crypto,pwn]",
+]
+
+# Development dependencies
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.12.0",
+    "mypy>=1.5.0",
+    "ruff>=0.1.0",
+    "pre-commit>=3.4.0",
+    "bandit[toml]>=1.7.0",
+    "types-PyYAML>=6.0.0",
+]
+
+[project.scripts]
+ctf = "ctf_kit.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/YOUR_USERNAME/ctf-kit"
+Documentation = "https://github.com/YOUR_USERNAME/ctf-kit#readme"
+Repository = "https://github.com/YOUR_USERNAME/ctf-kit"
+Issues = "https://github.com/YOUR_USERNAME/ctf-kit/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ctf_kit"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/tests",
+    "/README.md",
+    "/LICENSE",
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # Pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+    "N",      # pep8-naming
+    "YTT",    # flake8-2020
+    "ANN",    # flake8-annotations
+    "S",      # flake8-bandit (security)
+    "BLE",    # flake8-blind-except
+    "A",      # flake8-builtins
+    "COM",    # flake8-commas
+    "DTZ",    # flake8-datetimez
+    "T10",    # flake8-debugger
+    "EM",     # flake8-errmsg
+    "ISC",    # flake8-implicit-str-concat
+    "ICN",    # flake8-import-conventions
+    "G",      # flake8-logging-format
+    "PIE",    # flake8-pie
+    "T20",    # flake8-print
+    "PT",     # flake8-pytest-style
+    "Q",      # flake8-quotes
+    "RSE",    # flake8-raise
+    "RET",    # flake8-return
+    "SIM",    # flake8-simplify
+    "TCH",    # flake8-type-checking
+    "ARG",    # flake8-unused-arguments
+    "PTH",    # flake8-use-pathlib
+    "PD",     # pandas-vet
+    "PGH",    # pygrep-hooks
+    "PL",     # Pylint
+    "TRY",    # tryceratops
+    "FLY",    # flynt
+    "PERF",   # Perflint
+    "RUF",    # Ruff-specific rules
+]
+ignore = [
+    "E501",    # line too long (handled by formatter)
+    "ANN101",  # missing type annotation for self (deprecated)
+    "ANN102",  # missing type annotation for cls (deprecated)
+    "ANN002",  # missing type annotation for *args
+    "ANN003",  # missing type annotation for **kwargs
+    "ANN401",  # Any in *args/**kwargs (intentional for abstract methods)
+    "D",       # pydocstring (we'll add later)
+    "COM812",  # trailing comma (conflicts with formatter)
+    "ISC001",  # implicit string concat (conflicts with formatter)
+    "PLR2004", # magic values in comparisons (too strict for CTF work)
+    "TRY003",  # long exception messages (fine for clarity)
+    "EM102",   # f-string in exception (fine for clarity)
+    "B008",    # function call in defaults (Typer pattern)
+    "PLC0415", # import outside toplevel (fine for lazy imports)
+    "S603",    # subprocess without shell (we need this for tools)
+    "RSE102",  # unnecessary parens on raised exception
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["ctf_kit"]
+force-sort-within-sections = true
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+    "S101",   # assert usage is fine in tests
+    "ANN",    # type annotations not required in tests
+    "ARG",    # unused arguments in test fixtures
+]
+"src/ctf_kit/cli.py" = [
+    "T20",    # print statements (CLI needs them via Rich)
+]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_any_generics = true
+check_untyped_defs = true
+no_implicit_reexport = true
+show_error_codes = true
+show_column_numbers = true
+pretty = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+check_untyped_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-v --cov=ctf_kit --cov-report=term-missing --cov-report=html --cov-fail-under=50"
+# TODO: Increase to 80% as we implement Phase 1
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests that require actual tools installed",
+]
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning",
+]
+
+[tool.coverage.run]
+source = ["src/ctf_kit"]
+omit = [
+    "*/tests/*",
+    "*/__pycache__/*",
+    "*/.venv/*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "@abstractmethod",
+]
+
+[tool.bandit]
+exclude_dirs = ["tests", ".venv", "build", "dist"]
+skips = ["B101"]  # Skip assert_used in non-test code
+
+[tool.bandit.assert_used]
+exclude = ["*_test.py", "*/test_*.py"]
