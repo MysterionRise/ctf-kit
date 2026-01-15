@@ -29,12 +29,16 @@ __all__ = [
 ]
 
 # Import all tool modules to register them
+from ctf_kit.integrations import (
+    basic,  # noqa: F401  # file, strings
+    crypto,  # noqa: F401  # hashid, xortool
+    forensics,  # noqa: F401  # binwalk
+    stego,  # noqa: F401  # exiftool, zsteg
+)
+
 # These imports will be uncommented as tools are implemented
-# from ctf_kit.integrations import crypto
 # from ctf_kit.integrations import archive
-# from ctf_kit.integrations import forensics
 # from ctf_kit.integrations import network
-# from ctf_kit.integrations import stego
 # from ctf_kit.integrations import web
 # from ctf_kit.integrations import pwn
 # from ctf_kit.integrations import reversing

@@ -160,6 +160,9 @@ force-sort-within-sections = true
 "src/ctf_kit/cli.py" = [
     "T20",    # print statements (CLI needs them via Rich)
 ]
+"src/ctf_kit/skills/*.py" = [
+    "TCH003",  # Path used at runtime, not just type annotations
+]
 
 [tool.mypy]
 python_version = "3.11"
