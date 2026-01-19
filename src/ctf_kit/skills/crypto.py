@@ -158,18 +158,8 @@ class CryptoSkill(BaseSkill):
             if not line:
                 continue
 
-            # Check for encoding patterns
-            for encoding, pattern in self.CIPHER_PATTERNS.items():
-                if pattern.match(line):
-                    result["encodings"].append(
-                        {
-                            "type": encoding,
-                            "value": line[:50] + "..." if len(line) > 50 else line,
-                        }
-                    )
-                    break
-
-            # Check for hash-like strings
+            # Check for hash-like strings FIRST (to avoid base64 false positives)
+            is_hash = False
             if re.match(r"^[0-9a-fA-F]+$", line):
                 length = len(line)
                 if length in self.HASH_LENGTHS:
@@ -180,6 +170,19 @@ class CryptoSkill(BaseSkill):
                             "value": line[:20] + "..." if len(line) > 20 else line,
                         }
                     )
+                    is_hash = True
+
+            # Check for encoding patterns (skip base64 if already identified as hash)
+            if not is_hash:
+                for encoding, pattern in self.CIPHER_PATTERNS.items():
+                    if pattern.match(line):
+                        result["encodings"].append(
+                            {
+                                "type": encoding,
+                                "value": line[:50] + "..." if len(line) > 50 else line,
+                            }
+                        )
+                        break
 
             # Check for RSA-like parameters
             rsa_patterns: list[tuple[str, str]] = [
@@ -253,13 +256,22 @@ class CryptoSkill(BaseSkill):
         """Generate suggestions based on crypto analysis."""
         suggestions: list[str] = []
 
-        # Hash suggestions
+        # Hash suggestions - from hashid tool
         if analysis.get("detected_hashes"):
             for hash_info in analysis["detected_hashes"][:3]:
                 types = hash_info.get("types", [])
                 if types:
                     type_names = [t.get("type", "unknown") for t in types[:3]]
                     suggestions.append(f"Possible hash types: {', '.join(type_names)}")
+                    suggestions.append("Try cracking with hashcat or john")
+                    suggestions.append("Check CrackStation or hashes.com for known hashes")
+        # Fallback: use pattern-detected hashes from detected_ciphers
+        elif analysis.get("detected_ciphers"):
+            hash_ciphers = [c for c in analysis["detected_ciphers"] if c.get("type") == "hash"]
+            for cipher in hash_ciphers[:3]:
+                possible_types = cipher.get("possible_types", [])
+                if possible_types:
+                    suggestions.append(f"Possible hash types: {', '.join(possible_types)}")
                     suggestions.append("Try cracking with hashcat or john")
                     suggestions.append("Check CrackStation or hashes.com for known hashes")
 

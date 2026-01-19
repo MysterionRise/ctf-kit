@@ -10,6 +10,7 @@ from enum import Enum
 from pathlib import Path
 import shutil
 import subprocess  # nosec B404 - subprocess is required for tool execution
+import sys
 import time
 from typing import Any, ClassVar
 
@@ -112,11 +113,18 @@ class BaseTool(ABC):
         return self._binary_path
 
     def _find_binary(self) -> str | None:
-        """Locate the tool binary in PATH."""
+        """Locate the tool binary in PATH or venv."""
         for name in self.binary_names:
+            # Check system PATH first
             path = shutil.which(name)
             if path:
                 return path
+
+            # Check current venv bin directory
+            venv_bin = Path(sys.prefix) / "bin" / name
+            if venv_bin.exists():
+                return str(venv_bin)
+
         return None
 
     @property
