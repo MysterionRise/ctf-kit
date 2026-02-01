@@ -271,7 +271,7 @@ def check_content_patterns(path: Path) -> list[str]:
     return matches
 
 
-def suggest_category(file_info: FileInfo) -> CTFCategory:  # noqa: PLR0911, PLR0912
+def suggest_category(file_info: FileInfo) -> CTFCategory:
     """Suggest CTF category based on file information."""
     # Check extension first
     if file_info.extension.lower() in EXTENSION_CATEGORIES:

@@ -31,15 +31,11 @@ __all__ = [
 # Import all tool modules to register them
 from ctf_kit.integrations import (
     basic,  # noqa: F401  # file, strings
-    crypto,  # noqa: F401  # hashid, xortool
-    forensics,  # noqa: F401  # binwalk
-    stego,  # noqa: F401  # exiftool, zsteg
+    crypto,  # noqa: F401  # hashid, xortool, rsactftool, john, hashcat
+    forensics,  # noqa: F401  # binwalk, volatility, tshark, foremost
+    osint,  # noqa: F401  # sherlock, theharvester
+    pwn,  # noqa: F401  # checksec, ropgadget
+    reversing,  # noqa: F401  # radare2, ghidra
+    stego,  # noqa: F401  # exiftool, zsteg, steghide
+    web,  # noqa: F401  # sqlmap, gobuster, ffuf
 )
-
-# These imports will be uncommented as tools are implemented
-# from ctf_kit.integrations import archive
-# from ctf_kit.integrations import network
-# from ctf_kit.integrations import web
-# from ctf_kit.integrations import pwn
-# from ctf_kit.integrations import reversing
-# from ctf_kit.integrations import osint

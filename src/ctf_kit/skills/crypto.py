@@ -252,7 +252,7 @@ class CryptoSkill(BaseSkill):
         # This is a simplified heuristic
         return len(samples) > 0 and all(len(s) > 5 for s in samples)
 
-    def _generate_suggestions(self, analysis: dict[str, Any]) -> list[str]:  # noqa: PLR0912
+    def _generate_suggestions(self, analysis: dict[str, Any]) -> list[str]:
         """Generate suggestions based on crypto analysis."""
         suggestions: list[str] = []
 
