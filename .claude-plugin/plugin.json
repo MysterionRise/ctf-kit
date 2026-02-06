@@ -1,0 +1,10 @@
+{
+  "name": "ctf-kit",
+  "description": "AI-assisted CTF challenge solver with specialized skills for crypto, forensics, stego, web, pwn, reversing, OSINT, and misc categories",
+  "version": "1.0.0",
+  "author": {
+    "name": "ctf-kit"
+  },
+  "repository": "https://github.com/MysterionRise/ctf-kit",
+  "license": "MIT"
+}

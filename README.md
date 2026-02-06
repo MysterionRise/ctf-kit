@@ -11,31 +11,47 @@
 
 ## ⚡ Quick Start
 
-### 1. Install CTF Kit
+### 1. Install the Claude Code Plugin
+
+Inside Claude Code, run:
+
+```bash
+/plugin install --from https://github.com/MysterionRise/ctf-kit
+```
+
+Or from a local checkout:
+
+```bash
+/plugin install --from /path/to/ctf-kit
+```
+
+This makes all `/ctf-kit:*` skills available in **any** project.
+
+### 2. Install the CLI (optional)
 
 ```bash
 uv tool install ctf-kit --from git+https://github.com/MysterionRise/ctf-kit.git
 ```
 
-### 2. Initialize in your CTF repo
+### 3. Initialize in your CTF repo
 
 ```bash
 cd ~/ctf-dangerzone-2026
 ctf init --repo
 ```
 
-### 3. Start solving challenges
+### 4. Start solving challenges
 
 ```bash
 cd competitions/somectf/crypto-challenge
 ctf init
 
-# Launch your AI agent (Claude Code, Cursor, Copilot, etc.)
+# Launch your AI agent
 claude
 
-# Use slash commands
-> /ctf-analyze challenge.bin
-> /ctf-crypto
+# Use slash commands (plugin format)
+> /ctf-kit:analyze challenge.bin
+> /ctf-kit:crypto
 ```
 
 ---
@@ -67,23 +83,23 @@ ctf run xortool file.enc     # Run a specific tool directly
 ctf tools                    # List all available tools
 ```
 
-### Claude Code Commands (`/ctf-*`)
+### Claude Code Plugin Skills (`/ctf-kit:*`)
 
-AI-powered slash commands that guide you through solving challenges:
+AI-powered skills available in any project after installing the plugin:
 
 | Command | What it does |
 |---------|--------------|
-| `/ctf-analyze` | Analyzes files, detects challenge type, suggests next steps |
-| `/ctf-crypto` | Guides crypto challenges (RSA, XOR, hashing, etc.) |
-| `/ctf-forensics` | Memory dumps, PCAPs, disk images, file carving |
-| `/ctf-stego` | Hidden data in images, audio, and other media |
-| `/ctf-web` | SQLi, XSS, directory enumeration, auth bypass |
-| `/ctf-pwn` | Binary exploitation, ROP chains, format strings |
-| `/ctf-reverse` | Static/dynamic analysis, decompilation |
-| `/ctf-osint` | Username enumeration, domain recon |
-| `/ctf-misc` | Encoding chains, esoteric languages, QR codes |
+| `/ctf-kit:analyze` | Analyzes files, detects challenge type, suggests next steps |
+| `/ctf-kit:crypto` | Guides crypto challenges (RSA, XOR, hashing, etc.) |
+| `/ctf-kit:forensics` | Memory dumps, PCAPs, disk images, file carving |
+| `/ctf-kit:stego` | Hidden data in images, audio, and other media |
+| `/ctf-kit:web` | SQLi, XSS, directory enumeration, auth bypass |
+| `/ctf-kit:pwn` | Binary exploitation, ROP chains, format strings |
+| `/ctf-kit:reverse` | Static/dynamic analysis, decompilation |
+| `/ctf-kit:osint` | Username enumeration, domain recon |
+| `/ctf-kit:misc` | Encoding chains, esoteric languages, QR codes |
 
-The slash commands run the CLI tools under the hood and help you interpret results.
+The skills run the CLI tools under the hood and help you interpret results.
 
 ---
 
@@ -97,10 +113,10 @@ cd competitions/somectf/rsa-challenge
 claude
 
 # In Claude Code:
-> /ctf-analyze encrypted.txt public_key.pem
+> /ctf-kit:analyze encrypted.txt public_key.pem
 # Output: Detected RSA challenge with small public exponent
 
-> /ctf-crypto
+> /ctf-kit:crypto
 # Claude guides you through attacking the weak RSA parameters
 ```
 
@@ -110,10 +126,10 @@ claude
 cd competitions/somectf/memory-dump
 claude
 
-> /ctf-analyze memory.raw
+> /ctf-kit:analyze memory.raw
 # Output: Detected memory dump (Windows), suggests volatility3
 
-> /ctf-forensics
+> /ctf-kit:forensics
 # Claude helps extract credentials, processes, and artifacts
 ```
 
@@ -123,35 +139,35 @@ claude
 cd competitions/somectf/hidden-message
 claude
 
-> /ctf-analyze image.png
+> /ctf-kit:analyze image.png
 # Output: PNG image, suggests checking for LSB steganography
 
-> /ctf-stego
+> /ctf-kit:stego
 # Claude runs zsteg, exiftool, and other tools to find hidden data
 ```
 
 ---
 
-## 📚 Slash Commands Reference
+## 📚 Skills Reference
 
 ### Analysis
 
 | Command | Description |
 |---------|-------------|
-| `/ctf-analyze` | Analyze challenge files and auto-detect category |
+| `/ctf-kit:analyze` | Analyze challenge files and auto-detect category |
 
 ### Category-Specific
 
 | Command | Tools Used |
 |---------|------------|
-| `/ctf-crypto` | xortool, RsaCtfTool, hashcat, john |
-| `/ctf-forensics` | volatility3, binwalk, foremost, tshark |
-| `/ctf-stego` | zsteg, steghide, exiftool |
-| `/ctf-web` | sqlmap, gobuster, ffuf |
-| `/ctf-pwn` | checksec, ROPgadget |
-| `/ctf-reverse` | radare2, ghidra (headless) |
-| `/ctf-osint` | sherlock, theHarvester |
-| `/ctf-misc` | Encoding detection, file analysis |
+| `/ctf-kit:crypto` | xortool, RsaCtfTool, hashcat, john |
+| `/ctf-kit:forensics` | volatility3, binwalk, foremost, tshark |
+| `/ctf-kit:stego` | zsteg, steghide, exiftool |
+| `/ctf-kit:web` | sqlmap, gobuster, ffuf |
+| `/ctf-kit:pwn` | checksec, ROPgadget |
+| `/ctf-kit:reverse` | radare2, ghidra (headless) |
+| `/ctf-kit:osint` | sherlock, theHarvester |
+| `/ctf-kit:misc` | Encoding detection, file analysis |
 
 ---
 

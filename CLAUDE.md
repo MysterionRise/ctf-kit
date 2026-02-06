@@ -10,22 +10,36 @@ CTF Kit is a toolkit that helps security researchers and CTF players solve chall
 
 ```text
 ctf-kit/
+├── .claude-plugin/
+│   └── plugin.json               # Claude Code plugin manifest
+├── skills/                       # Plugin skills (SKILL.md format)
+│   ├── analyze/SKILL.md          # /ctf-kit:analyze
+│   ├── crypto/SKILL.md           # /ctf-kit:crypto
+│   ├── forensics/SKILL.md        # /ctf-kit:forensics
+│   ├── stego/SKILL.md            # /ctf-kit:stego
+│   ├── web/SKILL.md              # /ctf-kit:web
+│   ├── pwn/SKILL.md              # /ctf-kit:pwn
+│   ├── reverse/SKILL.md          # /ctf-kit:reverse
+│   ├── osint/SKILL.md            # /ctf-kit:osint
+│   └── misc/SKILL.md             # /ctf-kit:misc
+├── .claude/
+│   └── commands/                 # In-repo slash commands (backward compat)
 ├── src/ctf_kit/
 │   ├── __init__.py
 │   ├── cli.py                    # Main CLI entry point (Typer)
 │   ├── config.py                 # Configuration management
-│   ├── skills/                   # AI agent skills (slash commands)
+│   ├── skills/                   # AI agent skills (Python)
 │   │   ├── __init__.py
 │   │   ├── base.py               # Base skill class
-│   │   ├── analyze.py            # /ctf.analyze
-│   │   ├── crypto.py             # /ctf.crypto
-│   │   ├── forensics.py          # /ctf.forensics
-│   │   ├── stego.py              # /ctf.stego
-│   │   ├── web.py                # /ctf.web
-│   │   ├── pwn.py                # /ctf.pwn
-│   │   ├── reversing.py          # /ctf.reverse
-│   │   ├── osint.py              # /ctf.osint
-│   │   └── misc.py               # /ctf.misc
+│   │   ├── analyze.py            # /ctf-kit:analyze
+│   │   ├── crypto.py             # /ctf-kit:crypto
+│   │   ├── forensics.py          # /ctf-kit:forensics
+│   │   ├── stego.py              # /ctf-kit:stego
+│   │   ├── web.py                # /ctf-kit:web
+│   │   ├── pwn.py                # /ctf-kit:pwn
+│   │   ├── reversing.py          # /ctf-kit:reverse
+│   │   ├── osint.py              # /ctf-kit:osint
+│   │   └── misc.py               # /ctf-kit:misc
 │   ├── integrations/             # Tool wrappers
 │   │   ├── __init__.py
 │   │   ├── base.py               # BaseTool class, ToolResult
@@ -63,6 +77,10 @@ ctf-kit/
 ├── README.md
 └── CLAUDE.md                     # This file
 ```
+
+### Plugin Structure
+
+CTF Kit is distributed as a **Claude Code Plugin**. Users install it with `/plugin install` and all skills become available as `/ctf-kit:*` in any project. The `.claude/commands/` directory is kept for backward compatibility when working inside the ctf-kit repo itself.
 
 ## Tech Stack
 
