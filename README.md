@@ -62,7 +62,7 @@ claude
 |---------|-------------|
 | **AI-Powered Analysis** | Automatic challenge categorization and vulnerability detection |
 | **20+ Tool Integrations** | xortool, binwalk, volatility, zsteg, RsaCtfTool, and more |
-| **Claude Code Integration** | Native slash commands for challenge-solving workflows |
+| **Claude Code Plugin** | Install once, use `/ctf-kit:*` skills in any project |
 | **Competition Workflow** | Designed for speed during live CTFs |
 | **Writeup Generation** | Auto-generate writeups from your solve process |
 
