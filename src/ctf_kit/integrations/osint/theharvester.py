@@ -103,7 +103,11 @@ class TheHarvesterTool(BaseTool):
         # Parse hosts/subdomains
         # Usually listed under "[*] Hosts found:"
         if "Hosts found:" in stdout or "hosts" in stdout.lower():
-            host_section = stdout.split("Hosts found:")[-1] if "Hosts found:" in stdout else stdout
+            host_section = (
+                stdout.rsplit("Hosts found:", maxsplit=1)[-1]
+                if "Hosts found:" in stdout
+                else stdout
+            )
             host_pattern = re.compile(r"([\w.-]+\.[a-zA-Z]{2,})")
             hosts = host_pattern.findall(host_section)
             parsed["hosts"] = list(set(hosts))
@@ -116,7 +120,7 @@ class TheHarvesterTool(BaseTool):
         # Parse subdomains
         subdomain_section = ""
         if "Subdomains found:" in stdout:
-            subdomain_section = stdout.split("Subdomains found:")[-1].split("[")[0]
+            subdomain_section = stdout.rsplit("Subdomains found:", maxsplit=1)[-1].split("[")[0]
             subdomain_pattern = re.compile(r"([\w.-]+)")
             subdomains = subdomain_pattern.findall(subdomain_section)
             parsed["subdomains"] = [s for s in subdomains if "." in s and len(s) > 3]

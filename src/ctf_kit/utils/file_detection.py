@@ -5,14 +5,14 @@ Provides file type detection, magic byte analysis, and CTF category suggestion.
 """
 
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 import re
 import shutil
 import subprocess  # nosec B404 - subprocess is required for file detection
 
 
-class CTFCategory(str, Enum):
+class CTFCategory(StrEnum):
     """CTF challenge categories."""
 
     CRYPTO = "crypto"

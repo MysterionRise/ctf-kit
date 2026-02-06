@@ -6,7 +6,7 @@ All tool wrappers inherit from BaseTool and return ToolResult.
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 import shutil
 import subprocess  # nosec B404 - subprocess is required for tool execution
@@ -15,7 +15,7 @@ import time
 from typing import Any, ClassVar
 
 
-class ToolCategory(str, Enum):
+class ToolCategory(StrEnum):
     """Tool categories."""
 
     CRYPTO = "crypto"
@@ -31,7 +31,7 @@ class ToolCategory(str, Enum):
     MISC = "misc"
 
 
-class ToolStatus(str, Enum):
+class ToolStatus(StrEnum):
     """Tool execution status."""
 
     NOT_INSTALLED = "not_installed"
