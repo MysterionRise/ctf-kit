@@ -25,9 +25,17 @@ Use this command for challenges involving:
 - File carving
 - Timeline analysis
 
+## Bundled Scripts
+
+- [check-tools.sh](scripts/check-tools.sh) — Verify required forensics tools are installed
+- [run-binwalk.sh](scripts/run-binwalk.sh) — Scan and extract embedded files
+- [run-volatility.sh](scripts/run-volatility.sh) — Run volatility3 plugins on memory dumps
+
 ## Instructions
 
-1. Run the forensics analysis:
+1. First check tool availability: `bash scripts/check-tools.sh`
+
+2. Run the forensics analysis:
 
    ```bash
    ctf run forensics $ARGUMENTS

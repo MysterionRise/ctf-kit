@@ -24,9 +24,17 @@ Use this command for challenges involving:
 - LSB encoding
 - Metadata hiding
 
+## Bundled Scripts
+
+- [check-tools.sh](scripts/check-tools.sh) — Verify required stego tools are installed
+- [run-zsteg.sh](scripts/run-zsteg.sh) — Full LSB analysis on PNG/BMP images
+- [run-steghide.sh](scripts/run-steghide.sh) — Extract hidden data from JPEG (tries common passwords)
+
 ## Instructions
 
-1. Run the stego analysis:
+1. First check tool availability: `bash scripts/check-tools.sh`
+
+2. Run the stego analysis:
 
    ```bash
    ctf run stego $ARGUMENTS

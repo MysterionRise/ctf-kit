@@ -25,9 +25,15 @@ Use this command for challenges involving:
 - Logic puzzles
 - Challenges that don't fit other categories
 
+## Bundled Scripts
+
+- [check-tools.sh](scripts/check-tools.sh) — Verify required misc tools are installed
+
 ## Instructions
 
-1. Run the misc analysis:
+1. First check tool availability: `bash scripts/check-tools.sh`
+
+2. Run the misc analysis:
 
    ```bash
    ctf run misc $ARGUMENTS

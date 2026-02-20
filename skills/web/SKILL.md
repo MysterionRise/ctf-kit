@@ -25,9 +25,15 @@ Use this command for challenges involving:
 - API exploitation
 - Source code analysis
 
+## Bundled Scripts
+
+- [check-tools.sh](scripts/check-tools.sh) — Verify required web tools are installed
+
 ## Instructions
 
-1. Run the web analysis:
+1. First check tool availability: `bash scripts/check-tools.sh`
+
+2. Run the web analysis:
 
    ```bash
    ctf run web $ARGUMENTS

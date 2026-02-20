@@ -25,9 +25,15 @@ Use this command for challenges involving:
 - Malware analysis
 - Obfuscated code
 
+## Bundled Scripts
+
+- [check-tools.sh](scripts/check-tools.sh) — Verify required reversing tools are installed
+
 ## Instructions
 
-1. Run the reversing analysis:
+1. First check tool availability: `bash scripts/check-tools.sh`
+
+2. Run the reversing analysis:
 
    ```bash
    ctf run reversing $ARGUMENTS

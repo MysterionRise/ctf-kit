@@ -24,9 +24,17 @@ Use this command for challenges involving:
 - Classical ciphers (Caesar, Vigenere, etc.)
 - Encoding chains (Base64, hex, etc.)
 
+## Bundled Scripts
+
+- [check-tools.sh](scripts/check-tools.sh) — Verify required crypto tools are installed
+- [run-xortool.sh](scripts/run-xortool.sh) — Analyze XOR-encrypted files with key length detection
+- [identify-hash.sh](scripts/identify-hash.sh) — Identify hash types from strings or files
+
 ## Instructions
 
-1. Run the crypto analysis:
+1. First check tool availability: `bash scripts/check-tools.sh`
+
+2. Run the crypto analysis:
 
    ```bash
    ctf run crypto $ARGUMENTS

@@ -25,9 +25,16 @@ Use this command for challenges involving:
 - ROP chains
 - Heap exploitation
 
+## Bundled Scripts
+
+- [check-tools.sh](scripts/check-tools.sh) — Verify required pwn tools are installed
+- [run-checksec.sh](scripts/run-checksec.sh) — Check binary protections (CANARY, NX, PIE, RELRO)
+
 ## Instructions
 
-1. Run the pwn analysis:
+1. First check tool availability: `bash scripts/check-tools.sh`
+
+2. Run the pwn analysis:
 
    ```bash
    ctf run pwn $ARGUMENTS

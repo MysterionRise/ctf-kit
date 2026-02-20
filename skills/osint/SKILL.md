@@ -25,9 +25,15 @@ Use this command for challenges involving:
 - Geolocation from images
 - Public records research
 
+## Bundled Scripts
+
+- [check-tools.sh](scripts/check-tools.sh) — Verify required OSINT tools are installed
+
 ## Instructions
 
-1. Run the OSINT analysis:
+1. First check tool availability: `bash scripts/check-tools.sh`
+
+2. Run the OSINT analysis:
 
    ```bash
    ctf run osint $ARGUMENTS

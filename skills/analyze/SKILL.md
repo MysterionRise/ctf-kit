@@ -22,9 +22,15 @@ Use this command when you have new challenge files and need to:
 - Get initial suggestions for tools to use
 - Understand what you're working with
 
+## Bundled Scripts
+
+- [check-tools.sh](scripts/check-tools.sh) — Verify required analysis tools are installed
+
 ## Instructions
 
-1. Run the analysis on the challenge files:
+1. First check tool availability: `bash scripts/check-tools.sh`
+
+2. Run the analysis on the challenge files:
 
    ```bash
    ctf analyze $ARGUMENTS
