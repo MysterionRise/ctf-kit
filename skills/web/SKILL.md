@@ -1,6 +1,13 @@
 ---
 name: web
-description: Analyze and solve web security challenges
+description: >-
+  Solve CTF web security challenges: SQL injection, XSS, authentication
+  bypass, SSTI, path traversal, and source code audit. Use when given a
+  URL, web app source code, or HTTP traffic. Triggers: .php .html .js
+  files, "SQL injection", "XSS", "SSTI", "LFI", "RFI", "cookie",
+  "JWT", "robots.txt", "directory enumeration", http:// or https://
+  targets. Tools: sqlmap, gobuster, ffuf, nikto, burpsuite.
+  NOT for network packet analysis (use forensics).
 ---
 
 # CTF Web

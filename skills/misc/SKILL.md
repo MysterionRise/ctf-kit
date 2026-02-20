@@ -1,6 +1,14 @@
 ---
 name: misc
-description: Analyze and solve miscellaneous challenges
+description: >-
+  Solve CTF misc challenges: encoding chains, esoteric programming
+  languages, QR codes, logic puzzles, and anything that doesn't fit
+  crypto/forensics/stego/web/pwn/reverse/osint. Use when you see:
+  Brainfuck (+[->), Ook!, Whitespace, JSFuck, QR/barcodes, multi-layer
+  encoding (Base64->hex->ROT13), or "what encoding is this".
+  Triggers: "decode this", "esoteric language", "QR code", "barcode",
+  "encoding chain", "CyberChef", unusual character sets.
+  Tools: CyberChef, zbarimg, dcode.fr, online interpreters.
 ---
 
 # CTF Misc

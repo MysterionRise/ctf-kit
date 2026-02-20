@@ -1,6 +1,14 @@
 ---
 name: reverse
-description: Analyze and solve reverse engineering challenges
+description: >-
+  Solve CTF reverse engineering challenges: disassembly, decompilation,
+  key/password finding, algorithm analysis, and anti-debug bypass.
+  Use when given binaries to analyze statically — crackmes, keygens,
+  obfuscated code. Triggers: .exe .elf .apk .jar .pyc files,
+  "disassemble", "decompile", "keygen", "crackme", "find the password",
+  "anti-debugging", radare2/Ghidra output, assembly code.
+  Tools: radare2, Ghidra, objdump, ltrace, strace, jadx, uncompyle6.
+  NOT for exploitation/pwn (use pwn) or malware triage (use forensics).
 ---
 
 # CTF Reverse

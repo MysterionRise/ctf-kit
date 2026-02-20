@@ -1,6 +1,12 @@
 ---
 name: analyze
-description: Analyze challenge files to determine type and suggest approaches
+description: >-
+  Analyze CTF challenge files to detect category and suggest next steps.
+  Use when starting a new challenge, receiving unknown files, or needing
+  triage. Triggers: file, strings, xxd, binwalk output, unknown binaries,
+  .bin .dat .raw .enc files, "what is this file", "analyze this",
+  "identify challenge type". Routes to crypto/forensics/stego/web/pwn/
+  reverse/osint/misc skills based on detection.
 ---
 
 # CTF Analyze

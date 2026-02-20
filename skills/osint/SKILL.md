@@ -1,6 +1,14 @@
 ---
 name: osint
-description: Gather open source intelligence for OSINT challenges
+description: >-
+  Solve CTF OSINT (open source intelligence) challenges: username
+  enumeration, domain recon, social media investigation, geolocation
+  from images, and public records research. Use when given a username,
+  email, domain, or photo to investigate. Triggers: "find this person",
+  "username lookup", "who is", "geolocation", "reverse image search",
+  "EXIF GPS", "whois", "domain recon", "social media".
+  Tools: sherlock, theHarvester, exiftool, whois, dig.
+  NOT for web app exploitation (use web).
 ---
 
 # CTF OSINT

@@ -1,6 +1,12 @@
 ---
 name: crypto
-description: Analyze and solve cryptography challenges
+description: >-
+  Solve CTF cryptography challenges including encryption, hashing, and
+  encoding. Use when you see: Base64 (trailing ==), hex strings (32/40/64
+  chars for MD5/SHA1/SHA256), RSA parameters (n=, e=, c=, p=, q=),
+  XOR-encrypted data, .pem .key .enc files, classical ciphers (Caesar,
+  Vigenere, substitution), encoding chains, or "crack this hash".
+  Tools: xortool, hashid, hashcat, john, RsaCtfTool, openssl.
 ---
 
 # CTF Crypto

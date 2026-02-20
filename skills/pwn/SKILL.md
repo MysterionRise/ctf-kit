@@ -1,6 +1,14 @@
 ---
 name: pwn
-description: Analyze and exploit binary exploitation challenges
+description: >-
+  Solve CTF binary exploitation (pwn) challenges: buffer overflows,
+  format strings, ROP chains, heap exploitation, and shellcoding.
+  Use when given ELF/PE binaries with a remote service to exploit.
+  Triggers: "buffer overflow", "format string", "ROP", "shellcode",
+  "checksec", "NX", "canary", "PIE", "GOT overwrite", "ret2libc",
+  pwntools scripts, .elf files, nc/netcat connection targets.
+  Tools: checksec, ROPgadget, pwntools, gdb, one_gadget.
+  NOT for static reverse engineering (use reverse).
 ---
 
 # CTF Pwn

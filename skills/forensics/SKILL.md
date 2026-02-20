@@ -1,6 +1,13 @@
 ---
 name: forensics
-description: Analyze and solve forensics challenges
+description: >-
+  Solve CTF forensics challenges: memory dumps, network captures, disk
+  images, and file carving. Use when you see: .vmem .raw .dmp memory
+  dumps, .pcap .pcapng network captures, .dd .E01 disk images, or
+  embedded/hidden files. Triggers: "memory dump", "packet capture",
+  "disk image", "file carving", "deleted files", "volatility".
+  Tools: volatility3, binwalk, foremost, tshark, sleuthkit.
+  NOT for steganography (use stego) or binary exploitation (use pwn).
 ---
 
 # CTF Forensics

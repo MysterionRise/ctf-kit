@@ -1,6 +1,13 @@
 ---
 name: stego
-description: Analyze and solve steganography challenges
+description: >-
+  Solve CTF steganography challenges: hidden data in images, audio, and
+  media files. Use when you see: .png .jpg .bmp .gif images, .wav .mp3
+  .flac audio, or suspect LSB encoding, appended data after EOF, hidden
+  metadata, spectrogram messages. Triggers: "hidden message", "LSB",
+  "steganography", "hidden in image", "zsteg", "steghide", "exiftool".
+  Tools: zsteg, steghide, exiftool, binwalk, stegsolve.
+  NOT for file carving from disk images (use forensics).
 ---
 
 # CTF Stego
