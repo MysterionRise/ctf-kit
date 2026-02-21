@@ -197,8 +197,7 @@ check_untyped_defs = false
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
-addopts = "-v --cov=ctf_kit --cov-report=term-missing --cov-report=html --cov-fail-under=40"
-# TODO: Add tests for new skills/tools and increase to 50%, then 80%
+addopts = "-v --cov=ctf_kit --cov-report=term-missing --cov-report=html --cov-fail-under=80"
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "integration: marks tests that require actual tools installed",
