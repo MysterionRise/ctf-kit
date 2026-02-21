@@ -12,7 +12,6 @@ from ctf_kit.skills.reversing import ReversingSkill
 from ctf_kit.skills.stego import StegoSkill
 from ctf_kit.skills.web import WebSkill
 
-
 # ---------------------------------------------------------------------------
 # ForensicsSkill
 # ---------------------------------------------------------------------------
@@ -1508,17 +1507,13 @@ class TestWebSkill:
     def test_detect_technologies_php(self, tmp_path: Path):
         """Test PHP technology detection."""
         skill = WebSkill()
-        technologies = skill._detect_technologies(
-            tmp_path / "test.php", "<?php echo 'hello'; ?>"
-        )
+        technologies = skill._detect_technologies(tmp_path / "test.php", "<?php echo 'hello'; ?>")
         assert "PHP" in technologies
 
     def test_detect_technologies_flask(self, tmp_path: Path):
         """Test Flask technology detection."""
         skill = WebSkill()
-        technologies = skill._detect_technologies(
-            tmp_path / "app.py", "from flask import Flask"
-        )
+        technologies = skill._detect_technologies(tmp_path / "app.py", "from flask import Flask")
         assert "Flask" in technologies
 
     def test_detect_technologies_jwt(self, tmp_path: Path):
@@ -1555,10 +1550,7 @@ class TestWebSkill:
     def test_extract_endpoints_express(self):
         """Test Express.js route extraction."""
         skill = WebSkill()
-        content = (
-            "app.get('/api/users', handler);\n"
-            "app.post('/api/login', handler);\n"
-        )
+        content = "app.get('/api/users', handler);\napp.post('/api/login', handler);\n"
         endpoints = skill._extract_endpoints(content)
         assert "/api/users" in endpoints
         assert "/api/login" in endpoints
@@ -1566,11 +1558,7 @@ class TestWebSkill:
     def test_extract_credentials(self):
         """Test credential extraction from source code."""
         skill = WebSkill()
-        content = (
-            'password = "supersecret123"\n'
-            'api_key = "sk-abc123def456"\n'
-            'username = "admin"\n'
-        )
+        content = 'password = "supersecret123"\napi_key = "sk-abc123def456"\nusername = "admin"\n'
         creds = skill._extract_credentials(content)
 
         types = {c["type"] for c in creds}
@@ -1587,11 +1575,7 @@ class TestWebSkill:
     def test_find_interesting_patterns(self):
         """Test detection of interesting security patterns."""
         skill = WebSkill()
-        content = (
-            'flag = "CTF{test_flag}"\n'
-            "DEBUG = True\n"
-            "eval(user_input)\n"
-        )
+        content = 'flag = "CTF{test_flag}"\nDEBUG = True\neval(user_input)\n'
         patterns = skill._find_interesting_patterns(content)
 
         assert "Flag value found" in patterns

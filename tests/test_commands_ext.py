@@ -10,8 +10,8 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
-import yaml
 from typer.testing import CliRunner
+import yaml
 
 from ctf_kit.cli import app
 from ctf_kit.commands.check import (
@@ -233,7 +233,9 @@ class TestInitRepo:
         assert "version" in config_content
         assert "ai_agent" in config_content
 
-    def test_init_repo_already_exists(self, tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    def test_init_repo_already_exists(
+        self, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+    ) -> None:
         """init_repo should print warning when .ctf-kit/ already exists."""
         (tmp_path / ".ctf-kit").mkdir()
         init_repo(tmp_path)
@@ -1004,7 +1006,9 @@ class TestGetConfig:
             first = config_module.get_config()
 
         # Second call should NOT invoke load_config again
-        with patch("ctf_kit.config.load_config", side_effect=AssertionError("should not be called")):
+        with patch(
+            "ctf_kit.config.load_config", side_effect=AssertionError("should not be called")
+        ):
             second = config_module.get_config()
 
         assert first is second

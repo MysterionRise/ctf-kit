@@ -57,7 +57,9 @@ class TestHashcatTool:
             command="hashcat --show hashes.txt",
             stdout="5d41402abc4b2a76b9719d911017c592:hello",
             stderr="",
-            parsed_data={"cracked": [{"hash": "5d41402abc4b2a76b9719d911017c592", "password": "hello"}]},
+            parsed_data={
+                "cracked": [{"hash": "5d41402abc4b2a76b9719d911017c592", "password": "hello"}]
+            },
         )
         tool = HashcatTool()
         result = tool.run("hashes.txt", show=True)
@@ -69,7 +71,11 @@ class TestHashcatTool:
     def test_run_bruteforce(self, mock_run):
         """Test brute-force attack mode builds mask arg."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="hashcat", command="", stdout="", stderr="",
+            success=True,
+            tool_name="hashcat",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"cracked": [], "recovered": 0, "total": 0, "status": None},
         )
         tool = HashcatTool()
@@ -83,7 +89,11 @@ class TestHashcatTool:
     def test_run_hash_mode_string(self, mock_run):
         """Test that string hash_mode is resolved via HASH_MODES."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="hashcat", command="", stdout="", stderr="",
+            success=True,
+            tool_name="hashcat",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"cracked": [], "recovered": 0, "total": 0, "status": None},
         )
         tool = HashcatTool()
@@ -94,14 +104,8 @@ class TestHashcatTool:
     def test_parse_output(self):
         """Test parsing cracked hashes and recovery stats."""
         tool = HashcatTool()
-        stdout = (
-            "5d41402abc4b2a76b9719d911017c592:hello\n"
-            "098f6bcd4621d373cade4e832627b4f6:test\n"
-        )
-        stderr = (
-            "Status...........: Cracked\n"
-            "Recovered........: 2/2 (100.00%)\n"
-        )
+        stdout = "5d41402abc4b2a76b9719d911017c592:hello\n098f6bcd4621d373cade4e832627b4f6:test\n"
+        stderr = "Status...........: Cracked\nRecovered........: 2/2 (100.00%)\n"
         result = tool.parse_output(stdout, stderr)
         assert len(result["cracked"]) == 2
         assert result["cracked"][0]["password"] == "hello"
@@ -138,7 +142,11 @@ class TestHashcatTool:
     def test_show_cracked(self, mock_run):
         """Test show_cracked convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="hashcat", command="", stdout="", stderr="",
+            success=True,
+            tool_name="hashcat",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"cracked": [], "recovered": 0, "total": 0, "status": None},
         )
         tool = HashcatTool()
@@ -150,7 +158,11 @@ class TestHashcatTool:
     def test_crack_dictionary(self, mock_run):
         """Test crack_dictionary convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="hashcat", command="", stdout="", stderr="",
+            success=True,
+            tool_name="hashcat",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"cracked": [], "recovered": 0, "total": 0, "status": None},
         )
         tool = HashcatTool()
@@ -163,7 +175,11 @@ class TestHashcatTool:
     def test_crack_bruteforce(self, mock_run):
         """Test crack_bruteforce convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="hashcat", command="", stdout="", stderr="",
+            success=True,
+            tool_name="hashcat",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"cracked": [], "recovered": 0, "total": 0, "status": None},
         )
         tool = HashcatTool()
@@ -200,8 +216,11 @@ class TestJohnTool:
     def test_run_basic(self, mock_run):
         """Test basic run with wordlist."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="john", command="john --wordlist=wl hashes.txt",
-            stdout="", stderr="Loaded 1 password hash (raw-MD5 type: Raw-MD5)",
+            success=True,
+            tool_name="john",
+            command="john --wordlist=wl hashes.txt",
+            stdout="",
+            stderr="Loaded 1 password hash (raw-MD5 type: Raw-MD5)",
             parsed_data={"cracked": [], "guesses": 0, "format_detected": "Raw-MD5"},
         )
         tool = JohnTool()
@@ -215,8 +234,11 @@ class TestJohnTool:
     def test_run_show(self, mock_run):
         """Test --show flag path."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="john", command="john --show hashes.txt",
-            stdout="user:password\n1 password hash cracked", stderr="",
+            success=True,
+            tool_name="john",
+            command="john --show hashes.txt",
+            stdout="user:password\n1 password hash cracked",
+            stderr="",
             parsed_data={"cracked": [{"hash": "user", "password": "password"}]},
         )
         tool = JohnTool()
@@ -229,7 +251,11 @@ class TestJohnTool:
     def test_run_with_format_and_rules(self, mock_run):
         """Test format and rules arguments."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="john", command="", stdout="", stderr="",
+            success=True,
+            tool_name="john",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"cracked": [], "guesses": 0, "format_detected": None},
         )
         tool = JohnTool()
@@ -242,7 +268,11 @@ class TestJohnTool:
     def test_run_incremental(self, mock_run):
         """Test incremental mode flag."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="john", command="", stdout="", stderr="",
+            success=True,
+            tool_name="john",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"cracked": [], "guesses": 0, "format_detected": None},
         )
         tool = JohnTool()
@@ -288,7 +318,11 @@ class TestJohnTool:
     def test_show_cracked(self, mock_run):
         """Test show_cracked convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="john", command="", stdout="", stderr="",
+            success=True,
+            tool_name="john",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"cracked": [], "guesses": 0, "format_detected": None},
         )
         tool = JohnTool()
@@ -300,7 +334,11 @@ class TestJohnTool:
     def test_identify_format(self, mock_run):
         """Test identify_format returns detected format."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="john", command="", stdout="", stderr="",
+            success=True,
+            tool_name="john",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"cracked": [], "guesses": 0, "format_detected": "bcrypt"},
         )
         tool = JohnTool()
@@ -328,9 +366,17 @@ class TestRsaCtfToolTool:
     def test_run_basic(self, mock_run):
         """Test basic run with n and e."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="rsactftool", command="",
-            stdout="p = 61\nq = 53", stderr="",
-            parsed_data={"factors": {"p": "61", "q": "53"}, "private_key": None, "plaintext": None, "attack_used": None},
+            success=True,
+            tool_name="rsactftool",
+            command="",
+            stdout="p = 61\nq = 53",
+            stderr="",
+            parsed_data={
+                "factors": {"p": "61", "q": "53"},
+                "private_key": None,
+                "plaintext": None,
+                "attack_used": None,
+            },
         )
         tool = RsaCtfToolTool()
         result = tool.run(n=3233, e=17, private=True)
@@ -346,8 +392,17 @@ class TestRsaCtfToolTool:
     def test_run_with_key_file(self, mock_run):
         """Test run with public key file."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="rsactftool", command="", stdout="", stderr="",
-            parsed_data={"factors": {}, "private_key": None, "plaintext": None, "attack_used": None},
+            success=True,
+            tool_name="rsactftool",
+            command="",
+            stdout="",
+            stderr="",
+            parsed_data={
+                "factors": {},
+                "private_key": None,
+                "plaintext": None,
+                "attack_used": None,
+            },
         )
         tool = RsaCtfToolTool()
         tool.run(key_file="pub.pem", private=True)
@@ -359,8 +414,17 @@ class TestRsaCtfToolTool:
     def test_run_with_cipher(self, mock_run):
         """Test run with ciphertext value and cipher file."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="rsactftool", command="", stdout="", stderr="",
-            parsed_data={"factors": {}, "private_key": None, "plaintext": None, "attack_used": None},
+            success=True,
+            tool_name="rsactftool",
+            command="",
+            stdout="",
+            stderr="",
+            parsed_data={
+                "factors": {},
+                "private_key": None,
+                "plaintext": None,
+                "attack_used": None,
+            },
         )
         tool = RsaCtfToolTool()
         tool.run(key_file="pub.pem", c=12345, cipher_file="cipher.bin")
@@ -400,7 +464,12 @@ class TestRsaCtfToolTool:
     def test_get_suggestions_key_recovered(self):
         """Test suggestions when private key recovered."""
         tool = RsaCtfToolTool()
-        parsed = {"private_key": "KEY", "plaintext": None, "factors": {"p": "61"}, "attack_used": "wiener"}
+        parsed = {
+            "private_key": "KEY",
+            "plaintext": None,
+            "factors": {"p": "61"},
+            "attack_used": "wiener",
+        }
         suggestions = tool._get_suggestions(parsed)
         assert any("Private key" in s for s in suggestions)
         assert any("wiener" in s for s in suggestions)
@@ -416,8 +485,17 @@ class TestRsaCtfToolTool:
     def test_attack_public_key(self, mock_run):
         """Test attack_public_key convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="rsactftool", command="", stdout="", stderr="",
-            parsed_data={"factors": {}, "private_key": None, "plaintext": None, "attack_used": None},
+            success=True,
+            tool_name="rsactftool",
+            command="",
+            stdout="",
+            stderr="",
+            parsed_data={
+                "factors": {},
+                "private_key": None,
+                "plaintext": None,
+                "attack_used": None,
+            },
         )
         tool = RsaCtfToolTool()
         tool.attack_public_key("pub.pem")
@@ -429,8 +507,17 @@ class TestRsaCtfToolTool:
     def test_factor_n(self, mock_run):
         """Test factor_n convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="rsactftool", command="", stdout="", stderr="",
-            parsed_data={"factors": {}, "private_key": None, "plaintext": None, "attack_used": None},
+            success=True,
+            tool_name="rsactftool",
+            command="",
+            stdout="",
+            stderr="",
+            parsed_data={
+                "factors": {},
+                "private_key": None,
+                "plaintext": None,
+                "attack_used": None,
+            },
         )
         tool = RsaCtfToolTool()
         tool.factor_n(3233, 17)
@@ -461,8 +548,11 @@ class TestForemostTool:
     def test_run_basic(self, mock_run):
         """Test basic run builds correct args."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="foremost", command="",
-            stdout="jpg:= 3\npng:= 1\n4 files extracted", stderr="",
+            success=True,
+            tool_name="foremost",
+            command="",
+            stdout="jpg:= 3\npng:= 1\n4 files extracted",
+            stderr="",
             parsed_data={"files_found": {"jpg": 3, "png": 1}, "total_files": 4},
         )
         tool = ForemostTool()
@@ -475,7 +565,11 @@ class TestForemostTool:
     def test_run_with_output_dir(self, mock_run):
         """Test run with output directory."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="foremost", command="", stdout="", stderr="",
+            success=True,
+            tool_name="foremost",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"files_found": {}, "total_files": 0},
         )
         tool = ForemostTool()
@@ -488,7 +582,11 @@ class TestForemostTool:
     def test_run_with_file_types(self, mock_run):
         """Test run with specific file types."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="foremost", command="", stdout="", stderr="",
+            success=True,
+            tool_name="foremost",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"files_found": {}, "total_files": 0},
         )
         tool = ForemostTool()
@@ -539,7 +637,11 @@ class TestForemostTool:
     def test_carve_all(self, mock_run):
         """Test carve_all convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="foremost", command="", stdout="", stderr="",
+            success=True,
+            tool_name="foremost",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"files_found": {}, "total_files": 0},
         )
         tool = ForemostTool()
@@ -552,7 +654,11 @@ class TestForemostTool:
     def test_carve_images(self, mock_run):
         """Test carve_images convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="foremost", command="", stdout="", stderr="",
+            success=True,
+            tool_name="foremost",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"files_found": {}, "total_files": 0},
         )
         tool = ForemostTool()
@@ -582,8 +688,17 @@ class TestTsharkTool:
     def test_run_summary(self, mock_run):
         """Test default summary mode."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="tshark", command="", stdout="", stderr="",
-            parsed_data={"protocols": [], "conversations": [], "stream_data": None, "statistics": {}},
+            success=True,
+            tool_name="tshark",
+            command="",
+            stdout="",
+            stderr="",
+            parsed_data={
+                "protocols": [],
+                "conversations": [],
+                "stream_data": None,
+                "statistics": {},
+            },
         )
         tool = TsharkTool()
         result = tool.run("capture.pcap")
@@ -598,8 +713,17 @@ class TestTsharkTool:
     def test_run_statistics(self, mock_run):
         """Test statistics mode."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="tshark", command="", stdout="", stderr="",
-            parsed_data={"protocols": [], "conversations": [], "stream_data": None, "statistics": {}},
+            success=True,
+            tool_name="tshark",
+            command="",
+            stdout="",
+            stderr="",
+            parsed_data={
+                "protocols": [],
+                "conversations": [],
+                "stream_data": None,
+                "statistics": {},
+            },
         )
         tool = TsharkTool()
         tool.run("capture.pcap", mode="statistics")
@@ -610,8 +734,17 @@ class TestTsharkTool:
     def test_run_follow_stream(self, mock_run):
         """Test follow stream mode."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="tshark", command="", stdout="", stderr="",
-            parsed_data={"protocols": [], "conversations": [], "stream_data": None, "statistics": {}},
+            success=True,
+            tool_name="tshark",
+            command="",
+            stdout="",
+            stderr="",
+            parsed_data={
+                "protocols": [],
+                "conversations": [],
+                "stream_data": None,
+                "statistics": {},
+            },
         )
         tool = TsharkTool()
         tool.run("capture.pcap", mode="follow", follow_stream=("tcp", 0))
@@ -622,8 +755,17 @@ class TestTsharkTool:
     def test_run_with_display_filter(self, mock_run):
         """Test display filter argument."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="tshark", command="", stdout="", stderr="",
-            parsed_data={"protocols": [], "conversations": [], "stream_data": None, "statistics": {}},
+            success=True,
+            tool_name="tshark",
+            command="",
+            stdout="",
+            stderr="",
+            parsed_data={
+                "protocols": [],
+                "conversations": [],
+                "stream_data": None,
+                "statistics": {},
+            },
         )
         tool = TsharkTool()
         tool.run("capture.pcap", display_filter="http.request")
@@ -683,8 +825,17 @@ class TestTsharkTool:
     def test_get_protocol_hierarchy(self, mock_run):
         """Test get_protocol_hierarchy convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="tshark", command="", stdout="", stderr="",
-            parsed_data={"protocols": [], "conversations": [], "stream_data": None, "statistics": {}},
+            success=True,
+            tool_name="tshark",
+            command="",
+            stdout="",
+            stderr="",
+            parsed_data={
+                "protocols": [],
+                "conversations": [],
+                "stream_data": None,
+                "statistics": {},
+            },
         )
         tool = TsharkTool()
         tool.get_protocol_hierarchy("capture.pcap")
@@ -695,8 +846,17 @@ class TestTsharkTool:
     def test_follow_tcp_stream(self, mock_run):
         """Test follow_tcp_stream convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="tshark", command="", stdout="", stderr="",
-            parsed_data={"protocols": [], "conversations": [], "stream_data": None, "statistics": {}},
+            success=True,
+            tool_name="tshark",
+            command="",
+            stdout="",
+            stderr="",
+            parsed_data={
+                "protocols": [],
+                "conversations": [],
+                "stream_data": None,
+                "statistics": {},
+            },
         )
         tool = TsharkTool()
         tool.follow_tcp_stream("capture.pcap", stream_index=2)
@@ -724,7 +884,11 @@ class TestVolatilityTool:
     def test_run_basic(self, mock_run):
         """Test basic run with default plugin."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="volatility", command="", stdout="", stderr="",
+            success=True,
+            tool_name="volatility",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"rows": [], "columns": [], "processes": []},
         )
         tool = VolatilityTool()
@@ -739,7 +903,11 @@ class TestVolatilityTool:
     def test_run_with_plugin(self, mock_run):
         """Test run with specific plugin."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="volatility", command="", stdout="", stderr="",
+            success=True,
+            tool_name="volatility",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"rows": [], "columns": [], "processes": []},
         )
         tool = VolatilityTool()
@@ -751,7 +919,11 @@ class TestVolatilityTool:
     def test_run_json_format(self, mock_run):
         """Test JSON output format."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="volatility", command="", stdout="", stderr="",
+            success=True,
+            tool_name="volatility",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"rows": [], "columns": [], "processes": []},
         )
         tool = VolatilityTool()
@@ -764,7 +936,11 @@ class TestVolatilityTool:
     def test_run_with_plugin_args(self, mock_run):
         """Test run with plugin-specific arguments."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="volatility", command="", stdout="", stderr="",
+            success=True,
+            tool_name="volatility",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"rows": [], "columns": [], "processes": []},
         )
         tool = VolatilityTool()
@@ -823,7 +999,11 @@ class TestVolatilityTool:
     def test_list_processes(self, mock_run):
         """Test list_processes convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="volatility", command="", stdout="", stderr="",
+            success=True,
+            tool_name="volatility",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"rows": [], "columns": [], "processes": []},
         )
         tool = VolatilityTool()
@@ -835,7 +1015,11 @@ class TestVolatilityTool:
     def test_dump_hashes(self, mock_run):
         """Test dump_hashes convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="volatility", command="", stdout="", stderr="",
+            success=True,
+            tool_name="volatility",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"rows": [], "columns": [], "processes": []},
         )
         tool = VolatilityTool()
@@ -864,7 +1048,9 @@ class TestSherlockTool:
     def test_run_basic(self, mock_run):
         """Test basic username search."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="sherlock", command="",
+            success=True,
+            tool_name="sherlock",
+            command="",
             stdout="[+] GitHub: https://github.com/testuser\n[-] Twitter: Not Found",
             stderr="",
             parsed_data={
@@ -884,7 +1070,11 @@ class TestSherlockTool:
     def test_run_with_site(self, mock_run):
         """Test search on specific site."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="sherlock", command="", stdout="", stderr="",
+            success=True,
+            tool_name="sherlock",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"profiles": [], "not_found": [], "errors": []},
         )
         tool = SherlockTool()
@@ -939,7 +1129,11 @@ class TestSherlockTool:
     def test_search(self, mock_run):
         """Test search convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="sherlock", command="", stdout="", stderr="",
+            success=True,
+            tool_name="sherlock",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"profiles": [], "not_found": [], "errors": []},
         )
         tool = SherlockTool()
@@ -951,7 +1145,11 @@ class TestSherlockTool:
     def test_search_site(self, mock_run):
         """Test search_site convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="sherlock", command="", stdout="", stderr="",
+            success=True,
+            tool_name="sherlock",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"profiles": [], "not_found": [], "errors": []},
         )
         tool = SherlockTool()
@@ -964,7 +1162,11 @@ class TestSherlockTool:
     def test_get_profiles(self, mock_run):
         """Test get_profiles returns profile list."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="sherlock", command="", stdout="", stderr="",
+            success=True,
+            tool_name="sherlock",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={
                 "profiles": [{"site": "GitHub", "url": "https://github.com/user"}],
                 "not_found": [],
@@ -997,7 +1199,11 @@ class TestTheHarvesterTool:
     def test_run_basic(self, mock_run):
         """Test basic domain harvest."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="theharvester", command="", stdout="", stderr="",
+            success=True,
+            tool_name="theharvester",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"emails": [], "hosts": [], "ips": [], "subdomains": []},
         )
         tool = TheHarvesterTool()
@@ -1013,7 +1219,11 @@ class TestTheHarvesterTool:
     def test_run_with_source(self, mock_run):
         """Test run with specific source."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="theharvester", command="", stdout="", stderr="",
+            success=True,
+            tool_name="theharvester",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"emails": [], "hosts": [], "ips": [], "subdomains": []},
         )
         tool = TheHarvesterTool()
@@ -1026,7 +1236,11 @@ class TestTheHarvesterTool:
     def test_run_dns_and_vhost(self, mock_run):
         """Test DNS lookup and virtual host flags."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="theharvester", command="", stdout="", stderr="",
+            success=True,
+            tool_name="theharvester",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"emails": [], "hosts": [], "ips": [], "subdomains": []},
         )
         tool = TheHarvesterTool()
@@ -1082,7 +1296,11 @@ class TestTheHarvesterTool:
     def test_harvest(self, mock_run):
         """Test harvest convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="theharvester", command="", stdout="", stderr="",
+            success=True,
+            tool_name="theharvester",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"emails": [], "hosts": [], "ips": [], "subdomains": []},
         )
         tool = TheHarvesterTool()
@@ -1094,10 +1312,16 @@ class TestTheHarvesterTool:
     def test_get_emails(self, mock_run):
         """Test get_emails returns email list."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="theharvester", command="", stdout="", stderr="",
+            success=True,
+            tool_name="theharvester",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={
                 "emails": ["admin@example.com", "info@example.com"],
-                "hosts": [], "ips": [], "subdomains": [],
+                "hosts": [],
+                "ips": [],
+                "subdomains": [],
             },
         )
         tool = TheHarvesterTool()
@@ -1109,11 +1333,16 @@ class TestTheHarvesterTool:
     def test_get_subdomains(self, mock_run):
         """Test get_subdomains returns host list."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="theharvester", command="", stdout="", stderr="",
+            success=True,
+            tool_name="theharvester",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={
                 "emails": [],
                 "hosts": ["mail.example.com", "www.example.com"],
-                "ips": [], "subdomains": [],
+                "ips": [],
+                "subdomains": [],
             },
         )
         tool = TheHarvesterTool()
@@ -1141,7 +1370,9 @@ class TestChecksecTool:
     def test_run_basic(self, mock_run):
         """Test basic run builds correct args."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="checksec", command="",
+            success=True,
+            tool_name="checksec",
+            command="",
             stdout="RELRO: Full\nStack Canary: Enabled\nNX: Enabled\nPIE: Enabled",
             stderr="",
             parsed_data={"protections": {"relro": True, "canary": True, "nx": True, "pie": True}},
@@ -1158,13 +1389,7 @@ class TestChecksecTool:
     def test_parse_output_full_protection(self):
         """Test parsing fully protected binary."""
         tool = ChecksecTool()
-        stdout = (
-            "RELRO: Full\n"
-            "Stack Canary: Enabled\n"
-            "NX: Enabled\n"
-            "PIE: Enabled\n"
-            "FORTIFY: Enabled\n"
-        )
+        stdout = "RELRO: Full\nStack Canary: Enabled\nNX: Enabled\nPIE: Enabled\nFORTIFY: Enabled\n"
         result = tool.parse_output(stdout, "")
         p = result["protections"]
         assert p["relro"] is True
@@ -1175,12 +1400,7 @@ class TestChecksecTool:
     def test_parse_output_no_protection(self):
         """Test parsing unprotected binary."""
         tool = ChecksecTool()
-        stdout = (
-            "RELRO: No\n"
-            "Stack CANARY: Disabled\n"
-            "NX: Disabled\n"
-            "PIE: Disabled\n"
-        )
+        stdout = "RELRO: No\nStack CANARY: Disabled\nNX: Disabled\nPIE: Disabled\n"
         result = tool.parse_output(stdout, "")
         p = result["protections"]
         assert p["relro"] is False
@@ -1206,7 +1426,11 @@ class TestChecksecTool:
     def test_quick_check(self, mock_run):
         """Test quick_check returns protections dict."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="checksec", command="", stdout="", stderr="",
+            success=True,
+            tool_name="checksec",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"protections": {"canary": True, "nx": True}},
         )
         tool = ChecksecTool()
@@ -1218,8 +1442,14 @@ class TestChecksecTool:
     def test_is_exploitable(self, mock_run):
         """Test is_exploitable returns vulnerability dict."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="checksec", command="", stdout="", stderr="",
-            parsed_data={"protections": {"canary": False, "nx": False, "pie": False, "relro": False}},
+            success=True,
+            tool_name="checksec",
+            command="",
+            stdout="",
+            stderr="",
+            parsed_data={
+                "protections": {"canary": False, "nx": False, "pie": False, "relro": False}
+            },
         )
         tool = ChecksecTool()
         result = tool.is_exploitable("/tmp/binary")
@@ -1248,7 +1478,9 @@ class TestRopgadgetTool:
     def test_run_basic(self, mock_run):
         """Test basic run builds correct args."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="ropgadget", command="",
+            success=True,
+            tool_name="ropgadget",
+            command="",
             stdout="0x00401234 : pop rdi ; ret\n0x00401238 : pop rsi ; ret",
             stderr="",
             parsed_data={
@@ -1272,7 +1504,11 @@ class TestRopgadgetTool:
     def test_run_with_grep(self, mock_run):
         """Test run with grep filter."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="ropgadget", command="", stdout="", stderr="",
+            success=True,
+            tool_name="ropgadget",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"gadgets": [], "unique_count": 0, "rop_chain": None},
         )
         tool = RopgadgetTool()
@@ -1285,7 +1521,11 @@ class TestRopgadgetTool:
     def test_run_rop_chain(self, mock_run):
         """Test run with ropchain generation."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="ropgadget", command="", stdout="", stderr="",
+            success=True,
+            tool_name="ropgadget",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"gadgets": [], "unique_count": 0, "rop_chain": None},
         )
         tool = RopgadgetTool()
@@ -1297,7 +1537,11 @@ class TestRopgadgetTool:
     def test_run_with_limit(self, mock_run):
         """Test that limit truncates gadgets."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="ropgadget", command="", stdout="", stderr="",
+            success=True,
+            tool_name="ropgadget",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={
                 "gadgets": [
                     {"address": "0x1", "instructions": "ret"},
@@ -1356,7 +1600,11 @@ class TestRopgadgetTool:
     def test_find_gadget(self, mock_run):
         """Test find_gadget convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="ropgadget", command="", stdout="", stderr="",
+            success=True,
+            tool_name="ropgadget",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"gadgets": [], "unique_count": 0, "rop_chain": None},
         )
         tool = RopgadgetTool()
@@ -1369,7 +1617,11 @@ class TestRopgadgetTool:
     def test_find_pop_gadgets(self, mock_run):
         """Test find_pop_gadgets convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="ropgadget", command="", stdout="", stderr="",
+            success=True,
+            tool_name="ropgadget",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"gadgets": [], "unique_count": 0, "rop_chain": None},
         )
         tool = RopgadgetTool()
@@ -1382,7 +1634,11 @@ class TestRopgadgetTool:
     def test_get_gadget_addresses(self, mock_run):
         """Test get_gadget_addresses returns address list."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="ropgadget", command="", stdout="", stderr="",
+            success=True,
+            tool_name="ropgadget",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={
                 "gadgets": [
                     {"address": "0x00401234", "instructions": "pop rdi ; ret"},
@@ -1418,7 +1674,9 @@ class TestGhidraTool:
     def test_run_basic(self, mock_run, tmp_path):
         """Test basic run with default project dir."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="ghidra", command="",
+            success=True,
+            tool_name="ghidra",
+            command="",
             stdout="Import succeeded\nANALYZING\n42 functions",
             stderr="",
             parsed_data={"analysis_complete": True, "functions_found": 42, "errors": []},
@@ -1436,7 +1694,11 @@ class TestGhidraTool:
     def test_run_import_only(self, mock_run, tmp_path):
         """Test import-only mode."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="ghidra", command="", stdout="", stderr="",
+            success=True,
+            tool_name="ghidra",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"analysis_complete": False, "functions_found": 0, "errors": []},
         )
         binary = tmp_path / "binary"
@@ -1450,7 +1712,11 @@ class TestGhidraTool:
     def test_run_with_script(self, mock_run, tmp_path):
         """Test run with post-analysis script."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="ghidra", command="", stdout="", stderr="",
+            success=True,
+            tool_name="ghidra",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"analysis_complete": True, "functions_found": 0, "errors": []},
         )
         binary = tmp_path / "binary"
@@ -1497,7 +1763,11 @@ class TestGhidraTool:
     def test_analyze(self, mock_run, tmp_path):
         """Test analyze convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="ghidra", command="", stdout="", stderr="",
+            success=True,
+            tool_name="ghidra",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"analysis_complete": True, "functions_found": 0, "errors": []},
         )
         binary = tmp_path / "binary"
@@ -1510,7 +1780,11 @@ class TestGhidraTool:
     def test_import_binary(self, mock_run, tmp_path):
         """Test import_binary convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="ghidra", command="", stdout="", stderr="",
+            success=True,
+            tool_name="ghidra",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"analysis_complete": False, "functions_found": 0, "errors": []},
         )
         binary = tmp_path / "binary"
@@ -1541,7 +1815,11 @@ class TestRadare2Tool:
     def test_run_basic(self, mock_run):
         """Test basic run with analysis."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="radare2", command="", stdout="", stderr="",
+            success=True,
+            tool_name="radare2",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"functions": [], "strings": [], "imports": [], "entry_point": None},
         )
         tool = Radare2Tool()
@@ -1559,7 +1837,11 @@ class TestRadare2Tool:
     def test_run_with_commands(self, mock_run):
         """Test run with specific commands."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="radare2", command="", stdout="", stderr="",
+            success=True,
+            tool_name="radare2",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"functions": [], "strings": [], "imports": [], "entry_point": None},
         )
         tool = Radare2Tool()
@@ -1572,7 +1854,11 @@ class TestRadare2Tool:
     def test_run_no_analysis(self, mock_run):
         """Test run without auto-analysis."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="radare2", command="", stdout="", stderr="",
+            success=True,
+            tool_name="radare2",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"functions": [], "strings": [], "imports": [], "entry_point": None},
         )
         tool = Radare2Tool()
@@ -1584,11 +1870,7 @@ class TestRadare2Tool:
     def test_parse_output_functions(self):
         """Test parsing function list."""
         tool = Radare2Tool()
-        stdout = (
-            "0x00401000  32  1  main\n"
-            "0x00401050  64  2  check_flag\n"
-            "0x004010a0  16  1  win\n"
-        )
+        stdout = "0x00401000  32  1  main\n0x00401050  64  2  check_flag\n0x004010a0  16  1  win\n"
         result = tool.parse_output(stdout, "")
         assert len(result["functions"]) == 3
         assert result["functions"][0]["address"] == "0x00401000"
@@ -1633,7 +1915,11 @@ class TestRadare2Tool:
     def test_list_functions(self, mock_run):
         """Test list_functions convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="radare2", command="", stdout="", stderr="",
+            success=True,
+            tool_name="radare2",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"functions": [], "strings": [], "imports": [], "entry_point": None},
         )
         tool = Radare2Tool()
@@ -1646,7 +1932,11 @@ class TestRadare2Tool:
     def test_disassemble(self, mock_run):
         """Test disassemble convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="radare2", command="", stdout="", stderr="",
+            success=True,
+            tool_name="radare2",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"functions": [], "strings": [], "imports": [], "entry_point": None},
         )
         tool = Radare2Tool()
@@ -1659,7 +1949,11 @@ class TestRadare2Tool:
     def test_list_strings(self, mock_run):
         """Test list_strings convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="radare2", command="", stdout="", stderr="",
+            success=True,
+            tool_name="radare2",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"functions": [], "strings": [], "imports": [], "entry_point": None},
         )
         tool = Radare2Tool()
@@ -1672,8 +1966,17 @@ class TestRadare2Tool:
     def test_get_entry_point(self, mock_run):
         """Test get_entry_point returns address string."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="radare2", command="", stdout="", stderr="",
-            parsed_data={"functions": [], "strings": [], "imports": [], "entry_point": "0x00401000"},
+            success=True,
+            tool_name="radare2",
+            command="",
+            stdout="",
+            stderr="",
+            parsed_data={
+                "functions": [],
+                "strings": [],
+                "imports": [],
+                "entry_point": "0x00401000",
+            },
         )
         tool = Radare2Tool()
         ep = tool.get_entry_point("/tmp/binary")
@@ -1683,7 +1986,11 @@ class TestRadare2Tool:
     def test_cross_references(self, mock_run):
         """Test cross_references convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="radare2", command="", stdout="", stderr="",
+            success=True,
+            tool_name="radare2",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"functions": [], "strings": [], "imports": [], "entry_point": None},
         )
         tool = Radare2Tool()
@@ -1713,7 +2020,9 @@ class TestSteghideTool:
     def test_run_info(self, mock_run):
         """Test info mode."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="steghide", command="",
+            success=True,
+            tool_name="steghide",
+            command="",
             stdout='  embedded file "secret.txt"\n  capacity: 10.5 KB\n  algorithm: rijndael-128',
             stderr="",
             parsed_data={"has_embedded": True, "encryption_algorithm": "rijndael-128"},
@@ -1729,7 +2038,9 @@ class TestSteghideTool:
     def test_run_extract(self, mock_run):
         """Test extract mode."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="steghide", command="",
+            success=True,
+            tool_name="steghide",
+            command="",
             stdout="wrote extracted data to output.txt",
             stderr="",
             parsed_data={"extraction_success": True},
@@ -1749,7 +2060,11 @@ class TestSteghideTool:
     def test_run_embed(self, mock_run):
         """Test embed mode."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="steghide", command="", stdout="", stderr="",
+            success=True,
+            tool_name="steghide",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={},
         )
         tool = SteghideTool()
@@ -1817,7 +2132,11 @@ class TestSteghideTool:
     def test_info_convenience(self, mock_run):
         """Test info convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="steghide", command="", stdout="", stderr="",
+            success=True,
+            tool_name="steghide",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"has_embedded": False},
         )
         tool = SteghideTool()
@@ -1829,7 +2148,11 @@ class TestSteghideTool:
     def test_extract_convenience(self, mock_run):
         """Test extract convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="steghide", command="", stdout="", stderr="",
+            success=True,
+            tool_name="steghide",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={},
         )
         tool = SteghideTool()
@@ -1843,7 +2166,11 @@ class TestSteghideTool:
     def test_embed_convenience(self, mock_run):
         """Test embed convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="steghide", command="", stdout="", stderr="",
+            success=True,
+            tool_name="steghide",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={},
         )
         tool = SteghideTool()
@@ -1874,7 +2201,11 @@ class TestFfufTool:
     def test_run_basic(self, mock_run):
         """Test basic run builds correct args."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="ffuf", command="", stdout="", stderr="",
+            success=True,
+            tool_name="ffuf",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"results": [], "by_status": {}},
         )
         tool = FfufTool()
@@ -1891,12 +2222,20 @@ class TestFfufTool:
     def test_run_with_filters(self, mock_run):
         """Test run with status filters."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="ffuf", command="", stdout="", stderr="",
+            success=True,
+            tool_name="ffuf",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"results": [], "by_status": {}},
         )
         tool = FfufTool()
-        tool.run("http://target.com/FUZZ", wordlist="/tmp/wl.txt",
-                 filter_status=[404], match_status=[200, 301])
+        tool.run(
+            "http://target.com/FUZZ",
+            wordlist="/tmp/wl.txt",
+            filter_status=[404],
+            match_status=[200, 301],
+        )
         args = mock_run.call_args[0][0]
         assert "-fc" in args
         assert "404" in args
@@ -1907,7 +2246,11 @@ class TestFfufTool:
     def test_run_post_data(self, mock_run):
         """Test run with POST data auto-switches method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="ffuf", command="", stdout="", stderr="",
+            success=True,
+            tool_name="ffuf",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"results": [], "by_status": {}},
         )
         tool = FfufTool()
@@ -1921,12 +2264,20 @@ class TestFfufTool:
     def test_run_with_headers_and_cookies(self, mock_run):
         """Test run with custom headers and cookies."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="ffuf", command="", stdout="", stderr="",
+            success=True,
+            tool_name="ffuf",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"results": [], "by_status": {}},
         )
         tool = FfufTool()
-        tool.run("http://target.com/FUZZ", wordlist="/tmp/wl.txt",
-                 headers={"X-Custom": "value"}, cookies="session=abc123")
+        tool.run(
+            "http://target.com/FUZZ",
+            wordlist="/tmp/wl.txt",
+            headers={"X-Custom": "value"},
+            cookies="session=abc123",
+        )
         args = mock_run.call_args[0][0]
         assert "-H" in args
         assert "X-Custom: value" in args
@@ -1982,7 +2333,11 @@ class TestFfufTool:
     def test_fuzz_dirs(self, mock_run):
         """Test fuzz_dirs convenience method adds FUZZ and filters 404."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="ffuf", command="", stdout="", stderr="",
+            success=True,
+            tool_name="ffuf",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"results": [], "by_status": {}},
         )
         tool = FfufTool()
@@ -1996,7 +2351,11 @@ class TestFfufTool:
     def test_fuzz_params(self, mock_run):
         """Test fuzz_params convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="ffuf", command="", stdout="", stderr="",
+            success=True,
+            tool_name="ffuf",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"results": [], "by_status": {}},
         )
         tool = FfufTool()
@@ -2009,7 +2368,11 @@ class TestFfufTool:
     def test_fuzz_headers(self, mock_run):
         """Test fuzz_headers convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="ffuf", command="", stdout="", stderr="",
+            success=True,
+            tool_name="ffuf",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"results": [], "by_status": {}},
         )
         tool = FfufTool()
@@ -2040,7 +2403,11 @@ class TestGobusterTool:
     def test_run_basic(self, mock_run):
         """Test basic dir mode run."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="gobuster", command="", stdout="", stderr="",
+            success=True,
+            tool_name="gobuster",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"found_paths": [], "by_status": {}},
         )
         tool = GobusterTool()
@@ -2057,7 +2424,11 @@ class TestGobusterTool:
     def test_run_with_extensions(self, mock_run):
         """Test run with file extensions."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="gobuster", command="", stdout="", stderr="",
+            success=True,
+            tool_name="gobuster",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"found_paths": [], "by_status": {}},
         )
         tool = GobusterTool()
@@ -2070,7 +2441,11 @@ class TestGobusterTool:
     def test_run_dns_mode(self, mock_run):
         """Test DNS mode."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="gobuster", command="", stdout="", stderr="",
+            success=True,
+            tool_name="gobuster",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"found_paths": [], "by_status": {}},
         )
         tool = GobusterTool()
@@ -2082,12 +2457,17 @@ class TestGobusterTool:
     def test_run_with_follow_redirect(self, mock_run):
         """Test follow redirect and cookies."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="gobuster", command="", stdout="", stderr="",
+            success=True,
+            tool_name="gobuster",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"found_paths": [], "by_status": {}},
         )
         tool = GobusterTool()
-        tool.run("http://target.com", wordlist="/tmp/wl.txt",
-                 follow_redirect=True, cookies="sid=abc")
+        tool.run(
+            "http://target.com", wordlist="/tmp/wl.txt", follow_redirect=True, cookies="sid=abc"
+        )
         args = mock_run.call_args[0][0]
         assert "-r" in args
         assert "-c" in args
@@ -2146,7 +2526,11 @@ class TestGobusterTool:
     def test_scan_dirs(self, mock_run):
         """Test scan_dirs convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="gobuster", command="", stdout="", stderr="",
+            success=True,
+            tool_name="gobuster",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"found_paths": [], "by_status": {}},
         )
         tool = GobusterTool()
@@ -2158,7 +2542,11 @@ class TestGobusterTool:
     def test_scan_files(self, mock_run):
         """Test scan_files convenience method with extensions."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="gobuster", command="", stdout="", stderr="",
+            success=True,
+            tool_name="gobuster",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"found_paths": [], "by_status": {}},
         )
         tool = GobusterTool()
@@ -2171,7 +2559,11 @@ class TestGobusterTool:
     def test_scan_vhost(self, mock_run):
         """Test scan_vhost convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="gobuster", command="", stdout="", stderr="",
+            success=True,
+            tool_name="gobuster",
+            command="",
+            stdout="",
+            stderr="",
             parsed_data={"found_paths": [], "by_status": {}},
         )
         tool = GobusterTool()
@@ -2200,8 +2592,19 @@ class TestSqlmapTool:
     def test_run_basic(self, mock_run):
         """Test basic URL test run."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="sqlmap", command="", stdout="", stderr="",
-            parsed_data={"vulnerable": False, "injection_type": None, "databases": [], "tables": [], "columns": [], "data": []},
+            success=True,
+            tool_name="sqlmap",
+            command="",
+            stdout="",
+            stderr="",
+            parsed_data={
+                "vulnerable": False,
+                "injection_type": None,
+                "databases": [],
+                "tables": [],
+                "columns": [],
+                "data": [],
+            },
         )
         tool = SqlmapTool()
         result = tool.run(url="http://target.com/page?id=1")
@@ -2217,8 +2620,19 @@ class TestSqlmapTool:
     def test_run_enumerate_dbs(self, mock_run):
         """Test database enumeration."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="sqlmap", command="", stdout="", stderr="",
-            parsed_data={"vulnerable": True, "injection_type": None, "databases": [], "tables": [], "columns": [], "data": []},
+            success=True,
+            tool_name="sqlmap",
+            command="",
+            stdout="",
+            stderr="",
+            parsed_data={
+                "vulnerable": True,
+                "injection_type": None,
+                "databases": [],
+                "tables": [],
+                "columns": [],
+                "data": [],
+            },
         )
         tool = SqlmapTool()
         tool.run(url="http://target.com/page?id=1", dbs=True)
@@ -2229,8 +2643,19 @@ class TestSqlmapTool:
     def test_run_dump_table(self, mock_run):
         """Test table dump with database and table args."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="sqlmap", command="", stdout="", stderr="",
-            parsed_data={"vulnerable": True, "injection_type": None, "databases": [], "tables": [], "columns": [], "data": []},
+            success=True,
+            tool_name="sqlmap",
+            command="",
+            stdout="",
+            stderr="",
+            parsed_data={
+                "vulnerable": True,
+                "injection_type": None,
+                "databases": [],
+                "tables": [],
+                "columns": [],
+                "data": [],
+            },
         )
         tool = SqlmapTool()
         tool.run(url="http://target.com/page?id=1", dump=True, database="mydb", table="users")
@@ -2245,8 +2670,19 @@ class TestSqlmapTool:
     def test_run_with_cookie_and_param(self, mock_run):
         """Test run with cookie and specific parameter."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="sqlmap", command="", stdout="", stderr="",
-            parsed_data={"vulnerable": False, "injection_type": None, "databases": [], "tables": [], "columns": [], "data": []},
+            success=True,
+            tool_name="sqlmap",
+            command="",
+            stdout="",
+            stderr="",
+            parsed_data={
+                "vulnerable": False,
+                "injection_type": None,
+                "databases": [],
+                "tables": [],
+                "columns": [],
+                "data": [],
+            },
         )
         tool = SqlmapTool()
         tool.run(url="http://target.com/page?id=1", cookie="sid=abc", param="id", level=3, risk=2)
@@ -2314,8 +2750,19 @@ class TestSqlmapTool:
     def test_test_url(self, mock_run):
         """Test test_url convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="sqlmap", command="", stdout="", stderr="",
-            parsed_data={"vulnerable": False, "injection_type": None, "databases": [], "tables": [], "columns": [], "data": []},
+            success=True,
+            tool_name="sqlmap",
+            command="",
+            stdout="",
+            stderr="",
+            parsed_data={
+                "vulnerable": False,
+                "injection_type": None,
+                "databases": [],
+                "tables": [],
+                "columns": [],
+                "data": [],
+            },
         )
         tool = SqlmapTool()
         tool.test_url("http://target.com/page?id=1", level=3)
@@ -2327,8 +2774,19 @@ class TestSqlmapTool:
     def test_enumerate_dbs(self, mock_run):
         """Test enumerate_dbs convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="sqlmap", command="", stdout="", stderr="",
-            parsed_data={"vulnerable": True, "injection_type": None, "databases": [], "tables": [], "columns": [], "data": []},
+            success=True,
+            tool_name="sqlmap",
+            command="",
+            stdout="",
+            stderr="",
+            parsed_data={
+                "vulnerable": True,
+                "injection_type": None,
+                "databases": [],
+                "tables": [],
+                "columns": [],
+                "data": [],
+            },
         )
         tool = SqlmapTool()
         tool.enumerate_dbs("http://target.com/page?id=1")
@@ -2339,8 +2797,19 @@ class TestSqlmapTool:
     def test_enumerate_tables(self, mock_run):
         """Test enumerate_tables convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="sqlmap", command="", stdout="", stderr="",
-            parsed_data={"vulnerable": True, "injection_type": None, "databases": [], "tables": [], "columns": [], "data": []},
+            success=True,
+            tool_name="sqlmap",
+            command="",
+            stdout="",
+            stderr="",
+            parsed_data={
+                "vulnerable": True,
+                "injection_type": None,
+                "databases": [],
+                "tables": [],
+                "columns": [],
+                "data": [],
+            },
         )
         tool = SqlmapTool()
         tool.enumerate_tables("http://target.com/page?id=1", "ctfdb")
@@ -2353,8 +2822,19 @@ class TestSqlmapTool:
     def test_dump_table(self, mock_run):
         """Test dump_table convenience method."""
         mock_run.return_value = ToolResult(
-            success=True, tool_name="sqlmap", command="", stdout="", stderr="",
-            parsed_data={"vulnerable": True, "injection_type": None, "databases": [], "tables": [], "columns": [], "data": []},
+            success=True,
+            tool_name="sqlmap",
+            command="",
+            stdout="",
+            stderr="",
+            parsed_data={
+                "vulnerable": True,
+                "injection_type": None,
+                "databases": [],
+                "tables": [],
+                "columns": [],
+                "data": [],
+            },
         )
         tool = SqlmapTool()
         tool.dump_table("http://target.com/page?id=1", "ctfdb", "users")

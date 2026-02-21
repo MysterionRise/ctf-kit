@@ -164,6 +164,10 @@ force-sort-within-sections = true
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = [
     "S101",   # assert usage is fine in tests
+    "S105",   # hardcoded passwords in test fixtures
+    "S106",   # hardcoded passwords in test arguments
+    "S108",   # /tmp usage in test helpers
+    "E402",   # imports after setup code in test files
     "ANN",    # type annotations not required in tests
     "ARG",    # unused arguments in test fixtures
 ]

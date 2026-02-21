@@ -4,7 +4,7 @@ CTF Kit - AI-assisted CTF challenge solver toolkit.
 
 import sys
 
-if sys.version_info < (3, 11):
+if sys.version_info < (3, 11):  # noqa: UP036 — intentional runtime guard
     raise RuntimeError(
         f"CTF Kit requires Python 3.11 or later (running {sys.version}). "
         "See README.md for setup instructions using uv or pyenv."
