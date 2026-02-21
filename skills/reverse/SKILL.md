@@ -39,91 +39,20 @@ Use this command for challenges involving:
    ctf run reversing $ARGUMENTS
    ```
 
-2. Static analysis with radare2:
+3. Analysis workflow:
+   1. **Identify:** File type and architecture
+   2. **Run:** Observe behavior
+   3. **Static:** Disassemble, find main, identify key functions
+   4. **Understand:** Trace validation logic flow
+   5. **Solve:** Write keygen or patch binary
 
-   ```bash
-   # Analyze binary
-   r2 -A ./binary
+4. Use appropriate tools for the binary type — see [Tool Reference](references/tools.md):
+   - **ELF** → radare2, Ghidra, ltrace/strace
+   - **PE/.NET** → Ghidra, dnSpy
+   - **Java/Android** → jadx, apktool
+   - **Python .pyc** → uncompyle6, pycdc
 
-   # List functions
-   afl
-
-   # Disassemble main
-   pdf @ main
-
-   # Decompile (pseudo-code)
-   pdc @ main
-
-   # List strings
-   iz
-
-   # Cross-references
-   axt @ function_address
-   ```
-
-3. For different binary types:
-
-   **ELF (Linux):**
-   - Use Ghidra or IDA for decompilation
-   - r2 for quick disassembly
-   - ltrace/strace for tracing
-
-   **PE (Windows):**
-   - x64dbg for debugging
-   - IDA or Ghidra for analysis
-   - Check for .NET (use dnSpy)
-
-   **Java/Android:**
-
-   ```bash
-   # Decompile JAR
-   jadx app.jar
-
-   # Decompile APK
-   jadx app.apk
-   apktool d app.apk
-   ```
-
-   **Python:**
-
-   ```bash
-   # Decompile .pyc
-   uncompyle6 file.pyc
-   pycdc file.pyc
-   ```
-
-4. Look for:
-   - Main validation logic
-   - String comparisons
-   - Crypto operations
-   - Anti-debugging checks
-
-## Anti-Debugging Bypass
-
-Common techniques to patch:
-
-- `ptrace` checks
-- `IsDebuggerPresent`
-- Timing checks (rdtsc)
-- Self-modifying code
-
-## Analysis Workflow
-
-1. **Identify:** File type, architecture
-2. **Run:** Observe behavior
-3. **Static:** Disassemble, find main
-4. **Understand:** Trace logic flow
-5. **Solve:** Write keygen or patch
-
-## Common Patterns
-
-| Pattern | Meaning |
-|---------|---------|
-| `strcmp`, `strncmp` | String comparison |
-| `memcmp` | Memory comparison |
-| XOR loop | Simple encryption |
-| `check_`, `verify_` | Validation functions |
-| `win`, `flag` | Target functions |
+5. Look for validation logic: string comparisons, XOR loops, crypto operations.
 
 ## Example Usage
 
@@ -132,3 +61,8 @@ Common techniques to patch:
 /ctf-kit:reverse ./challenge.exe
 /ctf-kit:reverse app.apk
 ```
+
+## References
+
+- [Tool Reference](references/tools.md) — radare2 commands, binary type tools, Ghidra headless
+- [Common Patterns](references/patterns.md) — function indicators, anti-debugging, obfuscation techniques

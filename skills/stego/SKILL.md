@@ -40,90 +40,17 @@ Use this command for challenges involving:
    ctf run stego $ARGUMENTS
    ```
 
-2. Based on file type, use appropriate tools:
+3. Based on file type, use appropriate tools — see [Tool Reference](references/tools.md) for detailed commands:
+   - **PNG/BMP** → zsteg for LSB analysis
+   - **JPEG** → steghide extraction
+   - **Any image** → exiftool metadata, binwalk for appended data
+   - **Audio** → spectrogram analysis, LSB extraction
 
-   **For PNG/BMP Images (LSB):**
-
-   ```bash
-   # Comprehensive LSB analysis
-   zsteg -a image.png
-
-   # Check specific channels
-   zsteg image.png -b 1
-
-   # Visual analysis with stegsolve
-   stegsolve image.png
-   ```
-
-   **For JPEG Images:**
-
-   ```bash
-   # Check for steghide data
-   steghide info image.jpg
-
-   # Extract with password
-   steghide extract -sf image.jpg -p "password"
-
-   # Try empty password
-   steghide extract -sf image.jpg -p ""
-
-   # Try jsteg
-   jsteg reveal image.jpg output.txt
-   ```
-
-   **For All Images:**
-
-   ```bash
-   # Check metadata
-   exiftool image.png
-
-   # Look for appended data
-   binwalk image.png
-
-   # Extract appended archives
-   binwalk -e image.png
-   ```
-
-   **For Audio:**
-
-   ```bash
-   # Open in Audacity, view spectrogram
-   # Look for visual patterns in spectrum
-
-   # Check for morse code
-   # Listen at different speeds
-
-   # LSB in WAV
-   # Use audio stego tools
-   ```
-
-3. Key things to check:
+4. Key things to check:
    - File metadata (comments, author fields)
    - Data appended after file EOF
    - LSB in color channels
    - Spectrogram in audio files
-
-## Quick Checklist
-
-| File Type | First Try |
-|-----------|-----------|
-| PNG/BMP | zsteg -a |
-| JPEG | steghide extract -p "" |
-| GIF | Check frames, delays |
-| WAV | Spectrogram in Audacity |
-| Any | exiftool, binwalk |
-
-## Common Passwords for Steghide
-
-Try these common passwords:
-
-- (empty)
-- password
-- steghide
-- secret
-- hidden
-- flag
-- (the challenge name)
 
 ## Example Usage
 
@@ -132,3 +59,8 @@ Try these common passwords:
 /ctf-kit:stego audio.wav
 /ctf-kit:stego ./media/
 ```
+
+## References
+
+- [Tool Reference](references/tools.md) — zsteg, steghide, exiftool, audio stego, password lists
+- [Pattern Recognition](references/patterns.md) — file type checklist, hiding techniques, channel analysis

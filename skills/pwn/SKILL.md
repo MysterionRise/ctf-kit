@@ -40,97 +40,16 @@ Use this command for challenges involving:
    ctf run pwn $ARGUMENTS
    ```
 
-2. Check binary protections:
+3. Check binary protections: `checksec ./binary`
 
-   ```bash
-   checksec ./binary
-   ```
+4. Find the vulnerability (overflow, format string, UAF) and determine offset to control.
 
-   | Protection | If Disabled |
-   |------------|-------------|
-   | CANARY | Stack overflow exploitable |
-   | NX | Shellcode injection possible |
-   | PIE | Fixed addresses for ROP |
-   | RELRO | GOT overwrite possible |
+5. Build exploit using appropriate technique — see [Attack Patterns](references/patterns.md) for templates:
+   - Buffer overflow → direct overwrite or ROP
+   - Format string → leak/write primitives
+   - ret2libc → leak libc, call system()
 
-3. Find ROP gadgets:
-
-   ```bash
-   # Find all gadgets
-   ROPgadget --binary ./binary
-
-   # Find specific gadgets
-   ROPgadget --binary ./binary --re "pop rdi"
-
-   # For x64: need pop rdi; ret for first argument
-   # For x86: arguments on stack
-   ```
-
-4. Dynamic analysis:
-
-   ```bash
-   # Run binary
-   ./binary
-
-   # Trace library calls
-   ltrace ./binary
-
-   # Trace system calls
-   strace ./binary
-
-   # Debug with GDB
-   gdb ./binary
-   ```
-
-5. Find offset to return address:
-
-   ```python
-   # Generate pattern
-   from pwn import *
-   print(cyclic(200))
-
-   # Find offset after crash
-   cyclic_find(0x61616161)  # Replace with crash value
-   ```
-
-## Common Attack Patterns
-
-### Buffer Overflow (No Canary, No PIE)
-
-```python
-from pwn import *
-p = process('./binary')
-payload = b'A' * offset + p64(win_function)
-p.sendline(payload)
-p.interactive()
-```
-
-### Format String
-
-```python
-# Leak stack values
-payload = b'%p ' * 20
-
-# Write to address
-payload = fmtstr_payload(offset, {target: value})
-```
-
-### ret2libc
-
-```python
-# Leak libc address
-# Calculate base
-# Call system("/bin/sh")
-```
-
-## Exploitation Checklist
-
-1. Run binary, understand behavior
-2. Check protections with checksec
-3. Find vulnerability (overflow, format string)
-4. Find offset to control
-5. Build exploit (shellcode or ROP)
-6. Test locally, then remote
+6. Test locally, then adapt for remote target.
 
 ## Example Usage
 
@@ -138,3 +57,8 @@ payload = fmtstr_payload(offset, {target: value})
 /ctf-kit:pwn ./challenge
 /ctf-kit:pwn ./binary
 ```
+
+## References
+
+- [Tool Reference](references/tools.md) — checksec, ROPgadget, GDB, pwntools offset finding
+- [Attack Patterns](references/patterns.md) — buffer overflow, format string, ret2libc, heap techniques

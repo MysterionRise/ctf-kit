@@ -20,7 +20,6 @@ Use this command when you have new challenge files and need to:
 - Identify the challenge category (crypto, forensics, stego, web, pwn, reversing, OSINT, misc)
 - Detect file types and formats
 - Get initial suggestions for tools to use
-- Understand what you're working with
 
 ## Bundled Scripts
 
@@ -36,23 +35,19 @@ Use this command when you have new challenge files and need to:
    ctf analyze $ARGUMENTS
    ```
 
-2. Review the output to understand:
-   - Detected file types
-   - Suggested challenge category
-   - Interesting strings or metadata found
-   - Embedded files detected
+3. Review the output to understand detected file types, suggested category, interesting strings, and embedded files.
 
-3. Based on the analysis results, suggest the appropriate specialized command:
-   - `/ctf-kit:crypto` for cryptography challenges
-   - `/ctf-kit:forensics` for forensics challenges
-   - `/ctf-kit:stego` for steganography challenges
-   - `/ctf-kit:web` for web security challenges
-   - `/ctf-kit:pwn` for binary exploitation challenges
-   - `/ctf-kit:reverse` for reverse engineering challenges
-   - `/ctf-kit:osint` for OSINT challenges
-   - `/ctf-kit:misc` for miscellaneous challenges
+4. Based on results, route to the appropriate specialized skill:
+   - `/ctf-kit:crypto` — cryptography
+   - `/ctf-kit:forensics` — forensics
+   - `/ctf-kit:stego` — steganography
+   - `/ctf-kit:web` — web security
+   - `/ctf-kit:pwn` — binary exploitation
+   - `/ctf-kit:reverse` — reverse engineering
+   - `/ctf-kit:osint` — OSINT
+   - `/ctf-kit:misc` — miscellaneous
 
-4. Explain the findings and recommended next steps to the user.
+5. Explain the findings and recommended next steps to the user.
 
 ## Example Usage
 
@@ -61,8 +56,6 @@ Use this command when you have new challenge files and need to:
 /ctf-kit:analyze ./challenge-folder/
 ```
 
-## Related Commands
+## References
 
-- `/ctf-kit:crypto` - Crypto-specific analysis
-- `/ctf-kit:forensics` - Forensics analysis
-- `/ctf-kit:stego` - Steganography analysis
+- [Tool Reference](references/tools.md) — analysis tools, category routing table, file signatures
