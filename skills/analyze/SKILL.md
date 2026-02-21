@@ -54,6 +54,28 @@ Use this command when you have new challenge files and need to:
 
 4. Explain the findings and recommended next steps to the user.
 
+## Common Issues
+
+**`file` command not found**
+- **Cause:** Core utilities not installed (rare on Linux/macOS, common in minimal containers)
+- **Solution:** Install with `apt install file` (Debian/Ubuntu) or `brew install file` (macOS)
+
+**`strings` returns no useful output**
+- **Cause:** Binary may use wide-character (UTF-16) strings, or strings are obfuscated
+- **Solution:** Try `strings -el` for little-endian UTF-16, or `strings -n 4` to lower the minimum length. For obfuscated binaries, use `/ctf-kit:reverse` instead
+
+**`binwalk` not found or returns no results**
+- **Cause:** binwalk not installed, or the file has no recognizable embedded signatures
+- **Solution:** Install with `pip install binwalk` or `apt install binwalk`. If no signatures found, try `binwalk -R '\x50\x4b'` to search for specific magic bytes (e.g., ZIP), or examine the file manually with `xxd | head`
+
+**Analysis suggests wrong category**
+- **Cause:** Some challenges are intentionally misleading — a "forensics" file may actually be a crypto challenge, or vice versa
+- **Solution:** If the suggested skill doesn't yield results, try the next most likely category. Use `file`, `xxd`, and `strings` output to form your own judgment rather than relying solely on automated detection
+
+**Permission denied when analyzing files**
+- **Cause:** Challenge file lacks read or execute permissions
+- **Solution:** Run `chmod +r challenge_file` to add read permission. For ELF binaries you need to run, use `chmod +x`
+
 ## Example Usage
 
 ```bash

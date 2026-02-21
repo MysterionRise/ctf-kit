@@ -125,6 +125,40 @@ Try these common passwords:
 - flag
 - (the challenge name)
 
+## Common Issues
+
+**`zsteg` not found**
+- **Cause:** zsteg is a Ruby gem, not a system package
+- **Solution:** Install with `gem install zsteg`. Requires Ruby. If Ruby is missing: `apt install ruby` (Debian/Ubuntu) or `brew install ruby` (macOS)
+
+**zsteg returns no results on a JPEG**
+- **Cause:** zsteg only works on PNG/BMP files — it cannot analyze JPEG images
+- **Solution:** Use `steghide` for JPEG files: `steghide extract -sf image.jpg -p ""`. Also try `jsteg reveal image.jpg` or `outguess -r image.jpg output.txt`
+
+**`steghide` not found**
+- **Cause:** steghide not installed
+- **Solution:** Install with `apt install steghide` (Debian/Ubuntu). On macOS, steghide is not in Homebrew — use Docker (`docker run -it --rm -v .:/data kalilinux/kali steghide`) or try `jsteg` as an alternative: `go install github.com/lukechampine/jsteg@latest`
+
+**steghide: "could not extract any data" with empty password**
+- **Cause:** The file has a non-empty password, or no steghide data is embedded
+- **Solution:** Try common passwords from the challenge context (challenge name, visible text, hints). Use `stegcracker image.jpg wordlist.txt` for automated password brute-forcing. If no steghide data exists, try other tools (binwalk, exiftool, strings)
+
+**`exiftool` not found**
+- **Cause:** ExifTool not installed
+- **Solution:** Install with `apt install libimage-exiftool-perl` (Debian/Ubuntu) or `brew install exiftool` (macOS)
+
+**No hidden data found with any tool**
+- **Cause:** Data may be hidden in a way standard tools don't detect — visual encoding, specific color channels, or non-standard LSB methods
+- **Solution:** Try `stegsolve` for visual analysis of individual color planes. Check if the image has unusual dimensions or pixel patterns. Look at color channel differences. For audio, check the spectrogram in Audacity (switch to spectrogram view)
+
+**Audio spectrogram shows nothing**
+- **Cause:** The hidden message may be in a different frequency range, or the audio uses a different stego technique
+- **Solution:** Adjust Audacity spectrogram settings — increase max frequency, change window size. Try `sonic-visualiser` for better spectral analysis. Check for DTMF tones, morse code (listen at different speeds), or LSB encoding in WAV samples
+
+**Image appears corrupted or won't open**
+- **Cause:** File header may be intentionally damaged as part of the challenge
+- **Solution:** Check magic bytes with `xxd image.png | head`. Compare against correct headers (PNG: `89 50 4E 47`, JPEG: `FF D8 FF`). Fix corrupted bytes with a hex editor. Check if the file is actually a different format than the extension suggests
+
 ## Example Usage
 
 ```bash

@@ -125,6 +125,40 @@ Common techniques to patch:
 | `check_`, `verify_` | Validation functions |
 | `win`, `flag` | Target functions |
 
+## Common Issues
+
+**`radare2` (r2) not found**
+- **Cause:** radare2 not installed
+- **Solution:** Install with `apt install radare2` (Debian/Ubuntu) or `brew install radare2` (macOS). For the latest version, build from source: `git clone https://github.com/radareorg/radare2 && cd radare2 && sys/install.sh`
+
+**radare2 analysis hangs or is very slow**
+- **Cause:** Full analysis (`aaaa`) on large binaries can take a long time
+- **Solution:** Use `aa` (basic analysis) instead of `aaaa` for initial exploration. Target specific functions: `af @ main` to analyze just main. Use `afl` to list known functions before deep analysis
+
+**`jadx` not found (Java/Android decompilation)**
+- **Cause:** jadx not installed
+- **Solution:** Install with `apt install jadx`, `brew install jadx`, or download from [GitHub releases](https://github.com/skylot/jadx/releases). For APK files, `apktool` is an alternative: `apt install apktool`
+
+**`uncompyle6` fails on Python 3.9+ .pyc files**
+- **Cause:** uncompyle6 only supports up to Python 3.8
+- **Solution:** Use `pycdc` (Decompyle++) which supports newer Python versions. Install from source: `git clone https://github.com/zrax/pycdc && cd pycdc && cmake . && make`. Alternatively, use `dis` module to get bytecode: `python -m dis file.pyc`
+
+**Binary is stripped — no function names visible**
+- **Cause:** Symbols were removed at compile time
+- **Solution:** Focus on `entry0` / `entry_point` and follow calls from there. Look for string cross-references (`iz` in r2, then `axt @ addr`) to locate interesting functions. In Ghidra, the decompiler still produces readable pseudo-code even without symbols
+
+**Anti-debugging prevents analysis**
+- **Cause:** Binary uses ptrace checks, timing checks, or environment detection
+- **Solution:** In GDB: `catch syscall ptrace` then `set $rax=0` to bypass ptrace. In r2: patch the check with `wa nop` at the conditional jump. For timing checks, use static analysis instead of dynamic
+
+**ELF binary is packed or encrypted**
+- **Cause:** UPX or custom packing hides the real code
+- **Solution:** Check with `upx -t binary`. If UPX packed: `upx -d binary` to unpack. For custom packers, run the binary under `strace` to see it unpack itself, then dump from memory with `gdb`
+
+**`objdump` output is overwhelming**
+- **Cause:** Dumping the entire binary produces too much output
+- **Solution:** Target specific sections: `objdump -d -M intel --disassemble=main ./binary`. Use `objdump -t` for symbol table and `objdump -s -j .rodata` for read-only data (often contains strings/keys)
+
 ## Example Usage
 
 ```bash

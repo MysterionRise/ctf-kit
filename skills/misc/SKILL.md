@@ -112,6 +112,32 @@ echo "encoded" | base64 -d | xxd -r -p | tr 'A-Za-z' 'N-ZA-Mn-za-m'
 - **Brainfuck interpreters:** Many online options
 - **zbarimg:** QR code reading
 
+## Common Issues
+
+**`zbarimg` not found (QR code decoding fails)**
+- **Cause:** zbar library not installed
+- **Solution:** Install with `apt install zbar-tools` (Debian/Ubuntu) or `brew install zbar` (macOS). As a fallback, use Python: `pip install pyzbar pillow` then decode with a short script
+
+**QR code not detected by `zbarimg`**
+- **Cause:** Image is too small, low contrast, partially damaged, or has inverted colors
+- **Solution:** Try preprocessing: resize/upscale the image, increase contrast, or invert colors with `convert input.png -negate output.png` (ImageMagick). For partial QR codes, try online QR recovery tools
+
+**Base64 decode produces binary garbage instead of text**
+- **Cause:** The decoded data is another encoding layer, a compressed file, or encrypted data
+- **Solution:** Check the decoded output with `file` to identify its format. Common patterns: decoded Base64 → gzip (`gunzip`), decoded Base64 → another Base64 layer, decoded Base64 → hex string
+
+**Esoteric language not recognized**
+- **Cause:** Many esoteric languages look similar, and some challenges use custom/obscure ones
+- **Solution:** Check dcode.fr's cipher identifier. Key tells: `+[->` = Brainfuck, `Ook.` = Ook!, only whitespace chars = Whitespace, `()[]!+` = JSFuck. For unknown languages, search the character set on esolangs.org
+
+**CyberChef "Magic" recipe finds nothing**
+- **Cause:** The encoding uses a custom alphabet, non-standard variant, or multiple uncommon layers
+- **Solution:** Examine the character set manually. If only A-Z and 2-7: Base32. If includes `/` and `+`: likely Base64. Try each layer individually rather than relying on auto-detection. Consider custom Base64 alphabets
+
+**`convert` (ImageMagick) not found**
+- **Cause:** ImageMagick not installed
+- **Solution:** Install with `apt install imagemagick` (Debian/Ubuntu) or `brew install imagemagick` (macOS). On newer ImageMagick versions, use `magick` instead of `convert`
+
 ## Example Usage
 
 ```bash

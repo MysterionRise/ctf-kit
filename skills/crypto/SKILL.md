@@ -96,6 +96,36 @@ Use this command for challenges involving:
 | All caps + 2-7 | Base32 |
 | n=..., e=... | RSA parameters |
 
+## Common Issues
+
+**`hashcat` or `john` not found**
+- **Cause:** Hash cracking tools not installed
+- **Solution:** Install with `apt install hashcat john` (Debian/Ubuntu) or `brew install hashcat john` (macOS). On macOS, hashcat requires OpenCL/Metal support — if GPU errors occur, try `hashcat --force` to use CPU fallback
+
+**`RsaCtfTool` not found**
+- **Cause:** Not packaged in system repos — requires manual install
+- **Solution:** Clone and install: `git clone https://github.com/RsaCtfTool/RsaCtfTool && cd RsaCtfTool && pip install -r requirements.txt`. Run with `python RsaCtfTool.py`
+
+**`xortool` not found**
+- **Cause:** Not installed or installed in a different Python environment
+- **Solution:** Install with `pip install xortool`. Verify with `xortool --help`
+
+**hashcat: "No hashes loaded"**
+- **Cause:** Wrong hash mode (`-m`) for the given hash type
+- **Solution:** Use `hashid` or `hash-identifier` to determine the hash type first, then match to the correct hashcat mode. Common modes: `-m 0` (MD5), `-m 100` (SHA1), `-m 1400` (SHA256), `-m 1000` (NTLM)
+
+**RsaCtfTool finds no attack that works**
+- **Cause:** The RSA parameters may not be vulnerable to known attacks, or key size is too large
+- **Solution:** Check if `n` can be factored on factordb.com. Try specifying attacks manually with `--attack`. For custom RSA variants (e.g., multi-prime, small `d`), write a Python script using `sympy` or `gmpy2` instead
+
+**Base64 decode produces garbage**
+- **Cause:** The string may not be standard Base64 — could be Base64url, Base32, or a custom alphabet
+- **Solution:** Try `base64 -d` first. If garbage, try Base64url (`tr '_-' '/+'`), Base32 (`base32 -d`), or check if the data has another encoding layer on top
+
+**john/hashcat cracking runs forever**
+- **Cause:** Hash type is slow (bcrypt, scrypt) or password not in wordlist
+- **Solution:** Use `rockyou.txt` first. For slow hashes, try rules: `john --wordlist=rockyou.txt --rules=best64`. Consider the CTF context — passwords are usually simple or hinted at in the challenge description
+
 ## Example Usage
 
 ```bash

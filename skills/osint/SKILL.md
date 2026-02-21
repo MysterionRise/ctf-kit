@@ -117,6 +117,36 @@ Use this command for challenges involving:
    - TinEye
    - Yandex (good for faces)
 
+## Common Issues
+
+**`sherlock` not found**
+- **Cause:** Sherlock not installed or not in PATH
+- **Solution:** Install with `pip install sherlock-project`. Run with `sherlock` (not `sherlock-project`). Alternatively clone: `git clone https://github.com/sherlock-project/sherlock && cd sherlock && pip install -r requirements.txt`
+
+**Sherlock returns many false positives**
+- **Cause:** Some sites return 200 for any username (soft 404s), or rate-limit responses look like valid profiles
+- **Solution:** Manually verify flagged profiles by visiting the URLs. Use `sherlock --print-found` to only show detected accounts, and cross-reference with the challenge context to filter relevant results
+
+**`theHarvester` not found or returns no results**
+- **Cause:** Not installed, or API keys not configured for data sources
+- **Solution:** Install with `pip install theHarvester`. Many sources (Shodan, Hunter, SecurityTrails) require API keys configured in `/etc/theHarvester/api-keys.yaml`. For CTFs, use free sources: `-b google,bing,dnsdumpster`
+
+**`exiftool` shows no GPS data in image**
+- **Cause:** GPS metadata was stripped, or the image was taken with a device that doesn't embed location
+- **Solution:** Fall back to visual OSINT — look for landmarks, signs, license plates, sun position, language on signs. Use Google Maps Street View to correlate. Check if the image has other metadata (camera model, timestamps) that could help
+
+**`whois` returns limited/redacted information**
+- **Cause:** Domain has WHOIS privacy protection enabled
+- **Solution:** Try historical WHOIS lookups via whoishistory.com or SecurityTrails. Check web.archive.org for older versions of the site that may reveal ownership. Try related domains or subdomains that may have less privacy
+
+**Rate limiting blocks OSINT tools**
+- **Cause:** Too many automated requests to a platform
+- **Solution:** Add delays between requests. For sherlock, use `--timeout 10`. Rotate through different search engines. Use cached/archived versions of pages when possible
+
+**Reverse image search finds nothing**
+- **Cause:** Image is unique to the CTF, heavily cropped, or modified
+- **Solution:** Try multiple engines — Google Images, TinEye, Yandex (best for faces/locations), Bing Visual Search. Crop to specific features (a building, sign, or landmark) and search those separately
+
 ## Example Usage
 
 ```bash
