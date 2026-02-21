@@ -28,7 +28,13 @@ Use this command when you have new challenge files and need to:
 
 ## Instructions
 
-1. First check tool availability: `bash scripts/check-tools.sh`
+1. Check tool availability:
+
+   ```bash
+   bash scripts/check-tools.sh
+   ```
+
+   Expected: each tool prints `[OK]`. If any show `[MISSING]`, note which tools are unavailable and adjust later steps accordingly.
 
 2. Run the analysis on the challenge files:
 
@@ -36,23 +42,33 @@ Use this command when you have new challenge files and need to:
    ctf analyze $ARGUMENTS
    ```
 
-2. Review the output to understand:
-   - Detected file types
-   - Suggested challenge category
-   - Interesting strings or metadata found
-   - Embedded files detected
+   Expected output includes: file type (e.g., `ELF 64-bit`, `PNG image`, `ASCII text`), magic bytes, embedded file signatures, and printable strings.
 
-3. Based on the analysis results, suggest the appropriate specialized command:
-   - `/ctf-kit:crypto` for cryptography challenges
-   - `/ctf-kit:forensics` for forensics challenges
-   - `/ctf-kit:stego` for steganography challenges
-   - `/ctf-kit:web` for web security challenges
-   - `/ctf-kit:pwn` for binary exploitation challenges
-   - `/ctf-kit:reverse` for reverse engineering challenges
-   - `/ctf-kit:osint` for OSINT challenges
-   - `/ctf-kit:misc` for miscellaneous challenges
+3. **CRITICAL: Before proceeding, confirm the analysis produced at least one of these results:**
+   - A detected file type (e.g., `file: ELF 64-bit LSB executable`)
+   - A suggested challenge category (e.g., `Category: crypto`)
+   - Interesting strings (e.g., `flag{`, `CTF{`, Base64 patterns, hex strings)
+   - Embedded file signatures (e.g., `JPEG image data`, `Zip archive`)
 
-4. Explain the findings and recommended next steps to the user.
+   If the output is empty or only shows `data`, run manual checks:
+   ```bash
+   file $ARGUMENTS && xxd $ARGUMENTS | head -20 && strings $ARGUMENTS | head -30
+   ```
+
+4. Route to the appropriate specialized skill based on detected category:
+
+   | Detection | Route to |
+   |-----------|----------|
+   | Encryption, hashes, RSA params, encoding | `/ctf-kit:crypto` |
+   | Memory dump, pcap, disk image | `/ctf-kit:forensics` |
+   | Image/audio with no obvious content | `/ctf-kit:stego` |
+   | URL, HTML, PHP, HTTP traffic | `/ctf-kit:web` |
+   | ELF/PE binary with remote service | `/ctf-kit:pwn` |
+   | ELF/PE binary, crackme, keygen | `/ctf-kit:reverse` |
+   | Username, domain, geolocation task | `/ctf-kit:osint` |
+   | Encoding chains, esoteric code, QR | `/ctf-kit:misc` |
+
+5. Explain the findings and recommended next steps to the user, including which specialized skill to invoke and why.
 
 ## Example Usage
 

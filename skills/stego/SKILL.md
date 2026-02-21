@@ -32,76 +32,105 @@ Use this command for challenges involving:
 
 ## Instructions
 
-1. First check tool availability: `bash scripts/check-tools.sh`
-
-2. Run the stego analysis:
+1. Check tool availability:
 
    ```bash
-   ctf run stego $ARGUMENTS
+   bash scripts/check-tools.sh
    ```
 
-2. Based on file type, use appropriate tools:
+   Expected: each tool prints `[OK]`. If any show `[MISSING]`, note which are unavailable before proceeding.
 
-   **For PNG/BMP Images (LSB):**
+2. Identify the file type:
 
    ```bash
-   # Comprehensive LSB analysis
+   file $ARGUMENTS
+   ```
+
+   Expected: one of:
+   - `PNG image data` → go to step 3a
+   - `JPEG image data` → go to step 3b
+   - `BMP image` → go to step 3a (same as PNG for LSB)
+   - `RIFF (little-endian) data, WAVE audio` → go to step 3d
+   - `GIF image data` → go to step 3c
+
+   **CRITICAL: The file type determines which stego tools to use. JPEG requires different tools than PNG/BMP.**
+
+3. Always run these checks first (any image type):
+
+   ```bash
+   exiftool $ARGUMENTS
+   ```
+
+   Expected: metadata table. Look for `Comment`, `Author`, `Description`, or `UserComment` fields containing hidden text or flags.
+
+   ```bash
+   binwalk $ARGUMENTS
+   ```
+
+   Expected: table of embedded file signatures. If it shows `Zip archive` or `JPEG image` after the main file header, there is appended data:
+
+   ```bash
+   binwalk -e $ARGUMENTS
+   ```
+
+   Expected: extracted files in `_<filename>.extracted/`. Check each one.
+
+   **CRITICAL: If exiftool or binwalk found the flag, stop here. Only continue to specialized tools if no flag was found.**
+
+   Now apply file-type-specific analysis:
+
+   **3a. PNG/BMP (LSB Analysis):**
+
+   ```bash
    zsteg -a image.png
-
-   # Check specific channels
-   zsteg image.png -b 1
-
-   # Visual analysis with stegsolve
-   stegsolve image.png
    ```
 
-   **For JPEG Images:**
+   Expected: list of channels and bit planes with detected data. Look for lines containing readable text, `flag{`, or `file` signatures. Example output:
+   ```
+   b1,rgb,lsb,xy   .. text: "flag{hidden_in_pixels}"
+   b1,r,lsb,xy     .. file: PNG image data
+   ```
+
+   If `zsteg -a` produces too much noise, try specific channels:
 
    ```bash
-   # Check for steghide data
+   zsteg image.png -b 1
+   ```
+
+   **3b. JPEG (Steghide/Jsteg):**
+
+   ```bash
    steghide info image.jpg
+   ```
 
-   # Extract with password
-   steghide extract -sf image.jpg -p "password"
+   Expected: `embedded file "secret.txt"` if data is hidden. Extract it:
 
-   # Try empty password
+   ```bash
    steghide extract -sf image.jpg -p ""
+   ```
 
-   # Try jsteg
+   Expected: `wrote extracted data to "secret.txt"`. If password-protected, try common passwords: `password`, `steghide`, `secret`, `hidden`, `flag`, or the challenge name.
+
+   If steghide finds nothing:
+
+   ```bash
    jsteg reveal image.jpg output.txt
    ```
 
-   **For All Images:**
+   Expected: hidden data written to `output.txt`.
 
-   ```bash
-   # Check metadata
-   exiftool image.png
+   **3c. GIF:**
+   - Check individual frames for differences (frame-by-frame analysis)
+   - Check frame delays for encoded data (e.g., morse code in timing)
+   - Extract frames and compare pixel differences
 
-   # Look for appended data
-   binwalk image.png
+   **3d. Audio (WAV/MP3/FLAC):**
+   - Open in Audacity → switch to Spectrogram view → look for visual text/patterns
+   - Check for morse code in the waveform
+   - Try LSB extraction tools for WAV files
+   - Listen at different speeds (0.5x, 2x)
 
-   # Extract appended archives
-   binwalk -e image.png
-   ```
-
-   **For Audio:**
-
-   ```bash
-   # Open in Audacity, view spectrogram
-   # Look for visual patterns in spectrum
-
-   # Check for morse code
-   # Listen at different speeds
-
-   # LSB in WAV
-   # Use audio stego tools
-   ```
-
-3. Key things to check:
-   - File metadata (comments, author fields)
-   - Data appended after file EOF
-   - LSB in color channels
-   - Spectrogram in audio files
+4. **Validation: Confirm the extracted data.** The output should be a readable flag, a secondary file containing the flag, or coordinates/text that answers the challenge. If you get binary garbage, try a different channel, bit plane, or tool from step 3.
 
 ## Quick Checklist
 

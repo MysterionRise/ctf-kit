@@ -31,7 +31,13 @@ Use this command for challenges involving:
 
 ## Instructions
 
-1. First check tool availability: `bash scripts/check-tools.sh`
+1. Check tool availability:
+
+   ```bash
+   bash scripts/check-tools.sh
+   ```
+
+   Expected: each tool prints `[OK]`. If any show `[MISSING]`, note which are unavailable before proceeding.
 
 2. Run the OSINT analysis:
 
@@ -39,45 +45,76 @@ Use this command for challenges involving:
    ctf run osint $ARGUMENTS
    ```
 
-2. For username enumeration:
+   Expected output: identified target type (username, domain, image) and initial findings.
+
+3. **CRITICAL: Before choosing tools, identify the target type:**
+   - A username or handle → **Username enumeration** → go to step 4a
+   - A domain name or URL → **Domain reconnaissance** → go to step 4b
+   - An image file → **Image geolocation** → go to step 4c
+
+   If the target type is unclear, check the arguments: `file $ARGUMENTS 2>/dev/null || echo "Not a file — treat as username or domain"`
+
+4. Apply the matching approach:
+
+   **4a. Username Enumeration:**
 
    ```bash
-   # Search across platforms
    sherlock username
+   ```
 
-   # Check specific site
+   Expected: list of `[+] <site>: https://<site>.com/username` for found profiles, `[-]` for not found. Focus on profiles marked `[+]`.
+
+   **CRITICAL: Verify at least one profile was found before investigating further.** If all results are `[-]`, try alternate spellings or related usernames.
+
+   ```bash
    sherlock username --site github
    ```
 
-3. For domain reconnaissance:
+   Expected: `[+] GitHub: https://github.com/username` — check the profile for repos, commits, or personal info.
+
+   **4b. Domain Reconnaissance:**
 
    ```bash
-   # Gather emails and subdomains
    theHarvester -d target.com -b all
+   ```
 
-   # DNS lookup
+   Expected: tables of `Emails found`, `Hosts found`, `IPs found`. Note all discovered subdomains and email addresses.
+
+   ```bash
    dig target.com ANY
+   ```
 
-   # Whois information
+   Expected: DNS records (A, MX, TXT, NS). Look for TXT records containing flags or hints.
+
+   ```bash
    whois target.com
    ```
 
-4. For image geolocation:
+   Expected: registrant name, organization, creation date, nameservers. Note any personal information.
+
+   **4c. Image Geolocation:**
 
    ```bash
-   # Extract EXIF data
    exiftool image.jpg
+   ```
 
-   # Look for GPS coordinates
+   Expected: metadata table with fields like `Camera Model`, `Date/Time`, `GPS Position`. If GPS data exists:
+
+   ```bash
    exiftool -gps* image.jpg
    ```
 
-5. Online resources:
-   - **Maps:** Google Maps, Google Earth
-   - **Archive:** web.archive.org
-   - **Reverse Image:** Google Images, TinEye
-   - **Social:** LinkedIn, Twitter, Facebook
-   - **Breach Data:** haveibeenpwned.com
+   Expected: `GPS Latitude: 48 deg 51' 24.00" N`, `GPS Longitude: 2 deg 21' 3.00" E`. Convert to decimal and look up on a map.
+
+   **CRITICAL: If no EXIF GPS data, fall back to visual analysis** — look for landmarks, signs, language on buildings, sun position, and vegetation.
+
+5. **Cross-reference and connect findings.** Look up discovered profiles, domains, or locations using:
+   - **Maps:** Google Maps, Google Earth (for coordinates)
+   - **Archive:** web.archive.org (for historical versions of sites)
+   - **Reverse Image:** Google Images, TinEye (for image origin)
+   - **Breach Data:** haveibeenpwned.com (for email-based leads)
+
+6. **Validation: Confirm the flag.** OSINT flags are often GPS coordinates, real names, email addresses, or hidden text found on discovered profiles. Verify your answer matches the expected flag format.
 
 ## OSINT Workflow
 

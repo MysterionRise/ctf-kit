@@ -32,7 +32,13 @@ Use this command for challenges involving:
 
 ## Instructions
 
-1. First check tool availability: `bash scripts/check-tools.sh`
+1. Check tool availability:
+
+   ```bash
+   bash scripts/check-tools.sh
+   ```
+
+   Expected: each tool prints `[OK]`. If any show `[MISSING]`, note which are unavailable before proceeding.
 
 2. Run the crypto analysis:
 
@@ -40,50 +46,75 @@ Use this command for challenges involving:
    ctf run crypto $ARGUMENTS
    ```
 
-2. Analyze the output for:
-   - Detected encoding types (Base64, hex, binary)
-   - Hash types identified
-   - XOR key length analysis
-   - RSA parameters (n, e, c, p, q)
+   Expected output: detected encoding type, hash format, XOR key length candidates, or RSA parameters.
 
-3. Based on findings, use appropriate tools:
+3. **CRITICAL: Before choosing a tool, confirm which crypto type you are dealing with:**
+   - **Hash**: 32 hex chars (MD5), 40 hex chars (SHA1), 64 hex chars (SHA256) → go to step 4a
+   - **RSA**: parameters `n=`, `e=`, `c=`, or `.pem` key file → go to step 4b
+   - **XOR**: repeating byte patterns, `xortool` suggested key lengths → go to step 4c
+   - **Encoding chain**: Base64 (`==` suffix), hex, ROT13, nested layers → go to step 4d
 
-   **For Hash Cracking:**
+   If none match, re-examine with `file $ARGUMENTS && xxd $ARGUMENTS | head -20`.
+
+4. Apply the matching tool:
+
+   **4a. Hash Cracking:**
 
    ```bash
-   # Identify hash type
    hashid <hash>
-
-   # Crack with John
-   john --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt
-
-   # Crack with Hashcat
-   hashcat -m 0 -a 0 hashes.txt wordlist.txt  # MD5
    ```
 
-   **For RSA:**
+   Expected: `[+] MD5`, `[+] SHA-1`, etc. Then crack:
 
    ```bash
-   # Attack weak RSA
-   RsaCtfTool --publickey key.pem --private
+   john --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt
+   ```
 
-   # With known parameters
+   Expected: `password123 (?)` — the cracked value appears in the output. Verify with:
+
+   ```bash
+   john --show hashes.txt
+   ```
+
+   **4b. RSA:**
+
+   ```bash
+   RsaCtfTool --publickey key.pem --private
+   ```
+
+   Expected: `-----BEGIN RSA PRIVATE KEY-----` if the attack succeeds. If it fails, try with known parameters:
+
+   ```bash
    RsaCtfTool -n <modulus> -e <exponent> --uncipher <ciphertext>
    ```
 
-   **For XOR:**
+   Expected: `Unciphered data: <plaintext or hex>`
+
+   **4c. XOR:**
 
    ```bash
-   # Analyze XOR encryption
    xortool encrypted.bin
-
-   # Try with known key length
-   xortool -l 8 -c 20 encrypted.bin
    ```
 
-4. Suggest decoding chains for multi-layered encoding:
-   - Try CyberChef Magic recipe
-   - Manual: Base64 -> Hex -> ASCII, etc.
+   Expected: `The most probable key lengths: 4, 8, 12...` and candidate keys. Then:
+
+   ```bash
+   xortool -l <key_length> -c 20 encrypted.bin
+   ```
+
+   Expected: decrypted files written to `xortool_out/`.
+
+   **4d. Encoding Chain:**
+   Decode layer by layer. Example:
+
+   ```bash
+   echo "SGVsbG8=" | base64 -d          # Base64 → "Hello"
+   echo "48656C6C6F" | xxd -r -p        # Hex → "Hello"
+   ```
+
+   **CRITICAL: After each decoding step, check if the result is another encoding or the flag.** Look for `flag{`, `CTF{`, or readable text.
+
+5. **Validation: Confirm the solution.** The final output should contain a flag string (e.g., `flag{...}`) or a clearly readable plaintext. If you get binary garbage, revisit step 3 — the crypto type identification may be wrong.
 
 ## Common Patterns
 

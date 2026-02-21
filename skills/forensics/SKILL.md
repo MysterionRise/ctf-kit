@@ -33,7 +33,13 @@ Use this command for challenges involving:
 
 ## Instructions
 
-1. First check tool availability: `bash scripts/check-tools.sh`
+1. Check tool availability:
+
+   ```bash
+   bash scripts/check-tools.sh
+   ```
+
+   Expected: each tool prints `[OK]`. If any show `[MISSING]`, note which are unavailable before proceeding.
 
 2. Run the forensics analysis:
 
@@ -41,61 +47,90 @@ Use this command for challenges involving:
    ctf run forensics $ARGUMENTS
    ```
 
-2. Based on file type, use appropriate tools:
+   Expected output: file type identification (memory dump, pcap, disk image, or embedded files).
 
-   **For Memory Dumps:**
+3. **CRITICAL: Before choosing tools, identify the file type:**
+   - `file` output contains `data`, `.vmem`, `.raw`, `.dmp` → **Memory dump** → go to step 4a
+   - `file` output contains `pcap`, `pcapng`, `tcpdump` → **Network capture** → go to step 4b
+   - `file` output contains `disk image`, `DOS/MBR`, or `binwalk` finds embedded files → **File carving** → go to step 4c
+
+   If unclear, run: `file $ARGUMENTS && binwalk $ARGUMENTS | head -10`
+
+4. Apply the matching toolset:
+
+   **4a. Memory Dumps:**
 
    ```bash
-   # Get memory profile info
    vol -f memory.raw windows.info
+   ```
 
-   # List processes
+   Expected: `Variable  Value` table with OS version, kernel base, etc. This confirms the dump is valid. Then:
+
+   ```bash
    vol -f memory.raw windows.pslist
+   ```
 
-   # Network connections
-   vol -f memory.raw windows.netscan
+   Expected: process table with columns `PID PPID ImageFileName`. Look for unusual processes (e.g., `cmd.exe`, `powershell.exe`, unknown names). Then:
 
-   # Command history
+   ```bash
    vol -f memory.raw windows.cmdline
+   ```
 
-   # Dump password hashes
+   Expected: command-line arguments for each process. Look for flags, passwords, or file paths.
+
+   ```bash
    vol -f memory.raw windows.hashdump
    ```
 
-   **For Network Captures:**
+   Expected: `Username:RID:LM_hash:NTLM_hash:::` — crack these hashes if needed.
+
+   **4b. Network Captures:**
 
    ```bash
-   # Protocol statistics
    tshark -r capture.pcap -q -z io,phs
-
-   # Follow TCP stream
-   tshark -r capture.pcap -z follow,tcp,ascii,0
-
-   # Export HTTP objects
-   tshark -r capture.pcap --export-objects http,./extracted
-
-   # Filter specific traffic
-   tshark -r capture.pcap -Y "http.request" -T fields -e http.host -e http.request.uri
    ```
 
-   **For File Carving:**
+   Expected: protocol hierarchy tree showing traffic breakdown (e.g., `TCP: 85%`, `HTTP: 12%`). Focus on the most common protocols. Then:
 
    ```bash
-   # Scan for embedded files
+   tshark -r capture.pcap -z follow,tcp,ascii,0
+   ```
+
+   Expected: full TCP conversation in ASCII. Look for credentials, flags, or interesting data. Then:
+
+   ```bash
+   tshark -r capture.pcap --export-objects http,./extracted
+   ```
+
+   Expected: files saved to `./extracted/`. Check each extracted file for flags.
+
+   **4c. File Carving:**
+
+   ```bash
    binwalk challenge.bin
+   ```
 
-   # Extract embedded files
+   Expected: table of `DECIMAL  HEXADECIMAL  DESCRIPTION` showing embedded file signatures. Then:
+
+   ```bash
    binwalk -e challenge.bin
+   ```
 
-   # Carve deleted files
+   Expected: files extracted to `_challenge.bin.extracted/`. List and examine each file.
+
+   ```bash
    foremost -i disk.img -o output/
    ```
 
-3. Key things to look for:
-   - Suspicious processes or network connections
-   - Deleted or hidden files
-   - Credentials in memory or traffic
-   - Unusual timestamps
+   Expected: carved files sorted by type in `output/` subdirectories (jpg, png, zip, etc.).
+
+5. **Validation: Confirm you found actionable results.** Check for:
+   - Suspicious processes or unusual network connections
+   - Credentials (hashes, plaintext passwords, tokens)
+   - Hidden or deleted files containing flags
+   - Unusual timestamps indicating tampering
+
+   If no flag found, revisit step 3 — the file type identification may need a second look.
 
 ## Common Volatility Plugins
 

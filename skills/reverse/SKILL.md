@@ -31,72 +31,90 @@ Use this command for challenges involving:
 
 ## Instructions
 
-1. First check tool availability: `bash scripts/check-tools.sh`
-
-2. Run the reversing analysis:
+1. Check tool availability:
 
    ```bash
-   ctf run reversing $ARGUMENTS
+   bash scripts/check-tools.sh
    ```
 
-2. Static analysis with radare2:
+   Expected: each tool prints `[OK]`. If any show `[MISSING]`, note which are unavailable before proceeding.
+
+2. Identify the binary type:
 
    ```bash
-   # Analyze binary
-   r2 -A ./binary
-
-   # List functions
-   afl
-
-   # Disassemble main
-   pdf @ main
-
-   # Decompile (pseudo-code)
-   pdc @ main
-
-   # List strings
-   iz
-
-   # Cross-references
-   axt @ function_address
+   file $ARGUMENTS
    ```
 
-3. For different binary types:
+   Expected: one of:
+   - `ELF 64-bit LSB executable` → **ELF (Linux)** → go to step 3a
+   - `PE32 executable` or `PE32+ executable` → **PE (Windows)** → go to step 3b
+   - `Java archive data (JAR)` or `Android application` → **Java/Android** → go to step 3c
+   - `python 3.x byte-compiled` → **Python bytecode** → go to step 3d
 
-   **ELF (Linux):**
+   **CRITICAL: The binary type determines which tools to use. Do not skip this step.**
+
+3. Analyze with the appropriate toolset:
+
+   **3a. ELF (Linux) — Static analysis with radare2:**
+
+   ```bash
+   r2 -qc "aaa; afl" ./binary
+   ```
+
+   Expected: list of functions like `sym.main`, `sym.check_password`, `sym.flag`. Note function names containing `check`, `verify`, `flag`, or `win`. Then decompile the main function:
+
+   ```bash
+   r2 -qc "aaa; pdc @ main" ./binary
+   ```
+
+   Expected: pseudo-C code showing the program logic. Look for `strcmp`, `strncmp`, `memcmp` calls — these reveal what input is expected.
+
+   ```bash
+   r2 -qc "aaa; iz" ./binary
+   ```
+
+   Expected: string table with addresses. Look for flag fragments, error/success messages, or hardcoded passwords.
+
+   **3b. PE (Windows):**
    - Use Ghidra or IDA for decompilation
-   - r2 for quick disassembly
-   - ltrace/strace for tracing
+   - Check for .NET: `file` output contains `Mono/.Net assembly` → use dnSpy
+   - Look for `IsDebuggerPresent`, `CheckRemoteDebuggerPresent` as anti-debug
 
-   **PE (Windows):**
-   - x64dbg for debugging
-   - IDA or Ghidra for analysis
-   - Check for .NET (use dnSpy)
-
-   **Java/Android:**
+   **3c. Java/Android:**
 
    ```bash
-   # Decompile JAR
-   jadx app.jar
-
-   # Decompile APK
-   jadx app.apk
-   apktool d app.apk
+   jadx app.jar    # or: jadx app.apk
    ```
 
-   **Python:**
+   Expected: decompiled Java source in `app.jar-decompiled/` or `app.apk-decompiled/`. Search for `flag`, `secret`, or `password` in the output.
+
+   **3d. Python bytecode:**
 
    ```bash
-   # Decompile .pyc
    uncompyle6 file.pyc
-   pycdc file.pyc
    ```
 
-4. Look for:
-   - Main validation logic
-   - String comparisons
-   - Crypto operations
-   - Anti-debugging checks
+   Expected: reconstructed Python source code. If `uncompyle6` fails, try `pycdc file.pyc`.
+
+4. **CRITICAL: Locate the validation logic.** Search for these patterns in the decompiled output:
+
+   | Pattern | Meaning |
+   |---------|---------|
+   | `strcmp`, `strncmp` | Direct string comparison — extract the expected value |
+   | `memcmp` | Memory comparison — check what buffer is compared |
+   | XOR loop | Simple encryption — reverse the XOR to get the key |
+   | `check_`, `verify_` | Validation functions — decompile and trace logic |
+   | `win`, `flag`, `success` | Target functions — find what triggers them |
+
+   If anti-debugging is present (`ptrace`, `IsDebuggerPresent`, timing checks), patch these checks out before dynamic analysis.
+
+5. **Validation: Verify your solution.** Run the binary with your derived key/password:
+
+   ```bash
+   echo "your_answer" | ./binary
+   ```
+
+   Expected: success message or flag output. If the binary rejects the input, revisit step 4 — the validation logic analysis may be incomplete.
 
 ## Anti-Debugging Bypass
 

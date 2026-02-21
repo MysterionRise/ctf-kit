@@ -31,7 +31,13 @@ Use this command for challenges involving:
 
 ## Instructions
 
-1. First check tool availability: `bash scripts/check-tools.sh`
+1. Check tool availability:
+
+   ```bash
+   bash scripts/check-tools.sh
+   ```
+
+   Expected: each tool prints `[OK]`. If any show `[MISSING]`, note which are unavailable before proceeding.
 
 2. Run the misc analysis:
 
@@ -39,31 +45,62 @@ Use this command for challenges involving:
    ctf run misc $ARGUMENTS
    ```
 
-2. For encoding detection and decoding:
+   Expected output: file type, encoding detection hints, or character pattern analysis.
+
+3. **CRITICAL: Before choosing an approach, identify the challenge subtype:**
+   - Trailing `=` or `==`, hex-only, nested encodings → **Encoding chain** → go to step 4a
+   - Image file containing a barcode/QR pattern → **QR/barcode** → go to step 4b
+   - Characters like `+-<>[].,` or `Ook.` or only whitespace → **Esoteric language** → go to step 4c
+
+   If unclear, inspect the raw content: `xxd $ARGUMENTS | head -20 && strings $ARGUMENTS | head -20`
+
+4. Apply the matching approach:
+
+   **4a. Encoding Chain:**
+
+   Decode layer by layer, checking output after each step:
 
    ```bash
-   # Use CyberChef (web tool)
-   # Try "Magic" recipe for auto-detection
-
-   # Manual decoding
-   echo "SGVsbG8=" | base64 -d          # Base64
-   echo "48656C6C6F" | xxd -r -p        # Hex
+   echo "SGVsbG8=" | base64 -d
    ```
 
-3. For QR codes:
+   Expected: readable text or another encoded string. If still encoded, continue:
 
    ```bash
-   # Decode QR code
+   echo "48656C6C6F" | xxd -r -p
+   ```
+
+   Expected: ASCII text. Apply ROT13 if letters look shifted:
+
+   ```bash
+   echo "Uryyb" | tr 'A-Za-z' 'N-ZA-Mn-za-m'
+   ```
+
+   Expected: `Hello`. **CRITICAL: After each decode step, check for `flag{`, `CTF{`, or readable plaintext before continuing.**
+
+   **4b. QR Codes / Barcodes:**
+
+   ```bash
    zbarimg qrcode.png
    ```
 
-4. For esoteric languages:
-   - **Brainfuck:** `++++[>++++++++<-]>.`
-   - **Ook!:** `Ook. Ook! Ook.`
-   - **Whitespace:** Only spaces, tabs, newlines
-   - **JSFuck:** `[]!+()` characters only
+   Expected: `QR-Code:http://example.com` or `QR-Code:flag{...}`. If `zbarimg` is not installed, try reading the image visually and decoding manually.
 
-   Use online interpreters for these.
+   **4c. Esoteric Languages:**
+
+   Identify the language by character set:
+
+   | Characters present | Language | Interpreter |
+   |--------------------|----------|-------------|
+   | `+ - < > [ ] . ,` only | Brainfuck | `beef`, online |
+   | `Ook.` `Ook!` `Ook?` | Ook! | Online interpreter |
+   | Only spaces, tabs, newlines | Whitespace | Online interpreter |
+   | `[]+!()` only | JSFuck | Node.js / browser console |
+   | `moo`, `MOO` | COW | Online interpreter |
+
+   Copy the source code and run it through the appropriate interpreter. Expected output: plaintext flag.
+
+5. **Validation: Confirm the solution.** The decoded/executed output should contain a flag string or readable answer. If you get binary garbage or errors, revisit step 3 — the subtype identification may be wrong.
 
 ## Common Encoding Patterns
 

