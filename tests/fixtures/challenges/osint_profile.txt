@@ -1,0 +1,15 @@
+Target Profile
+==============
+
+Username: ctf_hunter_2024
+Email: john.flagfinder@protonmail.com
+Twitter: @ctf_hunter_2024
+GitHub: https://github.com/ctf-hunter-2024
+LinkedIn: https://linkedin.com/in/john-flagfinder
+
+Last known location: 48.8566, 2.3522
+IP: 192.168.1.100
+Domain: ctf-challenge.example.com
+
+Notes: This user was last active on Discord server #ctf-general.
+Check their public repos for flag hints.
