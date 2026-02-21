@@ -1,5 +1,6 @@
 ---
 name: forensics
+license: MIT
 description: >-
   Solve CTF forensics challenges: memory dumps, network captures, disk
   images, and file carving. Use when you see: .vmem .raw .dmp memory

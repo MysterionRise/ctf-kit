@@ -1,5 +1,6 @@
 ---
 name: reverse
+license: MIT
 description: >-
   Solve CTF reverse engineering challenges: disassembly, decompilation,
   key/password finding, algorithm analysis, and anti-debug bypass.

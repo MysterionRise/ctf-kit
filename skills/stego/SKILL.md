@@ -1,5 +1,6 @@
 ---
 name: stego
+license: MIT
 description: >-
   Solve CTF steganography challenges: hidden data in images, audio, and
   media files. Use when you see: .png .jpg .bmp .gif images, .wav .mp3

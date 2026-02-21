@@ -1,5 +1,6 @@
 ---
 name: osint
+license: MIT
 description: >-
   Solve CTF OSINT (open source intelligence) challenges: username
   enumeration, domain recon, social media investigation, geolocation

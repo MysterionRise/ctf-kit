@@ -1,10 +1,38 @@
 {
   "name": "ctf-kit",
   "description": "AI-assisted CTF challenge solver with specialized skills for crypto, forensics, stego, web, pwn, reversing, OSINT, and misc categories",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "author": {
-    "name": "ctf-kit"
+    "name": "MysterionRise",
+    "url": "https://github.com/MysterionRise"
   },
   "repository": "https://github.com/MysterionRise/ctf-kit",
-  "license": "MIT"
+  "license": "MIT",
+  "compatibility": {
+    "python": ">=3.11",
+    "os": ["macOS", "Linux"],
+    "tools": {
+      "required": [],
+      "optional": [
+        "binwalk",
+        "exiftool",
+        "foremost",
+        "gobuster",
+        "hashcat",
+        "john",
+        "one_gadget",
+        "radare2",
+        "ropgadget",
+        "sherlock",
+        "sqlmap",
+        "steghide",
+        "tshark",
+        "volatility3",
+        "xortool",
+        "zsteg"
+      ],
+      "note": "External CTF tools are optional; skills degrade gracefully when tools are unavailable"
+    }
+  },
+  "versionStrategy": "follows pyproject.toml; bump both files together on release"
 }

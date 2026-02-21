@@ -1,5 +1,6 @@
 ---
 name: analyze
+license: MIT
 description: >-
   Analyze CTF challenge files to detect category and suggest next steps.
   Use when starting a new challenge, receiving unknown files, or needing

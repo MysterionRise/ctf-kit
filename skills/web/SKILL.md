@@ -1,5 +1,6 @@
 ---
 name: web
+license: MIT
 description: >-
   Solve CTF web security challenges: SQL injection, XSS, authentication
   bypass, SSTI, path traversal, and source code audit. Use when given a

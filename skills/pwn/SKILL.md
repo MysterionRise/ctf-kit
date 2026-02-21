@@ -1,5 +1,6 @@
 ---
 name: pwn
+license: MIT
 description: >-
   Solve CTF binary exploitation (pwn) challenges: buffer overflows,
   format strings, ROP chains, heap exploitation, and shellcoding.

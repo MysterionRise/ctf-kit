@@ -1,5 +1,6 @@
 ---
 name: crypto
+license: MIT
 description: >-
   Solve CTF cryptography challenges including encryption, hashing, and
   encoding. Use when you see: Base64 (trailing ==), hex strings (32/40/64

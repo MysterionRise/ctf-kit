@@ -1,5 +1,6 @@
 ---
 name: misc
+license: MIT
 description: >-
   Solve CTF misc challenges: encoding chains, esoteric programming
   languages, QR codes, logic puzzles, and anything that doesn't fit
