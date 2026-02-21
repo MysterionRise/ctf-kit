@@ -120,7 +120,7 @@ class TheHarvesterTool(BaseTool):
         # Parse subdomains
         subdomain_section = ""
         if "Subdomains found:" in stdout:
-            subdomain_section = stdout.rsplit("Subdomains found:", maxsplit=1)[-1].split("[")[0]
+            subdomain_section = stdout.rsplit("Subdomains found:", maxsplit=1)[-1].split("[", maxsplit=1)[0]
             subdomain_pattern = re.compile(r"([\w.-]+)")
             subdomains = subdomain_pattern.findall(subdomain_section)
             parsed["subdomains"] = [s for s in subdomains if "." in s and len(s) > 3]
