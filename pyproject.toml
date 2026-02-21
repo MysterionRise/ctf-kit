@@ -10,7 +10,7 @@ readme = "README.md"
 license = "MIT"
 requires-python = ">=3.11"
 authors = [
-    { name = "Your Name", email = "your.email@example.com" }
+    { name = "Konstantin Perikov", email = "pericov.ko@gmail.com" }
 ]
 keywords = ["ctf", "security", "capture-the-flag", "ai", "automation"]
 classifiers = [
@@ -67,10 +67,10 @@ dev = [
 ctf = "ctf_kit.cli:app"
 
 [project.urls]
-Homepage = "https://github.com/YOUR_USERNAME/ctf-kit"
-Documentation = "https://github.com/YOUR_USERNAME/ctf-kit#readme"
-Repository = "https://github.com/YOUR_USERNAME/ctf-kit"
-Issues = "https://github.com/YOUR_USERNAME/ctf-kit/issues"
+Homepage = "https://github.com/MysterionRise/ctf-kit"
+Documentation = "https://github.com/MysterionRise/ctf-kit#readme"
+Repository = "https://github.com/MysterionRise/ctf-kit"
+Issues = "https://github.com/MysterionRise/ctf-kit/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/ctf_kit"]
