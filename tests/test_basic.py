@@ -2,10 +2,13 @@
 Tests for CTF Kit.
 """
 
+import sys
 from pathlib import Path
+from unittest.mock import patch
 import tempfile
 from typing import Any, ClassVar
 
+import pytest
 from typer.testing import CliRunner
 
 from ctf_kit.cli import app
@@ -110,3 +113,23 @@ class TestBaseTool:
         version = tool.get_version()
         assert version is not None
         assert "Python" in version or "python" in version.lower()
+
+
+class TestVersionCheck:
+    """Test Python version enforcement."""
+
+    def test_current_python_passes(self) -> None:
+        """Verify the version check passes on the current interpreter."""
+        # The import already succeeded at module load; confirm sys.version_info >= 3.11
+        assert sys.version_info >= (3, 11)
+
+    def test_old_python_raises(self) -> None:
+        """Simulate running on Python 3.9 and verify RuntimeError."""
+        import importlib
+        import ctf_kit
+
+        fake_version = (3, 9, 0, "final", 0)
+        with patch.object(sys, "version_info", fake_version), \
+             patch.object(sys, "version", "3.9.0 (fake)"):
+            with pytest.raises(RuntimeError, match="requires Python 3.11"):
+                importlib.reload(ctf_kit)

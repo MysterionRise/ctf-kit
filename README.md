@@ -252,6 +252,38 @@ ctf check --category forensics
 
 ## 🤝 Contributing
 
+### Python Version
+
+CTF Kit requires **Python 3.11+**. A runtime check will raise `RuntimeError` on older versions.
+
+#### Using uv (recommended)
+
+```bash
+# Install uv
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Clone and install
+git clone https://github.com/MysterionRise/ctf-kit.git
+cd ctf-kit
+uv sync --dev          # Reads .python-version (3.14) and installs deps
+uv run pytest          # Run tests
+```
+
+#### Using pyenv
+
+```bash
+# Install pyenv (macOS)
+brew install pyenv
+
+# Install the pinned Python version
+pyenv install 3.14      # Or any 3.11+
+pyenv local 3.14         # Sets .python-version
+
+# Then use uv or pip
+uv sync --dev
+# or: pip install -e ".[dev]"
+```
+
 Contributions welcome! Please open an issue or pull request.
 
 ---
