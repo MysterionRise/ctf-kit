@@ -125,6 +125,27 @@ Try these common passwords:
 - flag
 - (the challenge name)
 
+## Performance Notes
+
+- Take your time — steganography hides data in subtle ways that are easy to miss with a quick scan
+- Quality is more important than speed: run all applicable tools for the file type, not just one
+- Do not skip validation steps — check metadata, LSB, appended data, and visual analysis
+- For images: always try both zsteg AND steghide AND exiftool AND binwalk — different tools find different things
+- For audio: always check the spectrogram, not just metadata
+- Try multiple passwords with steghide, including empty string and challenge-related words
+
+## Quality Checklist
+
+Before presenting findings, verify:
+
+- [ ] Checked file metadata with exiftool
+- [ ] Ran binwalk to check for appended/embedded files
+- [ ] For PNG/BMP: ran zsteg with `-a` flag for comprehensive LSB analysis
+- [ ] For JPEG: tried steghide with empty password and common passwords
+- [ ] For audio: checked spectrogram view for hidden messages
+- [ ] Verified extracted data is meaningful (not garbage bytes)
+- [ ] Checked for multiple hidden payloads (some challenges hide more than one thing)
+
 ## Example Usage
 
 ```bash

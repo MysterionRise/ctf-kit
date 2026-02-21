@@ -54,6 +54,28 @@ Use this command when you have new challenge files and need to:
 
 4. Explain the findings and recommended next steps to the user.
 
+## Performance Notes
+
+- Take your time to do this thoroughly — rushed triage leads to wrong categories and wasted effort downstream
+- Quality is more important than speed: a correct category assignment saves significant time later
+- Do not skip validation steps — run every applicable detection method before concluding
+- When in doubt between categories, run additional checks rather than guessing
+- This skill routes to all other skills — your analysis accuracy determines the entire solve path
+- Check for multi-category challenges (e.g., forensics + crypto) and note all relevant categories
+
+## Quality Checklist
+
+Before recommending a category and next steps, verify:
+
+- [ ] Ran `file` command on all challenge files
+- [ ] Checked `strings` output for readable text, flags, or hints
+- [ ] Ran `xxd` / hex dump on first ~256 bytes to check magic bytes
+- [ ] Checked for embedded files with `binwalk`
+- [ ] Examined file metadata with `exiftool` where applicable
+- [ ] Considered at least 2 possible categories before settling on one
+- [ ] Provided specific next steps, not just a category name
+- [ ] Noted any anomalies or secondary findings that might matter later
+
 ## Example Usage
 
 ```bash

@@ -117,6 +117,27 @@ Use this command for challenges involving:
    - TinEye
    - Yandex (good for faces)
 
+## Performance Notes
+
+- Take your time — OSINT is about thoroughness, not speed
+- Quality is more important than speed: check multiple sources before concluding
+- Do not skip validation steps — cross-reference findings across platforms
+- Usernames often appear on many platforms — check all major ones, not just the first hit
+- Image geolocation requires careful attention to small visual details
+- Always check the Wayback Machine — deleted content often holds the key
+
+## Quality Checklist
+
+Before presenting findings, verify:
+
+- [ ] Searched all major platforms for the given username/email/domain
+- [ ] Cross-referenced findings across multiple sources
+- [ ] For images: checked EXIF metadata AND performed visual analysis
+- [ ] Checked the Wayback Machine for historical content
+- [ ] For domains: ran whois, DNS lookups, and subdomain enumeration
+- [ ] Verified that findings are connected (not just coincidental matches)
+- [ ] Documented the full investigation trail with sources
+
 ## Example Usage
 
 ```bash

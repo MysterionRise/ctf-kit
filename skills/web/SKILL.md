@@ -99,6 +99,27 @@ Use this command for challenges involving:
    - POST data fields
    - Headers and cookies
 
+## Performance Notes
+
+- Take your time enumerating the attack surface — missed endpoints mean missed vulnerabilities
+- Quality is more important than speed: test each input field and parameter systematically
+- Do not skip validation steps — check robots.txt, source code, cookies, and headers before attacking
+- Try multiple injection types on each input — SQLi, XSS, SSTI, and command injection
+- Always read the page source — comments and hidden fields often contain hints
+- For authentication challenges: check JWT structure, cookie values, and default credentials
+
+## Quality Checklist
+
+Before presenting a solution, verify:
+
+- [ ] Checked robots.txt, sitemap.xml, and common hidden paths
+- [ ] Viewed page source for comments, hidden fields, and JS files
+- [ ] Tested all input parameters for injection vulnerabilities
+- [ ] Examined cookies, headers, and authentication tokens
+- [ ] For SQLi: confirmed injection type and extracted the target data
+- [ ] For authentication bypass: documented the exact bypass method
+- [ ] Verified the exploit works and extracted the flag or target data
+
 ## Example Usage
 
 ```bash

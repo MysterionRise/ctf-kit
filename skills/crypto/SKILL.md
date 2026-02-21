@@ -96,6 +96,26 @@ Use this command for challenges involving:
 | All caps + 2-7 | Base32 |
 | n=..., e=... | RSA parameters |
 
+## Performance Notes
+
+- Take your time identifying the cipher or encoding — misidentification wastes all subsequent effort
+- Quality is more important than speed: try multiple decoding approaches before concluding
+- Do not skip validation steps — always verify decrypted output looks correct (readable text, flag format)
+- Check for encoding chains: many challenges layer multiple encodings and stopping at the first decode misses the flag
+- When hash cracking, try multiple wordlists and rule sets before giving up
+
+## Quality Checklist
+
+Before presenting a solution, verify:
+
+- [ ] Identified the encoding/cipher type with evidence (not just a guess)
+- [ ] Tried all plausible decoding methods for the identified type
+- [ ] Checked for multi-layer encoding (decoded output may itself be encoded)
+- [ ] Verified the decrypted output is meaningful (text, flag format, etc.)
+- [ ] For RSA: checked multiple attack vectors (small e, common factor, Wiener, Fermat)
+- [ ] For hashes: tried common wordlists before declaring uncrackable
+- [ ] Documented the full decode chain so the user can reproduce it
+
 ## Example Usage
 
 ```bash

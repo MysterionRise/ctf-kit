@@ -112,6 +112,26 @@ echo "encoded" | base64 -d | xxd -r -p | tr 'A-Za-z' 'N-ZA-Mn-za-m'
 - **Brainfuck interpreters:** Many online options
 - **zbarimg:** QR code reading
 
+## Performance Notes
+
+- Take your time — misc challenges are deliberately tricky and reward patience over speed
+- Quality is more important than speed: try every plausible encoding/language before moving on
+- Do not skip validation steps — verify decoded output makes sense at each layer
+- Encoding chains can be deep (5+ layers) — keep decoding until you hit readable text or a flag
+- Esoteric languages have subtle syntax — double-check interpreter compatibility
+- Think creatively: misc challenges often require lateral thinking
+
+## Quality Checklist
+
+Before presenting a solution, verify:
+
+- [ ] Tried CyberChef Magic / auto-detect on the input
+- [ ] Checked for multi-layer encoding and decoded all layers
+- [ ] For esoteric languages: verified syntax and ran through a correct interpreter
+- [ ] For QR/barcodes: tried multiple scanning tools if first fails
+- [ ] Verified final output is meaningful (flag format, readable text)
+- [ ] Documented the full decode/solve chain for reproducibility
+
 ## Example Usage
 
 ```bash

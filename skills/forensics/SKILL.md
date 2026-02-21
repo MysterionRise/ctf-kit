@@ -109,6 +109,27 @@ Use this command for challenges involving:
 | windows.hashdump | Password hashes |
 | windows.malfind | Detect malware |
 
+## Performance Notes
+
+- Take your time with forensics — artifacts are easy to miss on a first pass
+- Quality is more important than speed: run multiple volatility plugins, not just the obvious ones
+- Do not skip validation steps — correlate findings across different evidence types
+- For memory dumps: check process lists, network connections, AND command history before concluding
+- For pcaps: examine multiple protocol layers and follow multiple streams
+- Deleted or hidden files often contain the flag — always check for carved/recovered content
+
+## Quality Checklist
+
+Before presenting findings, verify:
+
+- [ ] Identified the evidence type correctly (memory dump, pcap, disk image)
+- [ ] Ran at least 3-5 relevant plugins/tools for the evidence type
+- [ ] Checked for hidden or deleted files
+- [ ] Correlated timestamps across different artifacts where applicable
+- [ ] Extracted and examined all suspicious files or data blobs
+- [ ] Searched for common flag patterns in all extracted content
+- [ ] Documented the forensic timeline or chain of events
+
 ## Example Usage
 
 ```bash

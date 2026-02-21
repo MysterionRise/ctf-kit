@@ -125,6 +125,27 @@ Common techniques to patch:
 | `check_`, `verify_` | Validation functions |
 | `win`, `flag` | Target functions |
 
+## Performance Notes
+
+- Take your time understanding the control flow — jumping to conclusions about the algorithm leads to wrong keys
+- Quality is more important than speed: trace the full validation logic, not just the first comparison
+- Do not skip validation steps — check for anti-debugging, obfuscation, and multiple validation stages
+- Read the disassembly carefully — one missed branch can hide the real check
+- For obfuscated binaries, try both static and dynamic analysis before concluding
+- Always verify your solution actually works by running the binary with your answer
+
+## Quality Checklist
+
+Before presenting a solution, verify:
+
+- [ ] Identified the binary type (ELF, PE, Java, Python, etc.) and architecture
+- [ ] Located the main validation / check function
+- [ ] Traced the full algorithm, not just part of it
+- [ ] Checked for anti-debugging or obfuscation layers
+- [ ] Verified the solution by running the binary with the found key/password
+- [ ] For multi-stage challenges: confirmed all stages are solved
+- [ ] Documented the algorithm logic so the user understands the solve
+
 ## Example Usage
 
 ```bash

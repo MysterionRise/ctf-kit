@@ -132,6 +132,27 @@ payload = fmtstr_payload(offset, {target: value})
 5. Build exploit (shellcode or ROP)
 6. Test locally, then remote
 
+## Performance Notes
+
+- Take your time understanding the binary before writing exploits — rushing leads to wrong offsets and broken payloads
+- Quality is more important than speed: verify each step (protections, offset, gadgets) independently
+- Do not skip validation steps — always run checksec and understand all enabled protections first
+- Test exploits locally before targeting remote — debugging blind remote failures wastes time
+- When ROP chaining, verify each gadget individually before combining
+- Format string exploits require precise offset calculation — double-check with test payloads
+
+## Quality Checklist
+
+Before submitting an exploit, verify:
+
+- [ ] Ran checksec and documented all binary protections
+- [ ] Identified the vulnerability type with evidence
+- [ ] Calculated the correct offset to return address / control point
+- [ ] For ROP: verified gadgets exist and addresses are correct
+- [ ] Tested exploit locally and confirmed it works
+- [ ] Accounted for remote differences (libc version, ASLR, buffering)
+- [ ] Exploit handles both local and remote targets cleanly
+
 ## Example Usage
 
 ```bash
