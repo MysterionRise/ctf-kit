@@ -1,0 +1,12 @@
+RSA Challenge
+=============
+
+n = 3233
+e = 17
+c = 2790
+
+The flag is encrypted with the public key (n, e).
+Decrypt c to recover the plaintext flag.
+
+Hint: n is small enough to factor.
+p * q = n
