@@ -10,7 +10,7 @@ from rich.console import Console
 import typer
 
 from ctf_kit import __version__
-from ctf_kit.commands import analyze, check, flag, here, init, run, status, writeup
+from ctf_kit.commands import analyze, check, competition, flag, here, init, run, status, writeup
 
 app = typer.Typer(
     name="ctf",
@@ -50,6 +50,7 @@ def main(
 
 # Register subcommands
 app.add_typer(init.app, name="init")
+app.add_typer(competition.app, name="competition")
 app.command(name="check")(check.check_tools)
 app.command(name="run")(run.run_tool)
 app.command(name="analyze")(analyze.analyze_challenge)
