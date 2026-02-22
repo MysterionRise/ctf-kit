@@ -7,7 +7,6 @@ from pathlib import Path
 import tempfile
 
 import pytest
-import yaml
 from typer.testing import CliRunner
 
 from ctf_kit.cli import app

@@ -11,7 +11,6 @@ These tests use fixtures from tests/fixtures/challenges/ with known solutions.
 """
 
 import base64
-import struct
 from pathlib import Path
 
 import pytest
@@ -52,7 +51,7 @@ def assert_valid_skill_result(result: SkillResult):
 class TestWebChallengeIntegration:
     """Full workflow test for web challenge: web_flask_vuln.py."""
 
-    @pytest.fixture()
+    @pytest.fixture
     def web_challenge(self):
         return FIXTURES_DIR / "web_flask_vuln.py"
 
@@ -174,19 +173,19 @@ class TestWebChallengeIntegration:
 class TestCryptoChallengeIntegration:
     """Full workflow tests for crypto challenges."""
 
-    @pytest.fixture()
+    @pytest.fixture
     def rsa_challenge(self):
         return FIXTURES_DIR / "crypto_rsa_challenge.txt"
 
-    @pytest.fixture()
+    @pytest.fixture
     def base64_challenge(self):
         return FIXTURES_DIR / "crypto_base64.txt"
 
-    @pytest.fixture()
+    @pytest.fixture
     def hash_challenge(self):
         return FIXTURES_DIR / "crypto_hash.txt"
 
-    @pytest.fixture()
+    @pytest.fixture
     def xor_challenge(self):
         return FIXTURES_DIR / "crypto_xor.bin"
 
@@ -315,11 +314,11 @@ class TestCryptoChallengeIntegration:
 class TestForensicsChallengeIntegration:
     """Full workflow tests for forensics challenges."""
 
-    @pytest.fixture()
+    @pytest.fixture
     def pcap_challenge(self):
         return FIXTURES_DIR / "forensics_network.pcap"
 
-    @pytest.fixture()
+    @pytest.fixture
     def embedded_challenge(self):
         return FIXTURES_DIR / "forensics_embedded.bin"
 
@@ -410,7 +409,7 @@ class TestForensicsChallengeIntegration:
 class TestReversingChallengeIntegration:
     """Full workflow tests for reverse engineering challenges."""
 
-    @pytest.fixture()
+    @pytest.fixture
     def crackme_challenge(self):
         return FIXTURES_DIR / "reverse_crackme.pyc"
 
@@ -495,7 +494,7 @@ class TestReversingChallengeIntegration:
 class TestPwnChallengeIntegration:
     """Full workflow tests for binary exploitation challenges."""
 
-    @pytest.fixture()
+    @pytest.fixture
     def vuln_binary(self):
         return FIXTURES_DIR / "pwn_vulnerable"
 
@@ -573,7 +572,7 @@ class TestPwnChallengeIntegration:
 class TestMiscChallengeIntegration:
     """Full workflow tests for misc challenges."""
 
-    @pytest.fixture()
+    @pytest.fixture
     def multi_encode_challenge(self):
         return FIXTURES_DIR / "misc_multi_encode.txt"
 

@@ -1,4 +1,4 @@
-# ruff: noqa
+# ruff: noqa: S608, S201
 # This is an intentionally vulnerable Flask app used as a CTF challenge fixture.
 # All security issues (SQLi, SSTI, hardcoded secrets) are deliberate.
 import sqlite3
@@ -23,7 +23,7 @@ def login():
 
 @app.route("/admin/dashboard")
 def admin():
-    token = request.cookies.get("session")  # noqa: F841
+    token = request.cookies.get("session")  # noqa: F841 - intentional unused var in CTF fixture
     return flag
 
 
