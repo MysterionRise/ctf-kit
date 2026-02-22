@@ -35,7 +35,8 @@ from ctf_kit.integrations import (
     crypto,  # noqa: F401  # hashid, xortool, rsactftool, john, hashcat
     encoding,  # noqa: F401  # cyberchef
     forensics,  # noqa: F401  # binwalk, volatility, tshark, foremost
-    osint,  # noqa: F401  # sherlock, theharvester
+    misc,  # noqa: F401  # zbarimg, qrencode
+    osint,  # noqa: F401  # sherlock, theharvester, whois, dig, shodan
     pwn,  # noqa: F401  # checksec, ropgadget, pwntools
     reversing,  # noqa: F401  # radare2, ghidra
     stego,  # noqa: F401  # exiftool, zsteg, steghide

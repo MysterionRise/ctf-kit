@@ -43,6 +43,7 @@ class MiscSkill(BaseSkill):
         "binwalk",
         "exiftool",
         "zbarimg",  # QR code reader
+        "qrencode",  # QR code generator
     ]
 
     # Encoding patterns
