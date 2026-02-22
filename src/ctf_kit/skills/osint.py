@@ -38,6 +38,7 @@ class OSINTSkill(BaseSkill):
         "theharvester",
         "whois",
         "dig",
+        "shodan",
         "exiftool",
     ]
 
