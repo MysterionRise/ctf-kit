@@ -28,86 +28,73 @@ Use this command for challenges involving:
 ## Bundled Scripts
 
 - [check-tools.sh](scripts/check-tools.sh) — Verify required forensics tools are installed
-- [run-binwalk.sh](scripts/run-binwalk.sh) — Scan and extract embedded files
-- [run-volatility.sh](scripts/run-volatility.sh) — Run volatility3 plugins on memory dumps
+- [run-binwalk.sh](scripts/run-binwalk.sh) — Scan and extract embedded files. Outputs JSON with signatures, file types, and extraction suggestions.
+- [run-volatility.sh](scripts/run-volatility.sh) — Run volatility3 plugins on memory dumps. Outputs JSON with parsed table data and suspicious process detection.
+- [run-tshark.sh](scripts/run-tshark.sh) — Analyze PCAP files with protocol statistics. Outputs JSON with protocols, conversations, and HTTP/DNS/FTP suggestions.
+- [extract-and-analyze.sh](scripts/extract-and-analyze.sh) — **Multi-step pipeline**: binwalk extract → file type each → strings on interesting files → flag search. Chains extraction with analysis automatically.
 
 ## Instructions
 
 1. First check tool availability: `bash scripts/check-tools.sh`
 
-2. Run the forensics analysis:
+2. **For quick embedded file detection**:
 
    ```bash
-   ctf run forensics $ARGUMENTS
+   bash scripts/run-binwalk.sh $ARGUMENTS
+   bash scripts/run-binwalk.sh <file> --extract    # also extract
    ```
 
-2. Based on file type, use appropriate tools:
+   Read the JSON `next_steps` object to decide what to do:
+   - `has_archives: true` → extract with `binwalk -e`
+   - `has_executables: true` → analyze with strings/disassembler
+   - `has_images: true` → check with `/ctf-kit:stego`
 
-   **For Memory Dumps:**
+3. **For full extract-and-analyze pipeline** (chains binwalk → file → strings):
 
    ```bash
-   # Get memory profile info
-   vol -f memory.raw windows.info
-
-   # List processes
-   vol -f memory.raw windows.pslist
-
-   # Network connections
-   vol -f memory.raw windows.netscan
-
-   # Command history
-   vol -f memory.raw windows.cmdline
-
-   # Dump password hashes
-   vol -f memory.raw windows.hashdump
+   bash scripts/extract-and-analyze.sh <file>
    ```
 
-   **For Network Captures:**
+   This automatically extracts embedded files, identifies their types, searches for flags and secrets, and suggests next skills to use.
+
+4. **For memory dumps**:
 
    ```bash
-   # Protocol statistics
-   tshark -r capture.pcap -q -z io,phs
-
-   # Follow TCP stream
-   tshark -r capture.pcap -z follow,tcp,ascii,0
-
-   # Export HTTP objects
-   tshark -r capture.pcap --export-objects http,./extracted
-
-   # Filter specific traffic
-   tshark -r capture.pcap -Y "http.request" -T fields -e http.host -e http.request.uri
+   bash scripts/run-volatility.sh <dump>                    # system info
+   bash scripts/run-volatility.sh <dump> windows.pslist     # processes
+   bash scripts/run-volatility.sh <dump> windows.netscan    # network
+   bash scripts/run-volatility.sh <dump> windows.cmdline    # commands
    ```
 
-   **For File Carving:**
+   The JSON output includes parsed table data and flags suspicious processes.
+
+5. **For network captures**:
 
    ```bash
-   # Scan for embedded files
-   binwalk challenge.bin
-
-   # Extract embedded files
-   binwalk -e challenge.bin
-
-   # Carve deleted files
-   foremost -i disk.img -o output/
+   bash scripts/run-tshark.sh <pcap>
+   bash scripts/run-tshark.sh <pcap> "http.request"    # with filter
    ```
 
-3. Key things to look for:
-   - Suspicious processes or network connections
-   - Deleted or hidden files
-   - Credentials in memory or traffic
-   - Unusual timestamps
+   The JSON includes protocol detection (`has_http`, `has_dns`, `has_tls`) with specific extraction commands.
 
-## Common Volatility Plugins
+## Multi-Step Workflow
 
-| Plugin | Purpose |
-|--------|---------|
-| windows.pslist | List processes |
-| windows.pstree | Process tree |
-| windows.netscan | Network connections |
-| windows.filescan | Find files in memory |
-| windows.cmdline | Command line history |
-| windows.hashdump | Password hashes |
-| windows.malfind | Detect malware |
+The scripts are designed to chain. A typical forensics workflow:
+
+1. `run-binwalk.sh challenge.bin` → JSON shows archives inside
+2. `extract-and-analyze.sh challenge.bin` → extracts and analyzes each file
+3. Based on JSON `suggestions`, follow up with specific tools
+
+## Output Format
+
+All scripts produce `=== PARSED RESULTS (JSON) ===` sections. Key fields:
+
+| Field | Description |
+|-------|-------------|
+| `signatures` | Embedded file signatures found |
+| `file_types` | Types of embedded files |
+| `next_steps` | Boolean flags for what was found |
+| `suggestions` | Actionable next commands |
 
 ## Example Usage
 

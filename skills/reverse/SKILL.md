@@ -28,92 +28,43 @@ Use this command for challenges involving:
 ## Bundled Scripts
 
 - [check-tools.sh](scripts/check-tools.sh) — Verify required reversing tools are installed
+- [run-radare2.sh](scripts/run-radare2.sh) — Initial binary analysis with structured output. Lists functions, strings, and flags interesting functions (main, flag, win, check, verify, password, secret). Outputs JSON with function list and analysis suggestions.
 
 ## Instructions
 
 1. First check tool availability: `bash scripts/check-tools.sh`
 
-2. Run the reversing analysis:
+2. **Start with radare2 analysis** (outputs structured JSON):
 
    ```bash
-   ctf run reversing $ARGUMENTS
+   bash scripts/run-radare2.sh $ARGUMENTS
+   bash scripts/run-radare2.sh <binary> main    # disassemble specific function
    ```
 
-2. Static analysis with radare2:
+   JSON output includes:
+   - `functions[]`: all functions with address, size, name
+   - `interesting_functions[]`: functions matching CTF keywords (main, flag, win, check, verify, password, secret, decrypt)
+   - `strings[]`: strings found in binary
+   - `info`: binary metadata (arch, format, etc.)
 
-   ```bash
-   # Analyze binary
-   r2 -A ./binary
+3. Based on JSON findings, focus analysis:
+   - `interesting_functions` found → decompile them: `r2 -c "aa; pdc @ <function>" <binary>`
+   - Strings with flag patterns → trace cross-references
+   - Multiple check/verify functions → trace validation logic
 
-   # List functions
-   afl
+4. For different binary types:
 
-   # Disassemble main
-   pdf @ main
-
-   # Decompile (pseudo-code)
-   pdc @ main
-
-   # List strings
-   iz
-
-   # Cross-references
-   axt @ function_address
-   ```
-
-3. For different binary types:
-
-   **ELF (Linux):**
-   - Use Ghidra or IDA for decompilation
-   - r2 for quick disassembly
-   - ltrace/strace for tracing
-
-   **PE (Windows):**
-   - x64dbg for debugging
-   - IDA or Ghidra for analysis
-   - Check for .NET (use dnSpy)
-
-   **Java/Android:**
-
-   ```bash
-   # Decompile JAR
-   jadx app.jar
-
-   # Decompile APK
-   jadx app.apk
-   apktool d app.apk
-   ```
-
-   **Python:**
-
-   ```bash
-   # Decompile .pyc
-   uncompyle6 file.pyc
-   pycdc file.pyc
-   ```
-
-4. Look for:
-   - Main validation logic
-   - String comparisons
-   - Crypto operations
-   - Anti-debugging checks
-
-## Anti-Debugging Bypass
-
-Common techniques to patch:
-
-- `ptrace` checks
-- `IsDebuggerPresent`
-- Timing checks (rdtsc)
-- Self-modifying code
+   **ELF (Linux):** Use radare2 or Ghidra for analysis
+   **PE (Windows):** Check for .NET (use dnSpy)
+   **Java/Android:** `jadx app.jar` or `jadx app.apk`
+   **Python:** `uncompyle6 file.pyc` or `pycdc file.pyc`
 
 ## Analysis Workflow
 
-1. **Identify:** File type, architecture
-2. **Run:** Observe behavior
-3. **Static:** Disassemble, find main
-4. **Understand:** Trace logic flow
-5. **Solve:** Write keygen or patch
+1. `run-radare2.sh binary` → identify interesting functions from JSON
+2. Decompile target functions → understand algorithm
+3. Write keygen or patch binary
+4. Test solution
 
 ## Common Patterns
 

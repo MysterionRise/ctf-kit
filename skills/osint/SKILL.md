@@ -28,48 +28,42 @@ Use this command for challenges involving:
 ## Bundled Scripts
 
 - [check-tools.sh](scripts/check-tools.sh) — Verify required OSINT tools are installed
+- [run-sherlock.sh](scripts/run-sherlock.sh) — Username enumeration across platforms. Outputs JSON with found profiles categorized by type (social media, code platforms, other).
+- [run-exiftool.sh](scripts/run-exiftool.sh) — OSINT-focused metadata extraction with GPS coordinate extraction. Outputs JSON with interesting fields, GPS data, and flag detection.
 
 ## Instructions
 
 1. First check tool availability: `bash scripts/check-tools.sh`
 
-2. Run the OSINT analysis:
+2. **For username enumeration** (outputs structured JSON):
 
    ```bash
-   ctf run osint $ARGUMENTS
+   bash scripts/run-sherlock.sh <username>
    ```
 
-2. For username enumeration:
+   JSON output includes:
+   - `profiles[]`: all found profiles with site and URL
+   - `social_media[]`: social media profiles specifically
+   - `code_platforms[]`: GitHub, GitLab, etc.
+   - `suggestions`: cross-referencing guidance
+
+3. **For image geolocation** (outputs structured JSON):
 
    ```bash
-   # Search across platforms
-   sherlock username
-
-   # Check specific site
-   sherlock username --site github
+   bash scripts/run-exiftool.sh <image>
    ```
 
-3. For domain reconnaissance:
+   JSON output includes:
+   - `gps_data`: GPS coordinates if present
+   - `interesting_fields[]`: CTF-relevant metadata (comments, author, etc.)
+   - `has_flag`: true if flag pattern found in metadata
+
+4. For domain reconnaissance:
 
    ```bash
-   # Gather emails and subdomains
    theHarvester -d target.com -b all
-
-   # DNS lookup
    dig target.com ANY
-
-   # Whois information
    whois target.com
-   ```
-
-4. For image geolocation:
-
-   ```bash
-   # Extract EXIF data
-   exiftool image.jpg
-
-   # Look for GPS coordinates
-   exiftool -gps* image.jpg
    ```
 
 5. Online resources:
@@ -81,41 +75,10 @@ Use this command for challenges involving:
 
 ## OSINT Workflow
 
-1. **Collect:** Gather all given information
-2. **Identify:** Usernames, emails, domains
-3. **Enumerate:** Search across platforms
-4. **Connect:** Link findings together
-5. **Investigate:** Deep dive on leads
-
-## Common OSINT Sources
-
-| Category | Sources |
-|----------|---------|
-| Social | LinkedIn, Twitter, Instagram, Facebook |
-| Code | GitHub, GitLab, Bitbucket |
-| Email | HaveIBeenPwned, Hunter.io |
-| Domain | Shodan, Censys, SecurityTrails |
-| Archive | Wayback Machine, Archive.today |
-
-## Image OSINT Checklist
-
-1. Check EXIF metadata for:
-   - GPS coordinates
-   - Camera model
-   - Date/time taken
-   - Software used
-   - Author information
-
-2. Visual analysis:
-   - Landmarks visible
-   - Signs/text in image
-   - Weather/shadows (time of day)
-   - Unique features
-
-3. Reverse image search:
-   - Google Images
-   - TinEye
-   - Yandex (good for faces)
+1. `run-sherlock.sh username` → check JSON for profiles
+2. Cross-reference social and code platforms
+3. `run-exiftool.sh image.jpg` → check JSON for GPS, metadata clues
+4. Build complete picture from combined findings
 
 ## Example Usage
 
