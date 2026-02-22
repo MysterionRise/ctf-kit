@@ -225,7 +225,7 @@ class BkcrackTool(BaseTool):
 
     def _parse_password_output(self, stdout: str) -> dict[str, Any]:
         """Parse password recovery output."""
-        result: dict[str, Any] = {"password": None, "password_found": False}
+        result: dict[str, Any] = {"password": None, "password_found": False}  # nosec B105
 
         password_pattern = re.compile(r"Password:\s*(.+)")
         match = password_pattern.search(stdout)
