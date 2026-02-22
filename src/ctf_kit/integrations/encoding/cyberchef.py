@@ -290,7 +290,8 @@ class CyberChefTool(BaseTool):
             msg = f"Unknown operation: {operation}"
             raise ValueError(msg)
 
-        return ops[operation](data)
+        result: bytes = ops[operation](data)
+        return result
 
     def _xor(self, data: bytes, key: str | bytes) -> bytes:
         """XOR data with a repeating key."""

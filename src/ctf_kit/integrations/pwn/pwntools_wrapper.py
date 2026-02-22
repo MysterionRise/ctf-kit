@@ -41,7 +41,7 @@ class PwntoolsTool(BaseTool):
     def is_installed(self) -> bool:
         """Check if pwntools is importable."""
         try:
-            import pwn  # noqa: F401
+            import pwn  # type: ignore[import-not-found]  # noqa: F401
         except ImportError:
             return False
         else:

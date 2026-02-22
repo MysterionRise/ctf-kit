@@ -6,7 +6,7 @@ files, tools available, and solve status.
 """
 
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, Any
 
 from rich.console import Console
 from rich.panel import Panel
@@ -31,7 +31,7 @@ def _find_challenges(root: Path) -> list[Path]:
     return challenges
 
 
-def _read_competition_meta(path: Path) -> dict | None:
+def _read_competition_meta(path: Path) -> dict[str, Any] | None:
     """Read .ctf-competition.yaml if present."""
     comp_file = path / ".ctf-competition.yaml"
     if not comp_file.exists():
