@@ -358,9 +358,7 @@ class TestCompetitionCLI:
 
     def test_competition_init(self):
         with tempfile.TemporaryDirectory() as tmpdir:
-            result = runner.invoke(
-                app, ["competition", "init", "--name", "TestCTF", tmpdir]
-            )
+            result = runner.invoke(app, ["competition", "init", "--name", "TestCTF", tmpdir])
             assert result.exit_code == 0
             assert "Competition initialized" in result.stdout
 
@@ -372,10 +370,14 @@ class TestCompetitionCLI:
             result = runner.invoke(
                 app,
                 [
-                    "competition", "init",
-                    "--name", "PicoCTF",
-                    "--url", "https://play.picoctf.org",
-                    "--flag-format", r"picoCTF\{.*\}",
+                    "competition",
+                    "init",
+                    "--name",
+                    "PicoCTF",
+                    "--url",
+                    "https://play.picoctf.org",
+                    "--flag-format",
+                    r"picoCTF\{.*\}",
                     tmpdir,
                 ],
             )
@@ -390,9 +392,7 @@ class TestCompetitionCLI:
     def test_competition_init_duplicate(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             runner.invoke(app, ["competition", "init", "--name", "TestCTF", tmpdir])
-            result = runner.invoke(
-                app, ["competition", "init", "--name", "TestCTF2", tmpdir]
-            )
+            result = runner.invoke(app, ["competition", "init", "--name", "TestCTF2", tmpdir])
             assert result.exit_code == 1
             assert "already initialized" in result.stdout
 
@@ -428,9 +428,7 @@ class TestCompetitionCLI:
             monkeypatch.chdir(tmpdir)
 
             runner.invoke(app, ["competition", "add", "rsa-baby"])
-            result = runner.invoke(
-                app, ["competition", "start", "rsa-baby", "--assign", "alice"]
-            )
+            result = runner.invoke(app, ["competition", "start", "rsa-baby", "--assign", "alice"])
             assert result.exit_code == 0
             assert "Started" in result.stdout
             assert "alice" in result.stdout
@@ -470,7 +468,9 @@ class TestCompetitionCLI:
             runner.invoke(app, ["competition", "init", "--name", "TestCTF", tmpdir])
             monkeypatch.chdir(tmpdir)
 
-            runner.invoke(app, ["competition", "add", "ch1", "--category", "crypto", "--points", "100"])
+            runner.invoke(
+                app, ["competition", "add", "ch1", "--category", "crypto", "--points", "100"]
+            )
             runner.invoke(app, ["competition", "add", "ch2", "--category", "web"])
             runner.invoke(app, ["competition", "solve", "ch1", "--flag", "flag{ch1}"])
 
@@ -512,9 +512,7 @@ class TestCompetitionCLI:
             runner.invoke(app, ["competition", "init", "--name", "TestCTF", tmpdir])
             monkeypatch.chdir(tmpdir)
 
-            result = runner.invoke(
-                app, ["competition", "team-add", "alice", "--role", "crypto"]
-            )
+            result = runner.invoke(app, ["competition", "team-add", "alice", "--role", "crypto"])
             assert result.exit_code == 0
             assert "alice" in result.stdout
 

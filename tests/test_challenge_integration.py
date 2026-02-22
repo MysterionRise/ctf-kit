@@ -343,9 +343,7 @@ class TestForensicsChallengeIntegration:
         result = skill.analyze(pcap_challenge)
 
         suggestion_text = " ".join(result.suggestions).lower()
-        assert any(
-            kw in suggestion_text for kw in ["tcp", "http", "stream", "tshark", "protocol"]
-        )
+        assert any(kw in suggestion_text for kw in ["tcp", "http", "stream", "tshark", "protocol"])
 
     def test_pcap_confidence_positive(self, pcap_challenge):
         """Test that network pcap detection gives positive confidence."""
@@ -672,9 +670,7 @@ class TestMiscChallengeIntegration:
 
     def test_directory_analysis(self, tmp_path):
         """Test misc analysis on a directory with multiple files."""
-        (tmp_path / "encoded.txt").write_text(
-            base64.b64encode(b"flag{dir_flag}").decode()
-        )
+        (tmp_path / "encoded.txt").write_text(base64.b64encode(b"flag{dir_flag}").decode())
         (tmp_path / "notes.txt").write_text("Check the encoded file")
 
         skill = MiscSkill()
@@ -721,8 +717,15 @@ class TestCrossSkillIntegration:
     def test_all_skills_registered(self):
         """Test that all expected skills are in the registry."""
         expected_skills = [
-            "analyze", "crypto", "forensics", "misc",
-            "osint", "pwn", "reversing", "stego", "web",
+            "analyze",
+            "crypto",
+            "forensics",
+            "misc",
+            "osint",
+            "pwn",
+            "reversing",
+            "stego",
+            "web",
         ]
         for name in expected_skills:
             skill = get_skill(name)
@@ -754,8 +757,15 @@ class TestCrossSkillIntegration:
     def test_all_skills_have_suggest_approach(self):
         """Test that all skills implement suggest_approach."""
         skill_names = [
-            "analyze", "crypto", "forensics", "misc",
-            "osint", "pwn", "reversing", "stego", "web",
+            "analyze",
+            "crypto",
+            "forensics",
+            "misc",
+            "osint",
+            "pwn",
+            "reversing",
+            "stego",
+            "web",
         ]
 
         for name in skill_names:
@@ -763,14 +773,18 @@ class TestCrossSkillIntegration:
             assert skill is not None
             # Call with minimal analysis dict
             approaches = skill.suggest_approach({})
-            assert isinstance(approaches, list), f"Skill '{name}' suggest_approach didn't return list"
+            assert isinstance(approaches, list), (
+                f"Skill '{name}' suggest_approach didn't return list"
+            )
 
     def test_analyze_skill_categorizes_challenges(self, tmp_path):
         """Test that analyze skill correctly categorizes different file types."""
         from ctf_kit.skills.analyze import AnalyzeSkill
 
         # Create files that should be categorized differently
-        (tmp_path / "crypto.pem").write_text("-----BEGIN RSA PRIVATE KEY-----\ntest\n-----END RSA PRIVATE KEY-----")
+        (tmp_path / "crypto.pem").write_text(
+            "-----BEGIN RSA PRIVATE KEY-----\ntest\n-----END RSA PRIVATE KEY-----"
+        )
         (tmp_path / "image.png").write_bytes(b"\x89PNG\r\n\x1a\n" + b"\x00" * 100)
         (tmp_path / "app.php").write_text("<?php echo 'hello'; ?>")
 
@@ -847,9 +861,7 @@ class TestCrossSkillIntegration:
             "?>\n"
         )
         (tmp_path / "secret.pem").write_text(
-            "-----BEGIN RSA PRIVATE KEY-----\n"
-            "MIIEpAIBAAKCAQEA...\n"
-            "-----END RSA PRIVATE KEY-----\n"
+            "-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEA...\n-----END RSA PRIVATE KEY-----\n"
         )
 
         # Analyze skill should categorize both files
