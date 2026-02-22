@@ -30,12 +30,14 @@ __all__ = [
 
 # Import all tool modules to register them
 from ctf_kit.integrations import (
+    archive,  # noqa: F401  # bkcrack
     basic,  # noqa: F401  # file, strings
     crypto,  # noqa: F401  # hashid, xortool, rsactftool, john, hashcat
+    encoding,  # noqa: F401  # cyberchef
     forensics,  # noqa: F401  # binwalk, volatility, tshark, foremost
     osint,  # noqa: F401  # sherlock, theharvester
-    pwn,  # noqa: F401  # checksec, ropgadget
+    pwn,  # noqa: F401  # checksec, ropgadget, pwntools
     reversing,  # noqa: F401  # radare2, ghidra
     stego,  # noqa: F401  # exiftool, zsteg, steghide
-    web,  # noqa: F401  # sqlmap, gobuster, ffuf
+    web,  # noqa: F401  # sqlmap, gobuster, ffuf, nikto
 )
