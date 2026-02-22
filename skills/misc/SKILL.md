@@ -28,32 +28,31 @@ Use this command for challenges involving:
 ## Bundled Scripts
 
 - [check-tools.sh](scripts/check-tools.sh) — Verify required misc tools are installed
+- [run-decode.sh](scripts/run-decode.sh) — Multi-encoding decoder: tries Base64, Base32, hex, ROT13, URL, binary. Detects encoding type, attempts recursive decoding chains, and searches for flags. Outputs JSON with all decoded results.
 
 ## Instructions
 
 1. First check tool availability: `bash scripts/check-tools.sh`
 
-2. Run the misc analysis:
+2. **For encoding detection and decoding** (outputs structured JSON):
 
    ```bash
-   ctf run misc $ARGUMENTS
+   bash scripts/run-decode.sh <encoded-string>
+   bash scripts/run-decode.sh encoded.txt
    ```
 
-2. For encoding detection and decoding:
+   JSON output includes:
+   - `detected_encoding`: what the input looks like (base64, hex, binary, etc.)
+   - `decodings[]`: all successful decodings with confidence levels
+   - `chains[]`: multi-step decoding results (e.g., base64 → hex → plaintext)
+   - `flags`: any flag patterns found in decoded output
+   - `has_flag`: true if flag found
 
-   ```bash
-   # Use CyberChef (web tool)
-   # Try "Magic" recipe for auto-detection
-
-   # Manual decoding
-   echo "SGVsbG8=" | base64 -d          # Base64
-   echo "48656C6C6F" | xxd -r -p        # Hex
-   ```
+   The script automatically tries chaining: if Base64 decoding produces another encoded string, it tries decoding that too.
 
 3. For QR codes:
 
    ```bash
-   # Decode QR code
    zbarimg qrcode.png
    ```
 
@@ -64,6 +63,16 @@ Use this command for challenges involving:
    - **JSFuck:** `[]!+()` characters only
 
    Use online interpreters for these.
+
+## Encoding Chain Workflow
+
+The `run-decode.sh` script handles multi-step chains automatically:
+
+1. Input → detect encoding type
+2. Try all standard decodings (base64, hex, ROT13, URL, binary)
+3. For each successful decoding → try decoding the result again
+4. Search all intermediate and final results for flag patterns
+5. Output unified JSON with all results
 
 ## Common Encoding Patterns
 
@@ -76,17 +85,6 @@ Use this command for challenges involving:
 | `%20`, `%3D` | URL encoding |
 | `&#65;`, `&#x41;` | HTML entities |
 
-## Decoding Chain Example
-
-Often challenges use multiple encodings:
-
-1. Base64 -> 2. Hex -> 3. ROT13 -> Flag
-
-```bash
-# Step by step
-echo "encoded" | base64 -d | xxd -r -p | tr 'A-Za-z' 'N-ZA-Mn-za-m'
-```
-
 ## Esoteric Language Detection
 
 | Looks Like | Language |
@@ -96,21 +94,6 @@ echo "encoded" | base64 -d | xxd -r -p | tr 'A-Za-z' 'N-ZA-Mn-za-m'
 | Only whitespace | Whitespace |
 | `[]+!()` | JSFuck |
 | `moo`, `MOO` | COW |
-
-## Common Misc Patterns
-
-1. **Encoding chains:** Try CyberChef Magic
-2. **Esoteric code:** Look up interpreter
-3. **Puzzles:** Often need creative thinking
-4. **QR/Barcodes:** Use scanning tools
-5. **ZIP/Archives:** Check for passwords or corruption
-
-## Useful Tools
-
-- **CyberChef:** All-in-one encoding/decoding
-- **dcode.fr:** Various ciphers and encodings
-- **Brainfuck interpreters:** Many online options
-- **zbarimg:** QR code reading
 
 ## Example Usage
 

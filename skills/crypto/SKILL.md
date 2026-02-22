@@ -27,8 +27,8 @@ Use this command for challenges involving:
 ## Bundled Scripts
 
 - [check-tools.sh](scripts/check-tools.sh) — Verify required crypto tools are installed
-- [run-xortool.sh](scripts/run-xortool.sh) — Analyze XOR-encrypted files with key length detection
-- [identify-hash.sh](scripts/identify-hash.sh) — Identify hash types from strings or files
+- [run-xortool.sh](scripts/run-xortool.sh) — Analyze XOR-encrypted files with key length detection. Outputs JSON with key lengths, probabilities, and cracking suggestions.
+- [identify-hash.sh](scripts/identify-hash.sh) — Identify hash types from strings or files. Outputs JSON with hash type, hashcat mode numbers, and john format names.
 
 ## Instructions
 
@@ -40,50 +40,37 @@ Use this command for challenges involving:
    ctf run crypto $ARGUMENTS
    ```
 
-2. Analyze the output for:
-   - Detected encoding types (Base64, hex, binary)
-   - Hash types identified
-   - XOR key length analysis
-   - RSA parameters (n, e, c, p, q)
-
-3. Based on findings, use appropriate tools:
-
-   **For Hash Cracking:**
+3. **For hash identification** (outputs structured JSON with cracking commands):
 
    ```bash
-   # Identify hash type
-   hashid <hash>
-
-   # Crack with John
-   john --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt
-
-   # Crack with Hashcat
-   hashcat -m 0 -a 0 hashes.txt wordlist.txt  # MD5
+   bash scripts/identify-hash.sh <hash-string>
+   bash scripts/identify-hash.sh hashes.txt
    ```
 
-   **For RSA:**
+   The JSON output includes:
+   - `hashes[].types[]`: identified hash types with confidence
+   - `hashes[].types[].hashcat_mode`: exact hashcat -m number
+   - `hashes[].types[].jtr_format`: exact john --format value
+   - `suggestions`: ready-to-run cracking commands
+
+4. **For XOR analysis** (outputs structured JSON with key candidates):
 
    ```bash
-   # Attack weak RSA
-   RsaCtfTool --publickey key.pem --private
-
-   # With known parameters
-   RsaCtfTool -n <modulus> -e <exponent> --uncipher <ciphertext>
+   bash scripts/run-xortool.sh <encrypted-file>
+   bash scripts/run-xortool.sh <file> 8        # known key length
+   bash scripts/run-xortool.sh <file> 8 20     # key length + most frequent char (space=0x20)
    ```
 
-   **For XOR:**
+   The JSON output includes:
+   - `key_lengths[]`: candidates with probability percentages
+   - `best_key_length`: most probable key length
+   - `key_found`: actual key if detected
+   - `decrypted_files`: paths to decrypted candidates
 
-   ```bash
-   # Analyze XOR encryption
-   xortool encrypted.bin
-
-   # Try with known key length
-   xortool -l 8 -c 20 encrypted.bin
-   ```
-
-4. Suggest decoding chains for multi-layered encoding:
-   - Try CyberChef Magic recipe
-   - Manual: Base64 -> Hex -> ASCII, etc.
+5. Based on JSON findings, chain to next tool:
+   - Hash identified → run hashcat/john with the exact mode from JSON
+   - XOR key found → decrypt with `xortool-xor -n -s '<key>' <file>`
+   - RSA parameters → run `RsaCtfTool -n <n> -e <e> --uncipher <c>`
 
 ## Common Patterns
 
@@ -95,6 +82,10 @@ Use this command for challenges involving:
 | `==` at end | Base64 |
 | All caps + 2-7 | Base32 |
 | n=..., e=... | RSA parameters |
+
+## Output Format
+
+All scripts produce a `=== PARSED RESULTS (JSON) ===` section. Use the `suggestions` array for ready-to-run next commands.
 
 ## Example Usage
 

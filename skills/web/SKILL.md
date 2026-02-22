@@ -28,40 +28,30 @@ Use this command for challenges involving:
 ## Bundled Scripts
 
 - [check-tools.sh](scripts/check-tools.sh) — Verify required web tools are installed
+- [run-gobuster.sh](scripts/run-gobuster.sh) — Directory enumeration with structured output. Outputs JSON with accessible paths, redirects, and forbidden paths.
 
 ## Instructions
 
 1. First check tool availability: `bash scripts/check-tools.sh`
 
-2. Run the web analysis:
+2. **For directory/file enumeration** (outputs structured JSON):
 
    ```bash
-   ctf run web $ARGUMENTS
+   bash scripts/run-gobuster.sh http://target.com
+   bash scripts/run-gobuster.sh http://target.com /path/to/wordlist.txt
+   bash scripts/run-gobuster.sh http://target.com /path/to/wordlist.txt php,html,txt
    ```
 
-2. For directory/file enumeration:
-
-   ```bash
-   # Directory brute-force
-   gobuster dir -u http://target.com -w /usr/share/wordlists/dirb/common.txt
-
-   # With extensions
-   gobuster dir -u http://target.com -w wordlist.txt -x php,html,txt
-
-   # Fast fuzzing
-   ffuf -u http://target.com/FUZZ -w wordlist.txt
-   ```
+   JSON output includes:
+   - `accessible`: paths returning 200 (with size)
+   - `redirects`: paths returning 3xx
+   - `forbidden`: paths returning 403 (may indicate hidden content)
+   - `suggestions`: which paths to investigate
 
 3. For SQL injection:
 
    ```bash
-   # Test URL for SQLi
    sqlmap -u "http://target.com/page?id=1" --dbs
-
-   # Enumerate databases
-   sqlmap -u "http://target.com/page?id=1" --dbs
-
-   # Dump table
    sqlmap -u "http://target.com/page?id=1" -D database -T table --dump
    ```
 
@@ -81,23 +71,6 @@ Use this command for challenges involving:
 | Path Traversal | `../../../etc/passwd` |
 | SSTI | `{{7*7}}` or `${7*7}` |
 | Command Injection | `; id` or `\| id` |
-
-## Things to Check
-
-1. **Authentication:**
-   - Default credentials
-   - JWT token manipulation
-   - Cookie tampering
-
-2. **Files:**
-   - Source code disclosure
-   - Backup files (.bak, ~, .old)
-   - Config files exposed
-
-3. **Input:**
-   - All parameters in URL
-   - POST data fields
-   - Headers and cookies
 
 ## Example Usage
 

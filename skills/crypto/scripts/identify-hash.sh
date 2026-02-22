@@ -1,39 +1,46 @@
 #!/usr/bin/env bash
-# Identify hash type from a hash string or file containing hashes
+# Identify hash type from a hash string or file containing hashes.
+# Outputs raw results followed by a structured JSON summary.
 # Usage: identify-hash.sh <hash-or-file>
 set -euo pipefail
 
 INPUT="${1:?Usage: identify-hash.sh <hash-string-or-file>}"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+LIB_DIR="$SCRIPT_DIR/../../_lib"
+
+# Determine the hash string for the parser
+if [ -f "$INPUT" ]; then
+    HASH_STR=$(head -1 "$INPUT" | tr -d '[:space:]')
+else
+    HASH_STR="$INPUT"
+fi
 
 if ! command -v hashid &>/dev/null; then
-    # Fallback: identify by length
-    echo "hashid not installed (pip install hashid). Falling back to length-based detection."
-    if [ -f "$INPUT" ]; then
-        HASH=$(head -1 "$INPUT" | tr -d '[:space:]')
-    else
-        HASH="$INPUT"
-    fi
-    LEN=${#HASH}
-    case $LEN in
-        32) echo "Length 32: likely MD5, NTLM, or MD4" ;;
-        40) echo "Length 40: likely SHA1" ;;
-        64) echo "Length 64: likely SHA256 or SHA3-256" ;;
-        96) echo "Length 96: likely SHA384" ;;
-        128) echo "Length 128: likely SHA512 or SHA3-512" ;;
-        *) echo "Length $LEN: unknown hash type" ;;
-    esac
+    # Fallback: length-based detection via parser
+    echo "hashid not installed (pip install hashid). Using length-based detection."
+    echo ""
+    echo "=== PARSED RESULTS (JSON) ==="
+    echo "" | python3 "$LIB_DIR/parse-hashid.py" "$HASH_STR"
     exit 0
 fi
 
 if [ -f "$INPUT" ]; then
     echo "=== Hash Identification (from file) ==="
+    RAW=""
     while IFS= read -r line; do
         [ -z "$line" ] && continue
         echo "--- $line ---"
-        hashid "$line"
+        RESULT=$(hashid "$line" 2>&1) || true
+        echo "$RESULT"
+        RAW="${RAW}${RESULT}"$'\n'
         echo ""
     done < "$INPUT"
 else
     echo "=== Hash Identification ==="
-    hashid "$INPUT"
+    RAW=$(hashid "$INPUT" 2>&1) || true
+    echo "$RAW"
 fi
+
+echo ""
+echo "=== PARSED RESULTS (JSON) ==="
+echo "$RAW" | python3 "$LIB_DIR/parse-hashid.py" "$HASH_STR"
