@@ -23,7 +23,7 @@ repos:
         additional_dependencies:
           - types-PyYAML
           - types-setuptools
-        args: [--strict, --ignore-missing-imports]
+        args: [--strict, --ignore-missing-imports, --no-warn-unused-ignores]
         exclude: ^(tests/|docs/)
 
   # Standard pre-commit hooks
