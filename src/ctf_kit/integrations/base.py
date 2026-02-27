@@ -344,6 +344,9 @@ _tool_registry: dict[str, type[BaseTool]] = {}
 
 def register_tool(cls: type[BaseTool]) -> type[BaseTool]:
     """Decorator to register a tool class."""
+    if not issubclass(cls, BaseTool):
+        msg = f"Cannot register {cls.__name__}: not a BaseTool subclass"
+        raise TypeError(msg)
     _tool_registry[cls.name] = cls
     return cls
 

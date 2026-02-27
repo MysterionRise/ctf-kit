@@ -39,8 +39,7 @@ class CryptoSkill(BaseSkill):
         "hex": re.compile(r"^[0-9a-fA-F]{16,}$"),
         "binary": re.compile(r"^[01]{8,}$"),
         "morse": re.compile(r"^[\.\-\s/]+$"),
-        "rot13": re.compile(r"^[A-Za-z\s]+$"),
-        "caesar": re.compile(r"^[A-Za-z\s]+$"),
+        "rot13/caesar": re.compile(r"^[A-Za-z\s]+$"),
     }
 
     # Hash patterns by length

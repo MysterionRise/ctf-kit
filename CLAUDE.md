@@ -28,6 +28,18 @@ ctf-kit/
 │   ├── __init__.py
 │   ├── cli.py                    # Main CLI entry point (Typer)
 │   ├── config.py                 # Configuration management
+│   ├── competition.py            # Competition management
+│   ├── commands/                 # CLI subcommands
+│   │   ├── __init__.py
+│   │   ├── analyze.py
+│   │   ├── check.py
+│   │   ├── competition.py
+│   │   ├── flag.py
+│   │   ├── here.py
+│   │   ├── init.py
+│   │   ├── run.py
+│   │   ├── status.py
+│   │   └── writeup.py
 │   ├── skills/                   # AI agent skills (Python)
 │   │   ├── __init__.py
 │   │   ├── base.py               # Base skill class
@@ -43,28 +55,23 @@ ctf-kit/
 │   ├── integrations/             # Tool wrappers
 │   │   ├── __init__.py
 │   │   ├── base.py               # BaseTool class, ToolResult
-│   │   ├── crypto/               # xortool, rsactftool, hashcat, john
-│   │   ├── archive/              # bkcrack, fcrackzip, zip2john
-│   │   ├── forensics/            # binwalk, volatility, sleuthkit
-│   │   ├── network/              # tshark, tcpdump
+│   │   ├── basic/                # file, strings
+│   │   ├── crypto/               # xortool, rsactftool, hashcat, hashid, john
+│   │   ├── archive/              # bkcrack
+│   │   ├── encoding/             # cyberchef
+│   │   ├── forensics/            # binwalk, foremost, tshark, volatility
 │   │   ├── stego/                # zsteg, steghide, exiftool
-│   │   ├── web/                  # sqlmap, gobuster, ffuf
-│   │   ├── pwn/                  # pwntools, ropgadget, one_gadget
+│   │   ├── web/                  # sqlmap, gobuster, ffuf, nikto
+│   │   ├── pwn/                  # pwntools, ropgadget, checksec
 │   │   ├── reversing/            # radare2, ghidra
-│   │   └── osint/                # sherlock, theharvester
-│   ├── templates/                # Markdown templates
-│   │   ├── analysis.md
-│   │   ├── approach.md
-│   │   └── writeup.md
+│   │   ├── osint/                # sherlock, theharvester, dig, shodan, whois
+│   │   └── misc/                 # qrencode, zbarimg
 │   └── utils/
 │       ├── __init__.py
-│       ├── file_detection.py     # Detect file types, magic bytes
-│       └── encoding.py           # CyberChef-like operations
+│       └── file_detection.py     # Detect file types, magic bytes
 ├── agents/                       # AI agent configurations
-│   ├── claude/
-│   │   └── commands/             # Slash command definitions
-│   ├── copilot/
-│   └── cursor/
+│   └── claude/
+│       └── commands/             # Slash command definitions
 ├── tests/
 ├── docs/
 │   ├── plan/                     # Planning documents (reference)
@@ -149,15 +156,17 @@ All tools follow the same pattern defined in `docs/plan/tool-integrations.md`:
 
 ```python
 class BaseTool(ABC):
-    name: str
-    description: str
-    category: str
-    binary_names: List[str]
-    install_commands: Dict[str, str]
+    name: ClassVar[str]
+    description: ClassVar[str]
+    category: ClassVar[ToolCategory]
+    binary_names: ClassVar[list[str]]
+    install_commands: ClassVar[dict[str, str]]
 
+    @property
     def is_installed(self) -> bool
+    @abstractmethod
     def run(self, *args, **kwargs) -> ToolResult
-    def parse_output(self, stdout, stderr) -> Dict
+    def parse_output(self, stdout, stderr) -> dict[str, Any]
 
 @dataclass
 class ToolResult:
@@ -166,9 +175,11 @@ class ToolResult:
     command: str
     stdout: str
     stderr: str
-    parsed_data: Optional[Dict] = None
-    artifacts: Optional[List[Path]] = None
-    suggestions: Optional[List[str]] = None
+    parsed_data: dict[str, Any] | None = None
+    artifacts: list[Path] | None = None
+    suggestions: list[str] | None = None
+    error_message: str | None = None
+    execution_time: float = 0.0
 ```
 
 ### Skill Pattern
@@ -176,14 +187,17 @@ class ToolResult:
 Skills are AI-facing interfaces that orchestrate tools:
 
 ```python
-class BaseSkill:
-    name: str
-    commands: List[str]  # Slash commands this skill handles
-    tools: List[BaseTool]  # Tools this skill uses
+class BaseSkill(ABC):
+    name: ClassVar[str]
+    description: ClassVar[str]
+    category: ClassVar[str]
+    tool_names: ClassVar[list[str]]  # Tool names loaded from registry
 
+    @abstractmethod
     def analyze(self, path: Path) -> SkillResult
-    def suggest_approach(self, analysis: Dict) -> List[str]
-    def execute(self, approach: str) -> ToolResult
+    @abstractmethod
+    def suggest_approach(self, analysis: dict[str, Any]) -> list[str]
+    def run_tool(self, name: str, *args, **kwargs) -> ToolResult | None
 ```
 
 ### User Workflow

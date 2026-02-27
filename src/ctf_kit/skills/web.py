@@ -7,6 +7,7 @@ detecting vulnerabilities, and exploiting web applications.
 
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 import re
 from typing import TYPE_CHECKING, Any, ClassVar
@@ -19,6 +20,8 @@ from ctf_kit.utils.file_detection import (
 
 if TYPE_CHECKING:
     from ctf_kit.integrations.base import ToolResult
+
+logger = logging.getLogger(__name__)
 
 
 @register_skill
@@ -225,7 +228,7 @@ class WebSkill(BaseSkill):
             file_info: FileInfo = detect_file_type(path)
             file_analysis["file_type"] = file_info.file_type
         except Exception:  # noqa: BLE001
-            pass
+            logger.debug("Failed to detect file type for %s", path, exc_info=True)
 
         # Read file content
         try:

@@ -403,8 +403,9 @@ def analyze_directory(path: Path) -> list[FileInfo]:
 
 def format_size(size: int) -> str:
     """Format file size in human-readable format."""
+    value = float(size)
     for unit in ["B", "KB", "MB", "GB"]:
-        if size < 1024:
-            return f"{size:.1f} {unit}"
-        size //= 1024
-    return f"{size:.1f} TB"
+        if value < 1024:
+            return f"{value:.1f} {unit}"
+        value /= 1024
+    return f"{value:.1f} TB"

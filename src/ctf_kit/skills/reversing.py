@@ -7,6 +7,7 @@ understanding program logic, and extracting hidden functionality.
 
 from __future__ import annotations
 
+import logging
 from pathlib import Path
 import re
 from typing import TYPE_CHECKING, Any, ClassVar
@@ -19,6 +20,8 @@ from ctf_kit.utils.file_detection import (
 
 if TYPE_CHECKING:
     from ctf_kit.integrations.base import ToolResult
+
+logger = logging.getLogger(__name__)
 
 
 @register_skill
@@ -332,7 +335,7 @@ class ReversingSkill(BaseSkill):
                         if parts:
                             imports.append(parts[-1])
         except Exception:  # noqa: BLE001
-            pass
+            logger.debug("Failed to get imports for %s", path, exc_info=True)
 
         return imports[:50]
 
@@ -369,7 +372,7 @@ class ReversingSkill(BaseSkill):
                         break
 
         except Exception:  # noqa: BLE001
-            pass
+            logger.debug("Failed to find interesting functions in %s", path, exc_info=True)
 
         return list(set(interesting))[:30]
 
@@ -402,7 +405,7 @@ class ReversingSkill(BaseSkill):
                             )
 
         except Exception:  # noqa: BLE001
-            pass
+            logger.debug("Failed to get sections for %s", path, exc_info=True)
 
         return sections[:20]
 

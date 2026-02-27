@@ -163,15 +163,19 @@ class BkcrackTool(BaseTool):
         if offset:
             args.extend(["-o", str(offset)])
 
-        result = self._run_with_result(args, timeout=timeout)
-        if result.parsed_data is None:
-            result.parsed_data = {}
-        attack_data = self._parse_attack_output(result.stdout)
-        result.parsed_data.update(attack_data)
-        if attack_data.get("keys"):
-            result.success = True
-        result.suggestions = self._get_attack_suggestions(result.parsed_data)
-        return result
+        try:
+            result = self._run_with_result(args, timeout=timeout)
+            if result.parsed_data is None:
+                result.parsed_data = {}
+            attack_data = self._parse_attack_output(result.stdout)
+            result.parsed_data.update(attack_data)
+            if attack_data.get("keys"):
+                result.success = True
+            result.suggestions = self._get_attack_suggestions(result.parsed_data)
+            return result
+        finally:
+            if plaintext_bytes is not None:
+                Path(tmp.name).unlink(missing_ok=True)
 
     def parse_output(self, stdout: str, stderr: str) -> dict[str, Any]:
         """Parse bkcrack output."""

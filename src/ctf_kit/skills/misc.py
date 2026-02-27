@@ -8,6 +8,7 @@ esoteric languages, QR codes, logic puzzles, and more.
 from __future__ import annotations
 
 import base64
+import logging
 from pathlib import Path
 import re
 from typing import TYPE_CHECKING, Any, ClassVar
@@ -20,6 +21,8 @@ from ctf_kit.utils.file_detection import (
 
 if TYPE_CHECKING:
     from ctf_kit.integrations.base import ToolResult
+
+logger = logging.getLogger(__name__)
 
 
 @register_skill
@@ -192,6 +195,7 @@ class MiscSkill(BaseSkill):
             content = path.read_text(errors="ignore")
             self._analyze_text_content(content, file_analysis)
         except Exception:  # noqa: BLE001
+            logger.debug("Failed to read/analyze text content for %s", path, exc_info=True)
             # Try as binary
             try:
                 with path.open("rb") as f:
@@ -199,7 +203,7 @@ class MiscSkill(BaseSkill):
                 # Check for embedded text
                 self._analyze_binary_content(binary_content, file_analysis)
             except Exception:  # noqa: BLE001
-                pass
+                logger.debug("Failed to read/analyze binary content for %s", path, exc_info=True)
 
         # Run strings tool
         strings_tool = self.get_tool("strings")
@@ -339,7 +343,7 @@ class MiscSkill(BaseSkill):
                     return decoded
 
         except Exception:  # noqa: BLE001
-            pass
+            logger.debug("Failed to decode text as %s", encoding_type, exc_info=True)
 
         return None
 
