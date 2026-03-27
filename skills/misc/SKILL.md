@@ -95,6 +95,23 @@ The `run-decode.sh` script handles multi-step chains automatically:
 | `[]+!()` | JSFuck |
 | `moo`, `MOO` | COW |
 
+## Team Roles
+
+When using `/ctf-kit:team-solve` with a misc challenge, the lead spawns 3 specialists:
+
+| Role | Teammate Name | Focus | Tools | First Action |
+|------|--------------|-------|-------|--------------|
+| Encoding Specialist | `decoder` | CyberChef recipes, multi-layer encoding chains, base conversions, custom encodings, cipher identification | CyberChef, `scripts/run-decode.sh`, python3 | Run run-decode.sh, try recursive decoding, identify encoding layers |
+| Esoteric & Code | `esoteric-analyst` | Brainfuck, Whitespace, JSFuck, Ook!, Malbolge, polyglots, custom language identification | Online interpreters, python3 | Identify language from character set, find/build interpreter, execute |
+| Puzzle & Logic | `puzzle-solver` | Pattern recognition, math puzzles, QR/barcodes, game theory, constraint satisfaction, riddles | zbarimg, python3, z3 | Scan for QR/barcodes, analyze patterns, identify puzzle type |
+
+### When to broadcast
+
+- **Decoder**: "Base64 decoded to hex, hex decoded to... another encoding" — puzzle solver helps identify the pattern
+- **Esoteric**: "Identified as Whitespace language, output is: PARTIAL_STRING" — decoder checks if output needs further decoding
+- **Puzzle**: "QR code contains URL / encoded string" — decoder processes the content
+- **Any**: "Found the flag" — immediate broadcast, all stop
+
 ## Example Usage
 
 ```bash

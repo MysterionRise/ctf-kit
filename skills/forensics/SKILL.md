@@ -96,6 +96,23 @@ All scripts produce `=== PARSED RESULTS (JSON) ===` sections. Key fields:
 | `next_steps` | Boolean flags for what was found |
 | `suggestions` | Actionable next commands |
 
+## Team Roles
+
+When using `/ctf-kit:team-solve` with a forensics challenge, the lead spawns 3 specialists:
+
+| Role | Teammate Name | Focus | Tools | First Action |
+|------|--------------|-------|-------|--------------|
+| File & Disk | `file-carver` | File carving, embedded data extraction, disk image mounting, deleted file recovery, filesystem analysis | binwalk, foremost, `scripts/run-binwalk.sh`, `scripts/extract-and-analyze.sh` | Run extract-and-analyze pipeline on all challenge files |
+| Memory | `memory-analyst` | Volatility3 plugins, process trees, registry hives, command history, DLL injection, malware indicators | volatility3, `scripts/run-volatility.sh` | Run pslist, netscan, cmdline, filescan on memory dump |
+| Network | `network-analyst` | Protocol analysis, stream reconstruction, credential extraction, DNS exfiltration, HTTP object carving | tshark, `scripts/run-tshark.sh` | Run tshark stats, extract HTTP objects, check DNS queries |
+
+### When to broadcast
+
+- **File carver**: "Extracted N files, found image/pcap/binary inside" — other specialists claim the extracted file
+- **Memory**: "Found suspicious process PID with network connection to X" — network analyst filters for that IP
+- **Network**: "HTTP POST contains credentials / encoded data" — file carver or memory analyst cross-references
+- **Any**: "Found the flag" — immediate broadcast, all stop
+
 ## Example Usage
 
 ```bash

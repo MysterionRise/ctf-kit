@@ -76,6 +76,33 @@ Use this command for challenges involving:
 | `check_`, `verify_` | Validation functions |
 | `win`, `flag` | Target functions |
 
+## Team Roles
+
+When using `/ctf-kit:team-solve` with a reverse engineering challenge, the lead spawns 3 specialists:
+
+| Role | Teammate Name | Focus | Tools | First Action |
+|------|--------------|-------|-------|--------------|
+| Static Analyst | `static-reverser` | Disassembly, decompilation, function listing, string analysis, control flow graphs | radare2, Ghidra, objdump, `scripts/run-radare2.sh` | List functions, find interesting ones (main, check, verify, flag), decompile them |
+| Dynamic Analyst | `dynamic-reverser` | Runtime behavior, breakpoints, anti-debug bypass, library call tracing, input/output mapping | gdb, ltrace, strace, LD_PRELOAD | Run with ltrace/strace, set breakpoints on strcmp/memcmp, trace validation logic |
+| Algorithm Solver | `algo-solver` | Keygen writing, constraint solving, algorithm reimplementation, z3 SAT solving, symbolic execution | python3, z3, sage | Reimplement the validation algorithm from decompiled code, write solver/keygen |
+
+### Workflow coordination
+
+Reverse engineering has a natural pipeline:
+
+1. **Static analyst** maps the binary → identifies key functions and algorithm structure
+2. **Dynamic analyst** confirms behavior → finds actual values, bypasses anti-debug
+3. **Algorithm solver** writes the solution → uses both static and dynamic findings
+
+But all 3 can start in parallel — static and dynamic analysis are independent.
+
+### When to broadcast
+
+- **Static**: "Main calls check_password() which XORs input with key at 0x4020" — algo solver starts reimplementing
+- **Dynamic**: "strcmp compares against runtime-computed string, anti-debug detected (ptrace)" — static analyst looks for the check
+- **Algo solver**: "Constraint solver found valid input: PASSWORD" — others verify
+- **Any**: "Found the flag" — immediate broadcast, all stop
+
 ## Example Usage
 
 ```bash

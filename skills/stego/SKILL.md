@@ -53,22 +53,28 @@ Use this command for challenges involving:
 3. **For individual tools**:
 
    **PNG/BMP (LSB analysis):**
+
    ```bash
    bash scripts/run-zsteg.sh image.png
    ```
+
    JSON `findings[]` shows hidden text/files per channel. Use `zsteg -E <channel>` to extract.
 
    **JPEG (steghide):**
+
    ```bash
    bash scripts/run-steghide.sh image.jpg
    bash scripts/run-steghide.sh image.jpg "mypassword"
    ```
+
    JSON shows `extracted_file` and `password_used` on success.
 
    **Metadata:**
+
    ```bash
    bash scripts/run-exiftool.sh image.png
    ```
+
    JSON `interesting_fields[]` highlights CTF-relevant metadata with reasons.
 
 ## Multi-Step Workflow
@@ -93,6 +99,23 @@ The pipeline handles chaining automatically. For manual chaining:
 ## Output Format
 
 All scripts produce `=== PARSED RESULTS (JSON) ===` or `=== PIPELINE RESULTS (JSON) ===` sections. The `has_flag` field is `true` when a flag pattern is detected.
+
+## Team Roles
+
+When using `/ctf-kit:team-solve` with a stego challenge, the lead spawns 3 specialists:
+
+| Role | Teammate Name | Focus | Tools | First Action |
+|------|--------------|-------|-------|--------------|
+| Image Analyst | `image-analyst` | LSB analysis across channels (RGB, alpha), steghide extraction with password lists, visual plane separation, pixel manipulation | zsteg, steghide, stegsolve, `scripts/run-zsteg.sh`, `scripts/run-steghide.sh` | Run zsteg (PNG/BMP) or steghide (JPEG) with common passwords |
+| Metadata & Structure | `metadata-analyst` | EXIF/XMP metadata, file structure anomalies, appended data after EOF, IHDR manipulation, chunk analysis | exiftool, binwalk, xxd, `scripts/run-exiftool.sh`, `scripts/run-binwalk.sh` | Run exiftool for hidden comments/GPS, binwalk for appended files |
+| Audio & Advanced | `audio-analyst` | Spectrogram messages, audio LSB encoding, DTMF tone decoding, video frame extraction, multi-layer stego | Audacity (CLI), sox, ffmpeg | Generate spectrogram, check audio LSB, extract video frames |
+
+### When to broadcast
+
+- **Image**: "LSB in red channel contains ASCII text: ENCODED_STRING" — metadata analyst checks if it's a key
+- **Metadata**: "Binwalk found ZIP appended after PNG EOF" — image analyst extracts and checks for password-protected content
+- **Audio**: "Spectrogram shows text: HINT_STRING" — others use it as a password or clue
+- **Any**: "Found the flag" — immediate broadcast, all stop
 
 ## Example Usage
 

@@ -50,6 +50,7 @@ Use this command for challenges involving:
 3. Based on checksec JSON, proceed with exploitation:
 
    **No Canary + No NX (shellcode):**
+
    ```python
    from pwn import *
    p = process('./binary')
@@ -60,9 +61,11 @@ Use this command for challenges involving:
    ```
 
    **No Canary + NX + No PIE (ROP):**
+
    ```bash
    ROPgadget --binary ./binary --re "pop rdi"
    ```
+
    ```python
    payload = b'A' * offset + p64(pop_rdi) + p64(bin_sh) + p64(system)
    ```
@@ -88,6 +91,33 @@ Use this command for challenges involving:
 4. Find offset to control
 5. Build exploit (shellcode or ROP)
 6. Test locally, then remote
+
+## Team Roles
+
+When using `/ctf-kit:team-solve` with a pwn challenge, the lead spawns 3 specialists.
+
+**Exploit-dev requires plan approval** before connecting to remote targets.
+
+| Role | Teammate Name | Focus | Tools | First Action |
+|------|--------------|-------|-------|--------------|
+| Static Analyst | `binary-analyst` | checksec, disassembly, vulnerability identification, function mapping, string cross-refs | checksec, radare2, `scripts/run-checksec.sh` | Run checksec, disassemble main + interesting functions, identify vuln class |
+| Exploit Developer | `exploit-dev` | Payload crafting, ROP chain building, shellcode, format string exploitation, ret2libc/ret2csu | pwntools, ROPgadget, one_gadget | Build exploit based on static analysis, find gadgets, calculate offsets |
+| Dynamic Analyst | `dynamic-analyst` | GDB debugging, offset finding, leak discovery, heap state inspection, ASLR/PIE bypass | gdb, pwntools, ltrace, strace | Run binary with cyclic pattern, find crash offset, identify leakable addresses |
+
+### Workflow coordination
+
+The pwn team has a natural dependency chain:
+
+1. **Static analyst** runs first → identifies protections and vulnerability type
+2. **Dynamic analyst** runs in parallel → finds offsets and leaks
+3. **Exploit developer** waits for both → builds the final exploit
+
+### When to broadcast
+
+- **Static**: "Binary has no canary + no PIE, vuln in read() at offset 0x40" — exploit dev starts building
+- **Dynamic**: "Crash at offset 72, libc leak via puts@GOT" — exploit dev uses these values
+- **Exploit dev**: "Exploit works locally, switching to remote" — lead reviews plan before remote connection
+- **Any**: "Got shell / found flag" — immediate broadcast, all stop
 
 ## Example Usage
 

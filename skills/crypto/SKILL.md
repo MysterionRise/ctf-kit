@@ -87,6 +87,23 @@ Use this command for challenges involving:
 
 All scripts produce a `=== PARSED RESULTS (JSON) ===` section. Use the `suggestions` array for ready-to-run next commands.
 
+## Team Roles
+
+When using `/ctf-kit:team-solve` with a crypto challenge, the lead spawns 3 specialists:
+
+| Role | Teammate Name | Focus | Tools | First Action |
+|------|--------------|-------|-------|--------------|
+| Classical & Encoding | `classical-analyst` | Frequency analysis, substitution ciphers, Vigenere, transposition, encoding chains (Base64/hex/ROT13) | CyberChef, `scripts/run-decode.sh`, `scripts/identify-hash.sh`, dcode.fr | Run decode + hash-id on all files, check for known cipher patterns |
+| Asymmetric & Math | `rsa-specialist` | RSA factoring (small primes, Fermat, Wiener), padding oracles, Boneh-Durfee, ECC, Diffie-Hellman | RsaCtfTool, openssl, sage, python3 | Extract RSA parameters (n,e,c), try RsaCtfTool, check factordb |
+| Symmetric & Hash | `symmetric-cracker` | XOR key recovery, AES mode attacks (ECB/CBC), hash cracking, HMAC | xortool, hashcat, john, `scripts/run-xortool.sh` | Run xortool on binary files, identify and crack any hashes |
+
+### When to broadcast
+
+- **Classical**: "Identified cipher type as Vigenere with key length N" — RSA specialist can ignore
+- **RSA**: "Found factors of n" or "Need ciphertext in different format" — others adjust
+- **Symmetric**: "XOR key found: KEY" — others try decrypting their findings with it
+- **Any**: "Found the flag" — immediate broadcast, all stop
+
 ## Example Usage
 
 ```bash

@@ -80,6 +80,33 @@ Use this command for challenges involving:
 3. `run-exiftool.sh image.jpg` → check JSON for GPS, metadata clues
 4. Build complete picture from combined findings
 
+## Team Roles
+
+When using `/ctf-kit:team-solve` with an OSINT challenge, the lead spawns 3 specialists.
+
+**All OSINT teammates require plan approval** before querying external services.
+
+| Role | Teammate Name | Focus | Tools | First Action |
+|------|--------------|-------|-------|--------------|
+| People & Social | `social-investigator` | Username enumeration, social media profiling, identity correlation, breach data | sherlock, `scripts/run-sherlock.sh` | Run sherlock on any usernames, cross-reference profiles across platforms |
+| Domain & Infrastructure | `domain-analyst` | WHOIS, DNS records, subdomain enumeration, email harvesting, IP geolocation, certificate transparency | whois, dig, theHarvester | Run whois + dig on domains, check certificate transparency logs |
+| Geolocation & Media | `geo-analyst` | EXIF GPS extraction, reverse image search, visual landmark identification, Street View correlation | exiftool, `scripts/run-exiftool.sh` | Extract EXIF GPS, identify visual landmarks, cross-reference with maps |
+
+### When to broadcast
+
+- **Social**: "Username 'target123' has GitHub with a repo containing coordinates" — geo analyst investigates
+- **Domain**: "Domain registered to email X, also found on social platform Y" — social investigator digs deeper
+- **Geo**: "EXIF GPS points to 48.8584, 2.2945 (Eiffel Tower)" — others search for related context
+- **Any**: "Found the flag" — immediate broadcast, all stop
+
+### Plan approval flow
+
+Before any teammate queries an external service:
+
+1. Teammate describes the query and target
+2. Lead reviews for scope (only target what the challenge asks for)
+3. Lead approves or suggests alternative approach
+
 ## Example Usage
 
 ```bash

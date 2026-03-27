@@ -72,6 +72,33 @@ Use this command for challenges involving:
 | SSTI | `{{7*7}}` or `${7*7}` |
 | Command Injection | `; id` or `\| id` |
 
+## Team Roles
+
+When using `/ctf-kit:team-solve` with a web challenge, the lead spawns 3 specialists.
+
+**All web teammates require plan approval** before sending requests to the target.
+
+| Role | Teammate Name | Focus | Tools | First Action |
+|------|--------------|-------|-------|--------------|
+| Recon & Enumeration | `web-recon` | Directory scanning, technology fingerprinting, hidden paths, backup files, robots.txt, source code review | gobuster, ffuf, `scripts/run-gobuster.sh`, curl | Check robots.txt, run gobuster, view page source, identify tech stack |
+| Injection | `injection-tester` | SQLi, XSS, SSTI, command injection, path traversal, SSRF, deserialization | sqlmap, manual payloads, curl | Map input fields, test with common payloads from the patterns table above |
+| Auth & Logic | `auth-analyst` | JWT manipulation, session handling, IDOR, privilege escalation, business logic flaws, API abuse | jwt_tool, curl, burp | Inspect cookies/tokens, test auth bypass, enumerate API endpoints |
+
+### When to broadcast
+
+- **Recon**: "Found admin panel at /admin" or "Technology: Flask with Jinja2 (SSTI likely)" — injection tester focuses there
+- **Injection**: "SQLi confirmed on parameter X, dumping DB" — auth analyst checks for stored creds
+- **Auth**: "JWT uses none algorithm" or "IDOR on user ID" — others test with escalated access
+- **Any**: "Found the flag" — immediate broadcast, all stop
+
+### Plan approval flow
+
+Before any teammate sends a request to the target:
+
+1. Teammate describes what they want to do and why
+2. Lead reviews for safety (no destructive actions, rate limiting)
+3. Lead approves or redirects
+
 ## Example Usage
 
 ```bash
