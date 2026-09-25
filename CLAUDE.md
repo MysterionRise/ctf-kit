@@ -8,81 +8,17 @@ CTF Kit is a toolkit that helps security researchers and CTF players solve chall
 
 ## Architecture
 
-```text
-ctf-kit/
-├── .claude-plugin/
-│   └── plugin.json               # Claude Code plugin manifest
-├── skills/                       # Plugin skills (SKILL.md format)
-│   ├── analyze/SKILL.md          # /ctf-kit:analyze
-│   ├── crypto/SKILL.md           # /ctf-kit:crypto
-│   ├── forensics/SKILL.md        # /ctf-kit:forensics
-│   ├── stego/SKILL.md            # /ctf-kit:stego
-│   ├── web/SKILL.md              # /ctf-kit:web
-│   ├── pwn/SKILL.md              # /ctf-kit:pwn
-│   ├── reverse/SKILL.md          # /ctf-kit:reverse
-│   ├── osint/SKILL.md            # /ctf-kit:osint
-│   └── misc/SKILL.md             # /ctf-kit:misc
-├── .claude/
-│   └── commands/                 # In-repo slash commands (backward compat)
-├── src/ctf_kit/
-│   ├── __init__.py
-│   ├── cli.py                    # Main CLI entry point (Typer)
-│   ├── config.py                 # Configuration management
-│   ├── competition.py            # Competition management
-│   ├── commands/                 # CLI subcommands
-│   │   ├── __init__.py
-│   │   ├── analyze.py
-│   │   ├── check.py
-│   │   ├── competition.py
-│   │   ├── flag.py
-│   │   ├── here.py
-│   │   ├── init.py
-│   │   ├── run.py
-│   │   ├── status.py
-│   │   └── writeup.py
-│   ├── skills/                   # AI agent skills (Python)
-│   │   ├── __init__.py
-│   │   ├── base.py               # Base skill class
-│   │   ├── analyze.py            # /ctf-kit:analyze
-│   │   ├── crypto.py             # /ctf-kit:crypto
-│   │   ├── forensics.py          # /ctf-kit:forensics
-│   │   ├── stego.py              # /ctf-kit:stego
-│   │   ├── web.py                # /ctf-kit:web
-│   │   ├── pwn.py                # /ctf-kit:pwn
-│   │   ├── reversing.py          # /ctf-kit:reverse
-│   │   ├── osint.py              # /ctf-kit:osint
-│   │   └── misc.py               # /ctf-kit:misc
-│   ├── integrations/             # Tool wrappers
-│   │   ├── __init__.py
-│   │   ├── base.py               # BaseTool class, ToolResult
-│   │   ├── basic/                # file, strings
-│   │   ├── crypto/               # xortool, rsactftool, hashcat, hashid, john
-│   │   ├── archive/              # bkcrack
-│   │   ├── encoding/             # cyberchef
-│   │   ├── forensics/            # binwalk, foremost, tshark, volatility
-│   │   ├── stego/                # zsteg, steghide, exiftool
-│   │   ├── web/                  # sqlmap, gobuster, ffuf, nikto
-│   │   ├── pwn/                  # pwntools, ropgadget, checksec
-│   │   ├── reversing/            # radare2, ghidra
-│   │   ├── osint/                # sherlock, theharvester, dig, shodan, whois
-│   │   └── misc/                 # qrencode, zbarimg
-│   └── utils/
-│       ├── __init__.py
-│       └── file_detection.py     # Detect file types, magic bytes
-├── agents/                       # AI agent configurations
-│   └── claude/
-│       └── commands/             # Slash command definitions
-├── tests/
-├── docs/
-│   ├── plan/                     # Planning documents (reference)
-│   │   ├── project-plan.md
-│   │   ├── skills-analysis.md
-│   │   ├── tool-integrations.md
-│   │   └── competition-workflow.md
-│   └── user-guide/
-├── pyproject.toml
-├── README.md
-└── CLAUDE.md                     # This file
+```
+.claude-plugin/plugin.json    Claude Code plugin manifest (version lives here)
+skills/<name>/SKILL.md        one skill per challenge category + analyze, compete, flag, here, status, team-solve; `_lib/` shared prompt parts
+src/ctf_kit/cli.py            Typer entry point (`ctf`)
+src/ctf_kit/commands/         one file per CLI subcommand
+src/ctf_kit/skills/           Python skill classes (BaseSkill in base.py)
+src/ctf_kit/integrations/     tool wrappers grouped by category (BaseTool + ToolResult in base.py)
+src/ctf_kit/utils/            file detection, magic bytes
+agents/claude/commands/       Claude slash commands; .claude/commands/ mirrors them for in-repo use
+tests/                        pytest; fixtures/ holds sample challenges; slow/integration tests are marked
+docs/plan/                    original planning docs (reference only, the code is the truth now)
 ```
 
 ### Plugin Structure
@@ -100,59 +36,19 @@ CTF Kit is distributed as a **Claude Code Plugin**. Users install it with `/plug
 ## Development Commands
 
 ```bash
-# Install in development mode
-uv pip install -e ".[dev]"
-
-# Run CLI
+pip install -e ".[dev]"   # once; installs ruff, mypy, pytest, pre-commit
+make check                # ruff + mypy --strict + pytest (fast set)
+make test-all             # includes slow/integration tests that need real CTF tools
 ctf --help
-
-# Run tests
-pytest
-
-# Type checking
-mypy src/
-
-# Linting
-ruff check src/
 ```
 
-## Implementation Priority
-
-### Phase 1: Foundation (Current)
-
-1. ✅ Planning documents complete
-2. 🔲 Project skeleton with pyproject.toml
-3. 🔲 CLI framework (init, check, run commands)
-4. 🔲 Base tool integration class
-5. 🔲 Configuration system
-
-### Phase 2: Core Skills
-
-1. 🔲 `/ctf.analyze` - File analysis and categorization
-2. 🔲 `/ctf.crypto` - Crypto tools (xortool, RsaCtfTool)
-3. 🔲 `/ctf.misc` - Encoding chains, CyberChef operations
-
-### Phase 3: Tool Integrations
-
-1. 🔲 Crypto: xortool, hashcat, john
-2. 🔲 Archive: bkcrack, fcrackzip
-3. 🔲 Forensics: binwalk, volatility3, tshark
-4. 🔲 Stego: zsteg, steghide, exiftool
-
-### Phase 4: Advanced Skills
-
-1. 🔲 `/ctf.forensics`
-2. 🔲 `/ctf.stego`
-3. 🔲 `/ctf.web`
-4. 🔲 `/ctf.pwn`
-5. 🔲 `/ctf.reverse`
-6. 🔲 `/ctf.osint`
+`make check` green before saying "done". CI and pre-commit run the same three.
 
 ## Key Design Decisions
 
 ### Tool Integration Pattern
 
-All tools follow the same pattern defined in `docs/plan/tool-integrations.md`:
+All tools follow this pattern (`src/ctf_kit/integrations/base.py`):
 
 ```python
 class BaseTool(ABC):
@@ -210,12 +106,7 @@ CTF Kit adds `.ctf/` folders inside user's existing challenge folders:
 
 ## Reference Documents
 
-When implementing features, refer to these planning documents in `docs/plan/`:
-
-1. **project-plan.md** - Overall architecture, CLI design, implementation phases
-2. **skills-analysis.md** - How AI should interact with each category
-3. **tool-integrations.md** - Complete tool wrapper specifications (40+ tools)
-4. **competition-workflow.md** - User workflow during competitions
+`docs/plan/` holds the original design (skills-analysis, tool-integrations, competition-workflow). Where it disagrees with the code, the code is right; update the doc only if asked.
 
 ## Code Style
 
