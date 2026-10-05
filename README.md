@@ -1,19 +1,15 @@
-<div align="center">
-    <h1>🏴 CTF Kit</h1>
-    <h3><em>Solve CTF challenges faster with AI assistance.</em></h3>
-</div>
+# CTF Kit
 
-<p align="center">
-    <strong>A toolkit that integrates with AI coding agents to help you analyze, solve, and document CTF challenges.</strong>
-</p>
+A CLI and a Claude Code plugin for working through CTF challenges with an AI coding agent.
+The CLI wraps about 30 common security tools (xortool, binwalk, volatility3, zsteg, RsaCtfTool,
+sqlmap and others) behind one interface; the plugin adds `/ctf-kit:*` skills that run those tools
+and help you read the results.
 
----
+## Quick start
 
-## ⚡ Quick Start
+### 1. Install the Claude Code plugin
 
-### 1. Install the Claude Code Plugin
-
-Inside Claude Code, run:
+Inside Claude Code:
 
 ```bash
 /plugin install --from https://github.com/MysterionRise/ctf-kit
@@ -25,7 +21,7 @@ Or from a local checkout:
 /plugin install --from /path/to/ctf-kit
 ```
 
-This makes all `/ctf-kit:*` skills available in **any** project.
+The `/ctf-kit:*` skills are then available in every project.
 
 ### 2. Install the CLI (optional)
 
@@ -33,261 +29,116 @@ This makes all `/ctf-kit:*` skills available in **any** project.
 uv tool install ctf-kit --from git+https://github.com/MysterionRise/ctf-kit.git
 ```
 
-### 3. Initialize in your CTF repo
+### 3. Initialise your CTF repo
 
 ```bash
-cd ~/ctf-dangerzone-2026
+cd ~/your-ctf-repo
 ctf init --repo
 ```
 
-### 4. Start solving challenges
+### 4. Work on a challenge
 
 ```bash
 cd competitions/somectf/crypto-challenge
 ctf init
 
-# Launch your AI agent
 claude
-
-# Use slash commands (plugin format)
 > /ctf-kit:analyze challenge.bin
 > /ctf-kit:crypto
 ```
 
----
+## How it works
 
-## 🎯 Features
+There are two layers. The `ctf` CLI calls the tools directly. The plugin skills call the CLI and
+help you interpret its output inside Claude Code.
 
-| Feature | Description |
-|---------|-------------|
-| **AI-Powered Analysis** | Automatic challenge categorization and vulnerability detection |
-| **20+ Tool Integrations** | xortool, binwalk, volatility, zsteg, RsaCtfTool, and more |
-| **Claude Code Plugin** | Install once, use `/ctf-kit:*` skills in any project |
-| **Competition Workflow** | Designed for speed during live CTFs |
-| **Writeup Generation** | Auto-generate writeups from your solve process |
+### Skills
 
----
+| Command | What it covers | Tools it uses |
+|---------|----------------|---------------|
+| `/ctf-kit:analyze` | Detects the challenge type and suggests next steps | file, strings, category detection |
+| `/ctf-kit:crypto` | RSA, XOR, hashing | xortool, RsaCtfTool, hashcat, john |
+| `/ctf-kit:forensics` | Memory dumps, PCAPs, disk images, file carving | volatility3, binwalk, foremost, tshark |
+| `/ctf-kit:stego` | Hidden data in images, audio and other media | zsteg, steghide, exiftool |
+| `/ctf-kit:web` | SQLi, XSS, directory enumeration, auth bypass | sqlmap, gobuster, ffuf |
+| `/ctf-kit:pwn` | Binary exploitation, ROP chains, format strings | checksec, ROPgadget |
+| `/ctf-kit:reverse` | Static and dynamic analysis, decompilation | radare2, ghidra (headless) |
+| `/ctf-kit:osint` | Username enumeration, domain recon | sherlock, theHarvester |
+| `/ctf-kit:misc` | Encoding chains, esoteric languages, QR codes | encoding detection, file analysis |
 
-## 🔄 How It Works
-
-CTF Kit has a two-tier architecture:
-
-### CLI Commands (`ctf`)
-
-The standalone CLI for direct tool access:
+### CLI
 
 ```bash
-ctf analyze challenge.bin    # Analyze files and detect category
-ctf check --category crypto  # Check which crypto tools are installed
-ctf run xortool file.enc     # Run a specific tool directly
-ctf tools                    # List all available tools
+ctf init --repo                     # one-time setup for a CTF repo
+ctf init [--category <category>]    # set up a challenge folder
+ctf new <name> [--category <cat>]   # create a new challenge folder
+ctf analyze <path> [--verbose]      # inspect files and guess the category
+ctf check [--category <category>]   # which tools are installed
+ctf tools                           # all tools and their status
+ctf run <tool> [args...]            # run one tool directly
+ctf writeup                         # Markdown writeup from the .ctf/ notes (HTML not yet)
 ```
 
-### Claude Code Plugin Skills (`/ctf-kit:*`)
+### Example
 
-AI-powered skills available in any project after installing the plugin:
-
-| Command | What it does |
-|---------|--------------|
-| `/ctf-kit:analyze` | Analyzes files, detects challenge type, suggests next steps |
-| `/ctf-kit:crypto` | Guides crypto challenges (RSA, XOR, hashing, etc.) |
-| `/ctf-kit:forensics` | Memory dumps, PCAPs, disk images, file carving |
-| `/ctf-kit:stego` | Hidden data in images, audio, and other media |
-| `/ctf-kit:web` | SQLi, XSS, directory enumeration, auth bypass |
-| `/ctf-kit:pwn` | Binary exploitation, ROP chains, format strings |
-| `/ctf-kit:reverse` | Static/dynamic analysis, decompilation |
-| `/ctf-kit:osint` | Username enumeration, domain recon |
-| `/ctf-kit:misc` | Encoding chains, esoteric languages, QR codes |
-
-The skills run the CLI tools under the hood and help you interpret results.
-
----
-
-## 💡 Usage Examples
-
-### Example 1: Crypto Challenge
+The output lines below are illustrative, not captured from a real run.
 
 ```bash
-# Start Claude Code in your challenge directory
 cd competitions/somectf/rsa-challenge
 claude
 
-# In Claude Code:
 > /ctf-kit:analyze encrypted.txt public_key.pem
-# Output: Detected RSA challenge with small public exponent
+# e.g. "RSA challenge, small public exponent"
 
 > /ctf-kit:crypto
-# Claude guides you through attacking the weak RSA parameters
+# walks through attacks on the weak parameters, running RsaCtfTool where it applies
 ```
 
-### Example 2: Forensics Challenge
+## What it writes
 
-```bash
-cd competitions/somectf/memory-dump
-claude
-
-> /ctf-kit:analyze memory.raw
-# Output: Detected memory dump (Windows), suggests volatility3
-
-> /ctf-kit:forensics
-# Claude helps extract credentials, processes, and artifacts
-```
-
-### Example 3: Steganography
-
-```bash
-cd competitions/somectf/hidden-message
-claude
-
-> /ctf-kit:analyze image.png
-# Output: PNG image, suggests checking for LSB steganography
-
-> /ctf-kit:stego
-# Claude runs zsteg, exiftool, and other tools to find hidden data
-```
-
----
-
-## 📚 Skills Reference
-
-### Analysis
-
-| Command | Description |
-|---------|-------------|
-| `/ctf-kit:analyze` | Analyze challenge files and auto-detect category |
-
-### Category-Specific
-
-| Command | Tools Used |
-|---------|------------|
-| `/ctf-kit:crypto` | xortool, RsaCtfTool, hashcat, john |
-| `/ctf-kit:forensics` | volatility3, binwalk, foremost, tshark |
-| `/ctf-kit:stego` | zsteg, steghide, exiftool |
-| `/ctf-kit:web` | sqlmap, gobuster, ffuf |
-| `/ctf-kit:pwn` | checksec, ROPgadget |
-| `/ctf-kit:reverse` | radare2, ghidra (headless) |
-| `/ctf-kit:osint` | sherlock, theHarvester |
-| `/ctf-kit:misc` | Encoding detection, file analysis |
-
----
-
-## 🔧 CLI Reference
-
-```bash
-# Initialize CTF Kit in repo (one-time)
-ctf init --repo
-
-# Initialize for a challenge
-ctf init [--category <category>]
-
-# Analyze challenge files
-ctf analyze <path> [--verbose]
-
-# Check installed tools
-ctf check [--category <category>]
-
-# List all tools and their status
-ctf tools
-
-# Run a tool directly
-ctf run <tool> [args...]
-
-# Create a new challenge folder
-ctf new <name> [--category <category>]
-
-# Generate writeup
-ctf writeup [--format md|html]
-```
-
----
-
-## 📁 Project Structure
-
-CTF Kit integrates with your existing workflow:
+CTF Kit leaves your files alone and keeps its notes next to them:
 
 ```text
 your-ctf-repo/
-├── .ctf-kit/                    # Repo-level config (one-time)
+├── .ctf-kit/                    # repo-level config (one-time)
 │   └── config.yaml
 └── competitions/
     └── somectf2026/
         └── crypto-challenge/
-            ├── .ctf/            # CTF Kit memory (per-challenge)
+            ├── .ctf/            # per-challenge notes
             │   ├── analysis.md
             │   └── writeup.md
-            ├── challenge.txt    # Your files (unchanged)
-            └── solve.py         # Your solution (unchanged)
+            ├── challenge.txt    # your files
+            └── solve.py         # your solution
 ```
 
----
+## Requirements
 
-## 🛠️ Tool Requirements
+Python 3.11+ and the basic `file`, `strings` and `xxd` utilities. Everything else is optional;
+`ctf tools` and `ctf check --category <category>` show what is installed.
 
-### Essential (auto-checked)
+## Scope and limits
 
-- Python 3.11+
-- file, strings, xxd
+- Use it on CTF challenges and systems you are authorised to test. Several wrapped tools
+  (sqlmap, gobuster, ffuf, nikto) send traffic to whatever target you give them.
+- Tools run locally with your permissions; there is no sandbox.
+- Category detection and the agent's suggestions are hints and can be wrong. Check results
+  before relying on them, especially during a live competition.
 
-### Check Installed Tools
+## Documentation
 
-```bash
-# See all tools and their installation status
-ctf tools
+Design and planning notes:
 
-# Check specific category
-ctf check --category crypto
-ctf check --category forensics
-```
+- [Project plan](docs/plan/ctf-kit-project-plan.md)
+- [Competition workflow](docs/plan/ctf-kit-competition-workflow.md)
+- [Tool integrations](docs/plan/ctf-kit-tool-integrations.md)
+- [Skills analysis](docs/plan/ctf-kit-skills-analysis.md)
 
----
+## Contributing
 
-## 📖 Documentation
+Setup, quality checks and workflow are in [DEVELOPMENT.md](DEVELOPMENT.md). Issues and pull
+requests are welcome.
 
-- [Project Plan](docs/plan/ctf-kit-project-plan.md)
-- [Competition Workflow Guide](docs/plan/ctf-kit-competition-workflow.md)
-- [Tool Integrations](docs/plan/ctf-kit-tool-integrations.md)
-- [Skills Analysis](docs/plan/ctf-kit-skills-analysis.md)
+## License
 
----
-
-## 🤝 Contributing
-
-### Python Version
-
-CTF Kit requires **Python 3.11+**. A runtime check will raise `RuntimeError` on older versions.
-
-#### Using uv (recommended)
-
-```bash
-# Install uv
-curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# Clone and install
-git clone https://github.com/MysterionRise/ctf-kit.git
-cd ctf-kit
-uv sync --dev          # Reads .python-version (3.14) and installs deps
-uv run pytest          # Run tests
-```
-
-#### Using pyenv
-
-```bash
-# Install pyenv (macOS)
-brew install pyenv
-
-# Install the pinned Python version
-pyenv install 3.14      # Or any 3.11+
-pyenv local 3.14         # Sets .python-version
-
-# Then use uv or pip
-uv sync --dev
-# or: pip install -e ".[dev]"
-```
-
-Contributions welcome! Please open an issue or pull request.
-
----
-
-## 📄 License
-
-MIT License - see [LICENSE](LICENSE) for details.
+MIT, see [LICENSE](LICENSE).
