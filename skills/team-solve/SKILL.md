@@ -49,7 +49,7 @@ Or use the analyze skill's triage:
 
 ```bash
 # From the ctf-kit plugin
-bash scripts/triage.sh $ARGUMENTS
+bash ../analyze/scripts/triage.sh $ARGUMENTS
 ```
 
 Read the JSON output. Key fields: `category`, `confidence`, `secondary_categories`.
@@ -67,6 +67,9 @@ Create an agent team with 3 teammates. For each teammate:
 3. **Set plan approval** for teammates using offensive tools (web, pwn, osint)
 4. **Create initial tasks** in the shared task list — one per teammate
 
+Script paths in this skill are relative to its base directory. Teammates do not load this skill,
+so resolve every script to an absolute path before putting it in a spawn prompt.
+
 Example spawn prompt to the lead:
 
 ```text
@@ -75,7 +78,7 @@ Create an agent team with 3 teammates to solve this crypto challenge.
 Teammate 1 — "classical-analyst":
   Focus on classical ciphers and encoding chains.
   Tools: frequency analysis, dcode.fr patterns, CyberChef recipes.
-  Start by running: bash scripts/identify-hash.sh and bash scripts/run-decode.sh
+  Start by running: bash ../crypto/scripts/identify-hash.sh and bash ../misc/scripts/run-decode.sh
 
 Teammate 2 — "rsa-specialist":
   Focus on RSA and asymmetric crypto attacks.
@@ -85,7 +88,7 @@ Teammate 2 — "rsa-specialist":
 Teammate 3 — "symmetric-cracker":
   Focus on XOR, AES, and hash cracking.
   Tools: xortool, hashcat, john.
-  Start by running: bash scripts/run-xortool.sh on any binary files.
+  Start by running: bash ../crypto/scripts/run-xortool.sh on any binary files.
 
 Each teammate should broadcast findings to others when they discover something
 that changes the understanding of the challenge. If a teammate finds a flag,
@@ -106,23 +109,23 @@ broadcast immediately and all teammates should verify.
 
 | Role | Name | Focus | First Action |
 |------|------|-------|--------------|
-| Classical & Encoding | `classical-analyst` | Frequency analysis, substitution ciphers, Vigenere, encoding chains, CyberChef | Run `scripts/run-decode.sh` and `scripts/identify-hash.sh` on all challenge files |
+| Classical & Encoding | `classical-analyst` | Frequency analysis, substitution ciphers, Vigenere, encoding chains, CyberChef | Run `../misc/scripts/run-decode.sh` and `../crypto/scripts/identify-hash.sh` on all challenge files |
 | Asymmetric & Math | `rsa-specialist` | RSA factoring, padding oracles, Wiener/Boneh-Durfee, ECC, Diffie-Hellman | Extract RSA parameters, run `RsaCtfTool`, try sage/python math attacks |
-| Symmetric & Hash | `symmetric-cracker` | XOR key recovery, AES mode attacks, hash cracking with hashcat/john | Run `scripts/run-xortool.sh`, identify and crack any hashes |
+| Symmetric & Hash | `symmetric-cracker` | XOR key recovery, AES mode attacks, hash cracking with hashcat/john | Run `../crypto/scripts/run-xortool.sh`, identify and crack any hashes |
 
 ### Forensics Team
 
 | Role | Name | Focus | First Action |
 |------|------|-------|--------------|
-| File & Disk | `file-carver` | binwalk, foremost, file carving, disk image mounting, deleted file recovery | Run `scripts/run-binwalk.sh` and `scripts/extract-and-analyze.sh` |
-| Memory | `memory-analyst` | volatility3 plugins, process trees, registry, command history, malware detection | Run `scripts/run-volatility.sh` with pslist, netscan, cmdline |
-| Network | `network-analyst` | tshark, protocol analysis, stream extraction, DNS exfil detection | Run `scripts/run-tshark.sh`, extract HTTP objects and DNS queries |
+| File & Disk | `file-carver` | binwalk, foremost, file carving, disk image mounting, deleted file recovery | Run `../forensics/scripts/run-binwalk.sh` and `../forensics/scripts/extract-and-analyze.sh` |
+| Memory | `memory-analyst` | volatility3 plugins, process trees, registry, command history, malware detection | Run `../forensics/scripts/run-volatility.sh` with pslist, netscan, cmdline |
+| Network | `network-analyst` | tshark, protocol analysis, stream extraction, DNS exfil detection | Run `../forensics/scripts/run-tshark.sh`, extract HTTP objects and DNS queries |
 
 ### Web Team (plan approval required for Tier 2 tools)
 
 | Role | Name | Focus | First Action |
 |------|------|-------|--------------|
-| Recon & Enumeration | `web-recon` | Directory scanning, technology fingerprinting, hidden paths, robots.txt | Run `scripts/run-gobuster.sh`, check robots.txt, view source |
+| Recon & Enumeration | `web-recon` | Directory scanning, technology fingerprinting, hidden paths, robots.txt | Run `../web/scripts/run-gobuster.sh`, check robots.txt, view source |
 | Injection | `injection-tester` | SQLi, XSS, SSTI, command injection, path traversal | Test input fields with common payloads, run sqlmap on parameters |
 | Auth & Logic | `auth-analyst` | JWT attacks, session handling, IDOR, privilege escalation, API abuse | Inspect cookies/tokens, test auth bypass, check API endpoints |
 
@@ -132,7 +135,7 @@ broadcast immediately and all teammates should verify.
 
 | Role | Name | Focus | First Action |
 |------|------|-------|--------------|
-| Static Analyst | `binary-analyst` | checksec, disassembly, vulnerability ID, function mapping | Run `scripts/run-checksec.sh`, map interesting functions |
+| Static Analyst | `binary-analyst` | checksec, disassembly, vulnerability ID, function mapping | Run `../pwn/scripts/run-checksec.sh`, map interesting functions |
 | Exploit Developer | `exploit-dev` | Payload crafting, ROP chains, shellcode, ret2libc, format strings | Build exploit based on static analyst's findings |
 | Dynamic Analyst | `dynamic-analyst` | GDB debugging, leak finding, heap state, ASLR bypass | Run binary in debugger, find offsets, verify leaks |
 
@@ -142,7 +145,7 @@ broadcast immediately and all teammates should verify.
 
 | Role | Name | Focus | First Action |
 |------|------|-------|--------------|
-| Static Analyst | `static-reverser` | radare2, Ghidra, decompilation, function listing, string analysis | Run `scripts/run-radare2.sh`, identify interesting functions |
+| Static Analyst | `static-reverser` | radare2, Ghidra, decompilation, function listing, string analysis | Run `../reverse/scripts/run-radare2.sh`, identify interesting functions |
 | Dynamic Analyst | `dynamic-reverser` | ltrace, strace, GDB, breakpoints, anti-debug bypass, runtime behavior | Run binary with ltrace/strace, set breakpoints on check functions |
 | Algorithm Solver | `algo-solver` | Keygen writing, constraint solving (z3), algorithm reimplementation | Reimplement validation logic, write solver script |
 
@@ -150,17 +153,17 @@ broadcast immediately and all teammates should verify.
 
 | Role | Name | Focus | First Action |
 |------|------|-------|--------------|
-| Image Analyst | `image-analyst` | zsteg LSB, steghide extraction, visual inspection, color plane analysis | Run `scripts/run-zsteg.sh` and `scripts/run-steghide.sh` |
-| Metadata & Structure | `metadata-analyst` | exiftool, binwalk appended data, file structure, IHDR manipulation | Run `scripts/run-exiftool.sh` and `scripts/run-binwalk.sh` |
+| Image Analyst | `image-analyst` | zsteg LSB, steghide extraction, visual inspection, color plane analysis | Run `../stego/scripts/run-zsteg.sh` and `../stego/scripts/run-steghide.sh` |
+| Metadata & Structure | `metadata-analyst` | exiftool, binwalk appended data, file structure, IHDR manipulation | Run `../stego/scripts/run-exiftool.sh` and `../forensics/scripts/run-binwalk.sh` |
 | Audio & Advanced | `audio-analyst` | Spectrogram messages, audio LSB, DTMF tones, video frame analysis | Open in Audacity spectrogram view, check audio LSB encoding |
 
 ### OSINT Team (plan approval for external queries)
 
 | Role | Name | Focus | First Action |
 |------|------|-------|--------------|
-| People & Social | `social-investigator` | Sherlock username enum, social media profiling, identity correlation | Run `scripts/run-sherlock.sh`, cross-reference platforms |
+| People & Social | `social-investigator` | Sherlock username enum, social media profiling, identity correlation | Run `../osint/scripts/run-sherlock.sh`, cross-reference platforms |
 | Domain & Infra | `domain-analyst` | whois, DNS records, subdomain enum, theHarvester, IP geolocation | Run whois, dig, theHarvester on target domains |
-| Geo & Media | `geo-analyst` | EXIF GPS extraction, reverse image search, visual landmark ID | Run `scripts/run-exiftool.sh`, identify visual clues |
+| Geo & Media | `geo-analyst` | EXIF GPS extraction, reverse image search, visual landmark ID | Run `../osint/scripts/run-exiftool.sh`, identify visual clues |
 
 **Important**: Spawn OSINT teammates with **plan approval required** before hitting external services.
 
@@ -168,7 +171,7 @@ broadcast immediately and all teammates should verify.
 
 | Role | Name | Focus | First Action |
 |------|------|-------|--------------|
-| Encoding Specialist | `decoder` | CyberChef recipes, encoding chains, base conversions, custom encodings | Run `scripts/run-decode.sh`, try multi-layer decoding |
+| Encoding Specialist | `decoder` | CyberChef recipes, encoding chains, base conversions, custom encodings | Run `../misc/scripts/run-decode.sh`, try multi-layer decoding |
 | Esoteric & Code | `esoteric-analyst` | Brainfuck, Whitespace, JSFuck, custom languages, polyglots | Identify language from character set, find interpreter |
 | Puzzle & Logic | `puzzle-solver` | Pattern recognition, math puzzles, QR/barcodes, game theory | Run `zbarimg` on images, analyze patterns, solve constraints |
 

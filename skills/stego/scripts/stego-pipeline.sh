@@ -12,6 +12,8 @@ echo "=== Stego Pipeline: $IMAGE ==="
 
 # Detect file type
 FILE_TYPE=$(file -b "$IMAGE" 2>/dev/null || echo "unknown")
+# Lowercase via tr: ${var,,} needs bash 4+, macOS ships bash 3.2
+FILE_TYPE_LC=$(printf '%s' "$FILE_TYPE" | tr '[:upper:]' '[:lower:]')
 echo "File type: $FILE_TYPE"
 echo ""
 
@@ -62,7 +64,7 @@ fi
 echo ""
 echo "--- Step 3: LSB Analysis ---"
 ZSTEG_RAW=""
-case "${FILE_TYPE,,}" in
+case "$FILE_TYPE_LC" in
     *png*|*bmp*|*bitmap*)
         if command -v zsteg &>/dev/null; then
             echo "  Running zsteg..."
@@ -87,7 +89,7 @@ esac
 echo ""
 echo "--- Step 4: Steghide Extraction ---"
 STEGHIDE_RAW=""
-case "${FILE_TYPE,,}" in
+case "$FILE_TYPE_LC" in
     *jpeg*|*jpg*|*wav*|*wave*)
         if command -v steghide &>/dev/null; then
             echo "  Trying common passwords..."

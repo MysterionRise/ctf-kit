@@ -903,6 +903,25 @@ class TestLoadChallengeConfig:
         assert cc.points == 100
         assert "rsa" in cc.tags
 
+    def test_load_challenge_config_ignores_unknown_keys(self, tmp_path: Path) -> None:
+        """Should ignore extra keys instead of raising TypeError."""
+        ctf_dir = tmp_path / ".ctf"
+        ctf_dir.mkdir()
+
+        config_data = {
+            "name": "jwt-maze",
+            "category": "web",
+            "description": "added by hand",
+            "url": "https://example.com",
+        }
+        with (ctf_dir / "challenge.yaml").open("w") as f:
+            yaml.dump(config_data, f)
+
+        cc = load_challenge_config(tmp_path)
+        assert cc is not None
+        assert cc.name == "jwt-maze"
+        assert cc.category == "web"
+
     def test_load_challenge_config_not_found(self, tmp_path: Path) -> None:
         """Should return None when .ctf/challenge.yaml does not exist."""
         cc = load_challenge_config(tmp_path)

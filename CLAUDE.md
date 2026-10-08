@@ -69,9 +69,8 @@ ctf-kit/
 │   └── utils/
 │       ├── __init__.py
 │       └── file_detection.py     # Detect file types, magic bytes
-├── agents/                       # AI agent configurations
-│   └── claude/
-│       └── commands/             # Slash command definitions
+├── docker/
+│   └── pwn/Dockerfile            # linux/amd64 pwn toolbox (gdb, pwndbg, pwntools)
 ├── tests/
 ├── docs/
 │   ├── plan/                     # Planning documents (reference)
@@ -79,6 +78,7 @@ ctf-kit/
 │   │   ├── skills-analysis.md
 │   │   ├── tool-integrations.md
 │   │   └── competition-workflow.md
+│   ├── legacy-commands/          # Old slash command definitions (reference only)
 │   └── user-guide/
 ├── pyproject.toml
 ├── README.md

@@ -1,0 +1,16 @@
+{
+  "name": "ctf-kit",
+  "owner": {
+    "name": "MysterionRise"
+  },
+  "metadata": {
+    "description": "CTF Kit: AI-assisted CTF challenge solving skills for Claude Code."
+  },
+  "plugins": [
+    {
+      "name": "ctf-kit",
+      "source": "./",
+      "description": "AI-assisted CTF challenge solver with multi-agent team support. Specialized skills for crypto, forensics, stego, web, pwn, reversing, OSINT, and misc categories."
+    }
+  ]
+}

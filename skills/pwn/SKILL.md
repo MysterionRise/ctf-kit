@@ -29,6 +29,7 @@ Use this command for challenges involving:
 
 - [check-tools.sh](scripts/check-tools.sh) — Verify required pwn tools are installed
 - [run-checksec.sh](scripts/run-checksec.sh) — Check binary protections (CANARY, NX, PIE, RELRO). Outputs JSON with protection status, attack vectors, and suggested exploitation strategy.
+- [pwn-docker.sh](scripts/pwn-docker.sh) — Run a command in the `ctf-pwn` linux/amd64 container with the current directory mounted at `/chal` (gdb/pwndbg, pwntools, one_gadget, patchelf, qemu-user). Use on macOS / Apple Silicon.
 
 ## Instructions
 
@@ -91,6 +92,31 @@ Use this command for challenges involving:
 4. Find offset to control
 5. Build exploit (shellcode or ROP)
 6. Test locally, then remote
+
+## macOS / Apple Silicon
+
+Linux ELF binaries cannot run natively on macOS. Use the `ctf-pwn` container
+(build once: `docker build --platform linux/amd64 -t ctf-pwn <ctf-kit>/docker/pwn`):
+
+```bash
+bash scripts/pwn-docker.sh ./binary                 # run the binary
+bash scripts/pwn-docker.sh python3 solve.py         # run a pwntools exploit locally
+bash scripts/pwn-docker.sh                          # interactive shell (tmux available)
+```
+
+Under amd64 emulation **ptrace does not work**: `gdb ./binary`, `gdb.debug()`,
+`gdb.attach(pid)`, gdbserver, strace and ltrace fail or print garbage. Instead:
+
+- **Debug** through qemu's gdb stub (breakpoints, registers, memory and stepping work; pwndbg `vmmap` does not):
+
+  ```bash
+  qemu-x86_64 -g 1234 ./binary &
+  pwndbg -ex 'target remote :1234' ./binary
+  ```
+
+  From pwntools: `p = process(['qemu-x86_64', '-g', '1234', './binary'])`, then attach pwndbg from another tmux pane.
+- **Trace syscalls** with `qemu-x86_64 -strace ./binary`.
+- **Match the remote libc** with `patchelf --set-interpreter ./ld-linux-x86-64.so.2 --set-rpath . ./binary`.
 
 ## Team Roles
 

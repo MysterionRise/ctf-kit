@@ -76,6 +76,13 @@ Use this command for challenges involving:
 | `check_`, `verify_` | Validation functions |
 | `win`, `flag` | Target functions |
 
+## macOS / Apple Silicon
+
+For dynamic analysis of Linux ELF binaries on macOS, use the pwn skill's container
+wrapper `../pwn/scripts/pwn-docker.sh`. ltrace/strace and plain gdb do not work
+under emulation; debug via `qemu-x86_64 -g 1234 ./binary` + `pwndbg -ex 'target remote :1234' ./binary`
+and trace syscalls with `qemu-x86_64 -strace ./binary`.
+
 ## Team Roles
 
 When using `/ctf-kit:team-solve` with a reverse engineering challenge, the lead spawns 3 specialists:

@@ -13,7 +13,9 @@ check() {
 
 echo "=== Reverse Engineering: Required Tools ==="
 check r2            "brew install radare2 / apt install radare2"
-check ghidra        "brew install ghidra (or download from ghidra-sre.org)"
+GHIDRA_BIN=ghidra
+command -v ghidra &>/dev/null || GHIDRA_BIN=ghidraRun  # Homebrew installs ghidraRun
+check "$GHIDRA_BIN"   "brew install ghidra (or download from ghidra-sre.org)"
 check objdump       "pre-installed (binutils)"
 check ltrace        "apt install ltrace (Linux only)"
 check strace        "apt install strace (Linux only)"

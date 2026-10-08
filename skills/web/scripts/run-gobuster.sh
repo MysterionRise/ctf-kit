@@ -4,7 +4,22 @@
 set -euo pipefail
 
 URL="${1:?Usage: run-gobuster.sh <url> [wordlist] [extensions]}"
-WORDLIST="${2:-/usr/share/wordlists/dirb/common.txt}"
+WORDLIST="${2:-}"
+if [ -z "$WORDLIST" ]; then
+    # First common.txt found: Kali/dirb, SecLists in ~/wordlists, Kali SecLists
+    for candidate in /usr/share/wordlists/dirb/common.txt \
+        "$HOME/wordlists/SecLists/Discovery/Web-Content/common.txt" \
+        /usr/share/seclists/Discovery/Web-Content/common.txt; do
+        if [ -f "$candidate" ]; then
+            WORDLIST="$candidate"
+            break
+        fi
+    done
+fi
+if [ -z "$WORDLIST" ]; then
+    echo "ERROR: no wordlist found. Pass one: run-gobuster.sh <url> <wordlist>" >&2
+    exit 1
+fi
 EXTENSIONS="${3:-}"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
