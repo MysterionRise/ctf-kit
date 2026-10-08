@@ -194,7 +194,7 @@ class MiscSkill(BaseSkill):
         try:
             content = path.read_text(errors="ignore")
             self._analyze_text_content(content, file_analysis)
-        except Exception:  # noqa: BLE001
+        except Exception:
             logger.debug("Failed to read/analyze text content for %s", path, exc_info=True)
             # Try as binary
             try:
@@ -202,7 +202,7 @@ class MiscSkill(BaseSkill):
                     binary_content = f.read()
                 # Check for embedded text
                 self._analyze_binary_content(binary_content, file_analysis)
-            except Exception:  # noqa: BLE001
+            except Exception:
                 logger.debug("Failed to read/analyze binary content for %s", path, exc_info=True)
 
         # Run strings tool
@@ -342,7 +342,7 @@ class MiscSkill(BaseSkill):
                 if decoded and self._is_readable(decoded):
                     return decoded
 
-        except Exception:  # noqa: BLE001
+        except Exception:
             logger.debug("Failed to decode text as %s", encoding_type, exc_info=True)
 
         return None
