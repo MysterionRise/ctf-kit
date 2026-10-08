@@ -312,7 +312,7 @@ class PwnSkill(BaseSkill):
                         interesting.append(line.strip())
                         break
 
-        except Exception:  # noqa: BLE001
+        except Exception:
             logger.debug("Failed to find interesting functions in %s", path, exc_info=True)
 
         return interesting[:20]

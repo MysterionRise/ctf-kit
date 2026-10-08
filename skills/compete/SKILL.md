@@ -24,7 +24,7 @@ Use during a live CTF when:
 ## Prerequisites
 
 - Agent teams enabled: `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`
-- Competition directory initialized: `ctf init` or challenges in known folders
+- Competition directory initialized: `ctf competition init` or challenges in known folders
 - Challenge files organized by folder (one folder per challenge)
 
 ## Instructions

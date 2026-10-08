@@ -57,7 +57,7 @@ dev = [
     "pytest-cov>=4.1.0",
     "pytest-mock>=3.12.0",
     "mypy>=1.5.0",
-    "ruff>=0.1.0",
+    "ruff>=0.16.10,<0.17",  # pinned: noqa usage differs between ruff minor versions
     "pre-commit>=3.4.0",
     "bandit[toml]>=1.7.0",
     "types-PyYAML>=6.0.0",
@@ -149,6 +149,7 @@ ignore = [
     "PERF401", # list.extend suggestions (stylistic, often less readable)
     "PLR0912", # too many branches (common in analysis/parsing code)
     "PLR0911", # too many return statements (common in decode chains)
+    "PLR0917", # too many positional args (tool run() signatures mirror CLI options)
     "PLW2901", # loop variable overwrite (common pattern in parsing)
     "SIM102",  # nested if statements (sometimes clearer)
     "SIM108",  # ternary operator (sometimes less readable)

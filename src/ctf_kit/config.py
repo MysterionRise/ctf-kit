@@ -2,7 +2,7 @@
 Configuration management for CTF Kit.
 """
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 from pathlib import Path
 from typing import Any
 
@@ -148,7 +148,9 @@ def load_challenge_config(challenge_path: Path) -> ChallengeConfig | None:
     with config_file.open() as f:
         data = yaml.safe_load(f) or {}
 
-    return ChallengeConfig(**data)
+    # Ignore keys added by hand or by other tools (description, url, ...)
+    known = {fld.name for fld in fields(ChallengeConfig)}
+    return ChallengeConfig(**{k: v for k, v in data.items() if k in known})
 
 
 def save_challenge_config(config: ChallengeConfig, challenge_path: Path) -> None:

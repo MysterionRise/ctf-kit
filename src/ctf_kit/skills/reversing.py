@@ -334,7 +334,7 @@ class ReversingSkill(BaseSkill):
                         parts = line.split()
                         if parts:
                             imports.append(parts[-1])
-        except Exception:  # noqa: BLE001
+        except Exception:
             logger.debug("Failed to get imports for %s", path, exc_info=True)
 
         return imports[:50]
@@ -371,7 +371,7 @@ class ReversingSkill(BaseSkill):
                         interesting.append(line.strip())
                         break
 
-        except Exception:  # noqa: BLE001
+        except Exception:
             logger.debug("Failed to find interesting functions in %s", path, exc_info=True)
 
         return list(set(interesting))[:30]
@@ -404,7 +404,7 @@ class ReversingSkill(BaseSkill):
                                 }
                             )
 
-        except Exception:  # noqa: BLE001
+        except Exception:
             logger.debug("Failed to get sections for %s", path, exc_info=True)
 
         return sections[:20]

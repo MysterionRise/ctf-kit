@@ -13,19 +13,25 @@
 
 ### 1. Install the Claude Code Plugin
 
-Inside Claude Code, run:
+Inside Claude Code, add the marketplace and install the plugin:
 
 ```bash
-/plugin install --from https://github.com/MysterionRise/ctf-kit
+/plugin marketplace add MysterionRise/ctf-kit
+/plugin install ctf-kit@ctf-kit
 ```
 
 Or from a local checkout:
 
 ```bash
-/plugin install --from /path/to/ctf-kit
+/plugin marketplace add /path/to/ctf-kit
+/plugin install ctf-kit@ctf-kit
 ```
 
 This makes all `/ctf-kit:*` skills available in **any** project.
+
+After pulling new changes, refresh with `/plugin marketplace update ctf-kit`.
+For plugin development, load the checkout for a single session with
+`claude --plugin-dir /path/to/ctf-kit`.
 
 ### 2. Install the CLI (optional)
 

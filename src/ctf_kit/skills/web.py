@@ -227,7 +227,7 @@ class WebSkill(BaseSkill):
         try:
             file_info: FileInfo = detect_file_type(path)
             file_analysis["file_type"] = file_info.file_type
-        except Exception:  # noqa: BLE001
+        except Exception:
             logger.debug("Failed to detect file type for %s", path, exc_info=True)
 
         # Read file content

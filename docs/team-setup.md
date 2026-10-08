@@ -9,7 +9,8 @@ How to set up CTF Kit with multi-agent teams in your CTF workspace.
 In your CTF workspace (the repo where you solve challenges):
 
 ```text
-/plugin install --from https://github.com/MysterionRise/ctf-kit
+/plugin marketplace add MysterionRise/ctf-kit
+/plugin install ctf-kit@ctf-kit
 ```
 
 This makes all `/ctf-kit:*` skills available globally.
@@ -236,7 +237,8 @@ Verify the plugin is installed:
 If ctf-kit is not listed, reinstall:
 
 ```text
-/plugin install --from https://github.com/MysterionRise/ctf-kit
+/plugin marketplace add MysterionRise/ctf-kit
+/plugin install ctf-kit@ctf-kit
 ```
 
 ### Agent teams not spawning
