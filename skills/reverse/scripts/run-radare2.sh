@@ -46,11 +46,7 @@ echo "=== PARSED RESULTS (JSON) ==="
 python3 -c "
 import json, re, sys
 
-info = '''$(echo "$INFO" | sed "s/'/\\\\'/g")'''
-funcs = '''$(echo "$FUNCS" | sed "s/'/\\\\'/g")'''
-strings_out = '''$(echo "$STRINGS" | sed "s/'/\\\\'/g")'''
-binary = '$BINARY'
-func_name = '$FUNC'
+info, funcs, strings_out, binary, func_name = sys.argv[1:6]
 
 # Parse binary info
 bin_info = {}
@@ -100,4 +96,4 @@ result = {
     'suggestions': suggestions,
 }
 print(json.dumps(result, indent=2))
-"
+" "$INFO" "$FUNCS" "$STRINGS" "$BINARY" "$FUNC"

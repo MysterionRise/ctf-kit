@@ -36,9 +36,7 @@ echo "=== PARSED RESULTS (JSON) ==="
 python3 -c "
 import json, re, sys
 
-stats = '''$STATS'''
-convs = '''$CONVS'''
-pcap = '$PCAP'
+stats, convs, pcap = sys.argv[1:4]
 
 # Count packets
 packet_count = 0
@@ -98,4 +96,4 @@ result = {
     'suggestions': suggestions,
 }
 print(json.dumps(result, indent=2))
-"
+" "$STATS" "$CONVS" "$PCAP"

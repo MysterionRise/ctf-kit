@@ -77,9 +77,7 @@ echo "=== TRIAGE RESULTS (JSON) ==="
 python3 -c "
 import json, re, sys, os
 
-file_path = '$FILE'
-file_type = '''$FILE_TYPE'''
-file_mime = '$FILE_MIME'
+file_path, file_type, file_mime, binwalk_raw = sys.argv[1:5]
 file_size = os.path.getsize(file_path) if os.path.exists(file_path) else 0
 
 # Parse strings findings
@@ -93,7 +91,6 @@ hashes = re.findall(r'(?<![0-9a-f])[0-9a-f]{32,64}(?![0-9a-f])', strings_raw, re
 b64 = re.findall(r'[A-Za-z0-9+/]{40,}={0,2}', strings_raw)
 
 # Parse binwalk
-binwalk_raw = '''$(echo "$BINWALK_RAW" | sed "s/'/\\\\'/g")'''
 sig_pattern = re.compile(r'(\d+)\s+(0x[0-9A-Fa-f]+)\s+(.+)')
 signatures = []
 for line in binwalk_raw.strip().split('\n'):
@@ -195,4 +192,4 @@ result = {
     'suggestions': suggestions,
 }
 print(json.dumps(result, indent=2))
-" <<< "$STRINGS_RAW"
+" "$FILE" "$FILE_TYPE" "$FILE_MIME" "$BINWALK_RAW" <<< "$STRINGS_RAW"

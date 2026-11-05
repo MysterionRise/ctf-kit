@@ -64,8 +64,7 @@ echo "=== PARSED RESULTS (JSON) ==="
 python3 -c "
 import json, os, re, sys
 
-file_path = '$FILE'
-outdir = '$OUTDIR'
+file_path, outdir = sys.argv[1:3]
 
 extracted = []
 flags = []
@@ -140,4 +139,4 @@ result = {
     'suggestions': suggestions,
 }
 print(json.dumps(result, indent=2))
-"
+" "$FILE" "$OUTDIR"

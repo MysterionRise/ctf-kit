@@ -26,8 +26,7 @@ python3 -c "
 import json, re, sys
 
 raw = sys.stdin.read()
-plugin = '$PLUGIN'
-dump = '$DUMP'
+plugin, dump = sys.argv[1:3]
 
 # Parse table output (common volatility format)
 lines = [l for l in raw.strip().split('\n') if l.strip()]
@@ -89,4 +88,4 @@ result = {
     'suggestions': suggestions,
 }
 print(json.dumps(result, indent=2))
-" <<< "$RAW"
+" "$PLUGIN" "$DUMP" <<< "$RAW"

@@ -44,7 +44,7 @@ python3 -c "
 import json, re, sys
 
 raw = sys.stdin.read()
-url = '$URL'
+url = sys.argv[1]
 
 # Parse gobuster output: /path (Status: 200) [Size: 1234]
 entries = []
@@ -86,4 +86,4 @@ result = {
     'suggestions': suggestions,
 }
 print(json.dumps(result, indent=2))
-" <<< "$RAW"
+" "$URL" <<< "$RAW"

@@ -120,12 +120,7 @@ echo "=== PIPELINE RESULTS (JSON) ==="
 python3 -c "
 import json, re, sys
 
-image = '$IMAGE'
-file_type = '''$FILE_TYPE'''
-exif_raw = '''$(echo "$EXIF_RAW" | sed "s/'/\\\\'/g")'''
-binwalk_raw = '''$(echo "$BINWALK_RAW" | sed "s/'/\\\\'/g")'''
-zsteg_raw = '''$(echo "$ZSTEG_RAW" | sed "s/'/\\\\'/g")'''
-steghide_raw = '''$(echo "$STEGHIDE_RAW" | sed "s/'/\\\\'/g")'''
+image, file_type, exif_raw, binwalk_raw, zsteg_raw, steghide_raw = sys.argv[1:7]
 
 # Parse each tool's results
 results = {'exiftool': {}, 'binwalk': {}, 'zsteg': {}, 'steghide': {}}
@@ -204,4 +199,4 @@ pipeline = {
     'suggestions': suggestions,
 }
 print(json.dumps(pipeline, indent=2))
-"
+" "$IMAGE" "$FILE_TYPE" "$EXIF_RAW" "$BINWALK_RAW" "$ZSTEG_RAW" "$STEGHIDE_RAW"

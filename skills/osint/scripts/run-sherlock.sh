@@ -21,7 +21,7 @@ python3 -c "
 import json, re, sys
 
 raw = sys.stdin.read()
-username = '$USERNAME'
+username = sys.argv[1]
 
 # Parse sherlock output: [+] SiteName: URL or [*] SiteName: URL
 found = []
@@ -73,4 +73,4 @@ result = {
     'suggestions': suggestions,
 }
 print(json.dumps(result, indent=2))
-" <<< "$RAW"
+" "$USERNAME" <<< "$RAW"
