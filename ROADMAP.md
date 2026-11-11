@@ -24,8 +24,8 @@ An issue can start once every issue in its **Depends on** list is merged. Issues
 
 - [x] Review and merge PR #7 (security fix by @meeminoglu): merged 2026-11-05.
 - [ ] Enable private vulnerability reporting (Settings, Code security).
-- [ ] Resolve PR #1 (AGENTS.md/CLAUDE.md cleanup by @kyuna0312) before dispatching agent sessions: the current AGENTS.md describes a tracker this repo does not use.
-- [ ] Rebase PR #2 (README rewrite) onto main, keeping the marketplace install commands from PR #6.
+- [ ] PR #1 (AGENTS.md/CLAUDE.md cleanup by @kyuna0312): the contributor has been asked to rebase and update a few stale lines ([comment](https://github.com/MysterionRise/ctf-kit/pull/1#issuecomment-6798709696)). If they can't, [#39](https://github.com/MysterionRise/ctf-kit/issues/39) carries the changes forward with credit. Until it lands, the current AGENTS.md describes a tracker this repo does not use, so point agent sessions at CLAUDE.md.
+- [ ] PR #2 (README rewrite): rebased onto main with PR #6's marketplace install commands; ready for review and merge.
 - [ ] Pin [#8](https://github.com/MysterionRise/ctf-kit/issues/8).
 
 ### Wave 1
