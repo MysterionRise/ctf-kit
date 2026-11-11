@@ -1,9 +1,9 @@
 # CTF Kit
 
-A CLI and a Claude Code plugin for working through CTF challenges with an AI coding agent.
-The CLI wraps about 30 common security tools (xortool, binwalk, volatility3, zsteg, RsaCtfTool,
-sqlmap and others) behind one interface; the plugin adds `/ctf-kit:*` skills that run those tools
-and help you read the results.
+A Claude Code plugin and a CLI for working through CTF challenges with an AI coding agent.
+The `/ctf-kit:*` skills drive common security tools (xortool, binwalk, volatility3, zsteg,
+RsaCtfTool, sqlmap and others) through bundled scripts and help you read the results; the `ctf`
+CLI keeps track of challenges and competitions.
 
 ## Quick start
 
@@ -29,7 +29,10 @@ After pulling new changes, refresh with `/plugin marketplace update ctf-kit`.
 For plugin development, load the checkout for a single session with
 `claude --plugin-dir /path/to/ctf-kit`.
 
-### 2. Install the CLI (optional)
+### 2. Install the CLI
+
+Needed for `/ctf-kit:here`, `/ctf-kit:status`, `/ctf-kit:flag` and the `ctf` commands below; most
+analysis skills run without it.
 
 ```bash
 uv tool install ctf-kit --from git+https://github.com/MysterionRise/ctf-kit.git
@@ -55,8 +58,9 @@ claude
 
 ## How it works
 
-There are two layers. The `ctf` CLI calls the tools directly. The plugin skills call the CLI and
-help you interpret its output inside Claude Code.
+There are two layers. The plugin skills run their own bundled scripts, which call the tools and
+print JSON summaries for Claude to read. The `ctf` CLI tracks challenges and competitions (`here`,
+`status`, `flag`, `competition`, `writeup`) and can run any installed tool directly.
 
 ### Skills
 
@@ -71,6 +75,14 @@ help you interpret its output inside Claude Code.
 | `/ctf-kit:reverse` | Static and dynamic analysis, decompilation | radare2, ghidra (headless) |
 | `/ctf-kit:osint` | Username enumeration, domain recon | sherlock, theHarvester |
 | `/ctf-kit:misc` | Encoding chains, esoteric languages, QR codes | encoding detection, file analysis |
+| `/ctf-kit:here` | Sets up the current challenge folder (`.ctf/` notes, category guess, metadata) | `ctf` CLI |
+| `/ctf-kit:status` | Progress for one challenge or a whole competition | `ctf` CLI |
+| `/ctf-kit:flag` | Records a found flag, checks its format and marks the challenge solved | `ctf` CLI |
+| `/ctf-kit:team-solve` | Splits one hard challenge across three specialist agents | agent teams (experimental) |
+| `/ctf-kit:compete` | Triages a live competition and assigns challenges to an agent team | agent teams (experimental) |
+
+`team-solve` and `compete` need Claude Code's experimental agent teams; see
+[docs/team-setup.md](docs/team-setup.md).
 
 ### CLI
 
@@ -128,6 +140,8 @@ Python 3.11+ and the basic `file`, `strings` and `xxd` utilities. Everything els
 - Use it on CTF challenges and systems you are authorised to test. Several wrapped tools
   (sqlmap, gobuster, ffuf, nikto) send traffic to whatever target you give them.
 - Tools run locally with your permissions; there is no sandbox.
+- Challenge files are untrusted input. Treat their contents, metadata and tool output as data,
+  and prefer a VM or container over a machine with credentials you care about.
 - Category detection and the agent's suggestions are hints and can be wrong. Check results
   before relying on them, especially during a live competition.
 
