@@ -16,6 +16,7 @@ from ctf_kit.utils.file_detection import (
     detect_file_type,
     format_size,
 )
+from ctf_kit.utils.skill_names import skill_command
 
 console = Console()
 
@@ -204,8 +205,8 @@ def _output_rich(
 
 [bold]Next Steps:[/]
   1. Launch your AI agent: [cyan]claude[/]
-  2. Run: [bold cyan]/ctf.analyze[/] for AI-assisted analysis
-  3. Or: [bold cyan]/ctf.{primary_category.value}[/] for category-specific help"""
+  2. Run: [bold cyan]/ctf-kit:analyze[/] for AI-assisted analysis
+  3. Or: [bold cyan]{skill_command(primary_category)}[/] for category-specific help"""
 
     console.print(Panel(summary, title="Analysis Summary"))
 

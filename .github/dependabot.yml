@@ -1,0 +1,28 @@
+# Dependabot configuration (part of #40).
+# Keeps Python dependencies and GitHub Actions pinned versions current via
+# weekly, grouped pull requests. The CI-permissions and action-pinning parts of
+# #40 are handled separately.
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      python-dependencies:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "deps"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+    commit-message:
+      prefix: "ci"

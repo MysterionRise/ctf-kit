@@ -8,6 +8,19 @@ Every pull request that changes `skills/`, `src/` or `.claude-plugin/` adds a li
 
 ## [Unreleased]
 
+### Added
+
+- `SECURITY.md` security policy with private vulnerability reporting, scope, and response targets (#14).
+- `.github/dependabot.yml` for weekly `pip` and `github-actions` dependency updates (part of #40).
+
+### Fixed
+
+- CLI next-step hints use the plugin command names `/ctf-kit:<skill>` (reversing -> `reverse`) and point to `ctf check -v`, instead of the pre-plugin `/ctf.*` and `ctf check --category all` (#22).
+
+### Removed
+
+- Legacy `.claude/commands/` slash-command copies; load the in-repo plugin with `claude --plugin-dir .` (#21).
+
 ### Security
 
 - Skill scripts pass challenge-derived values to inline Python via argv instead of splicing them into source code (#7, reported and fixed by @meeminoglu).

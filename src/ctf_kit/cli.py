@@ -29,7 +29,9 @@ def version_callback(value: bool) -> None:
         raise typer.Exit()
 
 
-@app.callback()  # type: ignore[misc]
+@app.callback(  # type: ignore[misc]
+    epilog="After [bold cyan]ctf init[/], launch your AI agent and use [bold cyan]/ctf-kit:analyze[/] and the other /ctf-kit:* skills.",
+)
 def main(
     version: bool | None = typer.Option(
         None,
@@ -44,7 +46,7 @@ def main(
     CTF Kit - Solve CTF challenges faster with AI assistance.
 
     Use [bold cyan]ctf init[/] to initialize a challenge, then launch your
-    AI agent and use /ctf.* slash commands.
+    AI agent and use the /ctf-kit:analyze skill (and other /ctf-kit:* commands).
     """
 
 
