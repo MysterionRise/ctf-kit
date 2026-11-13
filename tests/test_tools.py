@@ -36,6 +36,7 @@ class TestFileTool:
         not FileTool().is_installed,
         reason="file command not installed",
     )
+    @pytest.mark.integration
     def test_file_tool_run_text(self) -> None:
         """Test running file on a text file."""
         tool = FileTool()
@@ -56,6 +57,7 @@ class TestFileTool:
         not FileTool().is_installed,
         reason="file command not installed",
     )
+    @pytest.mark.integration
     def test_file_tool_mime_type(self) -> None:
         """Test getting MIME type."""
         tool = FileTool()
@@ -125,6 +127,7 @@ class TestStringsTool:
         not StringsTool().is_installed,
         reason="strings command not installed",
     )
+    @pytest.mark.integration
     def test_strings_tool_run(self) -> None:
         """Test running strings on a binary file."""
         tool = StringsTool()
@@ -147,6 +150,7 @@ class TestStringsTool:
         not StringsTool().is_installed,
         reason="strings command not installed",
     )
+    @pytest.mark.integration
     def test_strings_find_flags(self) -> None:
         """Test finding flag patterns."""
         tool = StringsTool()

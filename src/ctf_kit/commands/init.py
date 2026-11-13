@@ -153,7 +153,7 @@ def init_challenge(path: Path, category: str | None = None) -> None:
             f"  [cyan].ctf/approach.md[/]\n"
             f"  [cyan].ctf/attempts.md[/]\n\n"
             "Now launch your AI agent and use:\n"
-            "  [bold cyan]/ctf.analyze[/]",
+            "  [bold cyan]/ctf-kit:analyze[/]",
             title="Challenge Ready",
         )
     )

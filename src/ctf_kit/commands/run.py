@@ -61,7 +61,7 @@ def run_tool(
     if not binary_path:
         console.print(f"[red]Tool not found: [cyan]{tool}[/][/]")
         console.print(f"  Binary searched: {binary}")
-        console.print("\n  Try: [cyan]ctf check --category all[/] to see installation commands")
+        console.print("\n  Try: [cyan]ctf check -v[/] to see installation commands")
         raise typer.Exit(1)
 
     # Build command
